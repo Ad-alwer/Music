@@ -67,6 +67,7 @@ async function checkemail(value) {
   }
 }
 async function register(username, email, password) {
+
   let token;
   const user = new User({
     username,

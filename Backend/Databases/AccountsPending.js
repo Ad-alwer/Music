@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
 const timestamp = require("mongoose-timestamp");
 const jwt = require("jsonwebtoken");
-const cron = require("cron");
+const schedule = require("node-schedule");
 
 require("dotenv").config();
 
@@ -10,9 +10,10 @@ const userDB = require("./Users");
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
   console.log("conect");
-  // cron.schedule("0 0 * * *", () => {
-  //   deletepending();
-  // });
+
+  schedule.scheduleJob("00 00 * * *", () => {
+    deletepending();
+  });
 });
 
 const musicschema = new mongoose.Schema({
@@ -61,7 +62,7 @@ async function adduser(username, email, password) {
   });
   await account.save();
   token = jwt.sign({ _id: account.id, code }, process.env.PENDING_JWT);
-  const link = `localhost:${process.env.PORT}/v/${token}`;
+  const link = `http://localhost:${process.env.PORT}/v/${token}`;
   const html = `    <h1 style="text-align: center">Hello , ${username}</h1>
   <p style="font-size:1.5rem;text-align: center;font-weight:bold;  text-transform: capitalize;">Your create account in our site,Click on above button to verify that or copy text in your browser</p>
   <div style="display: flex; justify-content: center">
@@ -75,29 +76,30 @@ async function adduser(username, email, password) {
         padding: 20px 10px;
         width: 220px;
         text-transform: bold;
+        outline:none;
+        border:2px solid darkblue;
       "
     >
       <a
         href="${link}"
         style="
-        outline:none;
           text-decoration: none;
           color: white;
           font-size: 1.5rem;
           font-style:sans-serif;
           text-transform: capitalize;
           font-weight: bold;
+          cursor:pointer;
         "
         >Verify</a
       >
     </button>
     
   </div>
-  <p style="font-size:1.5rem;text-align: center;font-weight:bold;  text-transform: capitalize;text-wrap:wrap">${link}</p>
   <hr style="margin-top:30px;" />
   <footer style="margin-top:30px;">
     <p style="font-size:1.5rem;text-align: center;font-weight:bold;  text-transform: capitalize;"
-      >If you arent sign up , please Dont send this email for other
+      > if you arent sign up , please Dont send this email for other
       people.</p
     >
     <p style="font-size:1.5rem;text-align: center;font-weight:bold;  text-transform: capitalize;">This request was expride 30 day later</p>
@@ -118,25 +120,60 @@ async function adduser(username, email, password) {
     subject: "Verify your account",
     html: html,
   });
-
-  //TODO
-
+  if (!info.rejected[0]) {
+    return true;
+  } else {
+    return false;
+  }
 }
 async function deletepending() {
-  await Account.findOneAndRemove({
-    createdAt: {
-      $lte: new Date(new Date() - 30 * 24 * 60 * 60 * 1000),
-    },
-  });
+  let deletarr = [];
+  const accounts = await Account.find({});
+  let year = new Date(new Date() - 30 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0];
+
+  for await (const e of accounts) {
+    e.year = new Date(e.createdAt.toISOString().split("T")[0]);
+    year = new Date(year);
+
+    if (e.year < year) {
+      deletarr.push(e);
+    }
+  }
+
+  if (deletarr.length > 0) {
+    for (const e of deletarr) {
+      await Account.findByIdAndDelete(e._id);
+    }
+  }
 }
 async function verify(token) {
-  const decoded = jwt.verify(token, process.env.PENDING_JWT);
-  let user = await Account.findById(decoded.data._id);
-  if (user.code === decoded.data.code) {
-    const token = await userDB.register(...user);
-    return token;
-  } else {
-    return "Verification Failed!";
+  try {
+    const decode = jwt.verify(token, process.env.PENDING_JWT);
+
+    let user = await Account.findById(decode._id);
+
+    if (user.code === decode.code) {
+      const token = await userDB.register(
+        user.username,
+        user.email,
+        user.password
+      );
+      await deleteVerified(user.email);
+      return token;
+    } else {
+      return "Verification Failed!";
+    }
+  } catch (err) {
+    return false;
+  }
+}
+
+async function deleteVerified(mail) {
+  const sameEmails = await Account.find({ email: mail });
+  for (const email of sameEmails) {
+    await Account.findByIdAndDelete(email._id);
   }
 }
 

@@ -15,11 +15,11 @@ Router.get("/checkusername/:value", (req, res) => {
 });
 
 Router.post("/register", (req, res) => {
-
-
-   accountspendingDB.adduser(req.body.username,req.body.email,req.body.password).then((data) => res.send(data));
+  accountspendingDB
+    .adduser(...Object.values(req.body))
+    .then((data) => res.send(data));
 });
-//TODO iteral
+
 
 Router.get("/verify", (req, res) => {
   accountspendingDB.verify(req.headers.jwt).then((data) => res.send(data));
