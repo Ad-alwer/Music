@@ -357,46 +357,81 @@ async function changeadmin(userid) {
   }
 }
 
-async function addrequesttrack(id, url) {
-try {
-  const user = await User.findOneAndUpdate(
-    { _id: id },
-    { $push: { requests: { url, status: "pending" } } },
-    { new: true }
-  );
-  return user
-} catch {
-  return false
-}
-}
-
-async function addrequestalbum(id, url,tumbnail) {
+async function addrequesttrack(
+  id,
+  name,
+  type,
+  genre,
+  description,
+  lyric,
+  schdule,
+  feat,
+  cover,
+  track
+) {
   try {
     const user = await User.findOneAndUpdate(
       { _id: id },
-      { $push: { requests: { url, status: "pending",tumbnail } } },
+      {
+        $push: {
+          requests: {
+            track,
+            name,
+            type,
+            genre,
+            description,
+            lyric,
+            schdule,
+            feat,
+            cover,
+            status: "pending",
+          },
+        },
+      },
       { new: true }
     );
-    return user
+    return user;
   } catch {
-    return false
+    return false;
   }
-  }
+}
 
-async function addprofile(id,url){
+async function addrequestalbum(id, name, tracks, cover, description, schdule) {
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: id },
+      {
+        $push: {
+          requests: {
+            name,
+            tracks,
+            status: "pending",
+            cover,
+            description,
+            schdule,
+          },
+        },
+      },
+      { new: true }
+    );
+    return user;
+  } catch {
+    return false;
+  }
+}
+
+async function addprofile(id, url) {
   try {
     const updatedUser = await User.findByIdAndUpdate(
       id,
       { profile: url },
       { new: true }
     );
-    return updatedUser
+    return updatedUser;
   } catch {
-    return false
+    return false;
   }
 }
-
-
 
 module.exports = {
   checkusername,
@@ -412,5 +447,5 @@ module.exports = {
   changeadmin,
   addrequesttrack,
   addrequestalbum,
-  addprofile
+  addprofile,
 };

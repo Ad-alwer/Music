@@ -26,7 +26,6 @@ const musicschema = new mongoose.Schema({
   tracks: [],
   monthlyListener: [],
   schedule: Date,
-  time: String,
   releaseDate: Date,
 });
 musicschema.plugin(timestamp);

@@ -16,7 +16,6 @@ const config = {
 const Router = express.Router();
 const s3 = new AWS.S3(config);
 
-
 const uploadtracks = multer({
   storage: multerS3({
     s3,
@@ -47,22 +46,7 @@ const uploadprofile = multer({
   }),
 });
 
-Router.post("/track", uploadtracks.single("objectKey"), function (req, res) {
-  usersDB.addrequesttrack(req.body.id, req.file.location).then((data) => {
-    if (data) {
-      return res.send({
-        status: "success",
-        message: "file uploaded!",
-        url: {
-          size: req.file.size,
-          url: req.file.location,
-          name: req.file.key,
-          type: req.file.mimetype,
-        },
-      });
-    }
-  });
-});
+
 
 Router.post(
   "/album",
@@ -81,14 +65,66 @@ Router.post(
       })
     );
 
-    usersDB.addrequestalbum(req.body.id, files, thumbnail).then((data) => {
-      if (data) {
-        return res.send({
-          status: "success",
-          message: "file uploaded!",
-        });
-      }
-    });
+    usersDB
+      .addrequestalbum(
+        req.body.id,
+        req.body.name,
+        files,
+        thumbnail,
+        req.body.description,
+        req.body.schdule
+      )
+      .then((data) => {
+        if (data) {
+          return res.send({
+            status: "success",
+            message: "file uploaded!",
+          });
+        }
+      });
+  }
+);
+
+Router.post(
+  "/track",
+  uploadtracks.array("objectKey"),
+  async function (req, res) {
+    let coverurl;
+    let trackurl;
+
+    await Promise.all(
+      req.files.map(async (file) => {
+        if (file.mimetype === "audio/mpeg") {
+          trackurl = file.location;
+          console.log(trackurl);
+        } else {
+          coverurl = file.location;
+          console.log(coverurl);
+        }
+      })
+    );
+
+    usersDB
+      .addrequesttrack(
+        req.body.id,
+        req.body.name,
+        req.body.type,
+        req.body.genre,
+        req.body.description,
+        req.body.lyrics,
+        req.body.schdule,
+        req.body.feat,
+        coverurl,
+        trackurl
+      )
+      .then((data) => {
+        if (data) {
+          return res.send({
+            status: "success",
+            message: "file uploaded!",
+          });
+        }
+      });
   }
 );
 
