@@ -16,16 +16,15 @@ const musicschema = new mongoose.Schema({
   type: { enum: ["music", "podcast"] },
   genre: String,
   artist: mongoose.Schema.Types.ObjectId,
-  status: { enum: ["active", "deleted", "private", "pending"] },
-  likes: Number,
-  plays: Number,
+  status: { enum: ["public", "deleted", "private", "pending"] },
+  likes: { type: String, default: 0 },
+  plays: { type: String, default: 0 },
   description: {
     type: String,
     maxlength: 4000,
     trim: true,
-    
   },
-  album: mongoose.Schema.Types.ObjectId,
+  album: { type: mongoose.Schema.Types.ObjectId, default: null },
   lyric: String,
   cover: String,
   feat: [],
@@ -37,3 +36,66 @@ const musicschema = new mongoose.Schema({
 musicschema.plugin(timestamp);
 
 const Track = mongoose.model("track", musicschema);
+
+async function addtrack(
+  name,
+  type,
+  genre,
+  artist,
+  description,
+  album,
+  lyric,
+  cover,
+  feat,
+  track,
+  schdule,
+  status
+) {
+try{
+  const currentDate = new Date();
+  const scheduledDate = new Date(schdule);
+  if (scheduledDate <= currentDate) {
+    const track = new Track({
+      name,
+      type,
+      genre,
+      artist,
+      description,
+      album,
+      lyric,
+      cover,
+      feat,
+      track,
+      status,
+      releaseDate: currentDate,
+    });
+    await track.save();
+    return track;
+  } else {
+    const track = new Track({
+      name,
+      type,
+      genre,
+      artist,
+      description,
+      album,
+      lyric,
+      cover,
+      feat,
+      track,
+      status,
+      schdule,
+      releaseDate: null,
+    });
+    await track.save();
+    return track;
+  }
+}catch{
+  return false
+}
+}
+
+
+module.exports={
+  addtrack
+}

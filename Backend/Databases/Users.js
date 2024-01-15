@@ -3,6 +3,7 @@ const timestamp = require("mongoose-timestamp");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
+const trackDB = require("./Tracks");
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => console.log("conect"));
@@ -28,11 +29,13 @@ const musicschema = new mongoose.Schema({
     enum: ["active", "deleted"],
     default: "active",
   },
+  tracks: [],
   isadmin: { type: Boolean, default: false },
   ismaster: { type: Boolean, default: false },
+  isverify: { type: Boolean, default: false },
   banupload: { type: Boolean, default: false },
   requests: [],
-  description: [],
+  bio: { type: String, maxlength: 500, trim: true },
   socialmedia: [],
   subscribe: [],
   artists: [],
@@ -43,6 +46,7 @@ const musicschema = new mongoose.Schema({
   profile: { type: String, default: null },
   favouriteGenre: { type: String, default: null },
   recommendUser: [],
+  albums: [],
 });
 musicschema.plugin(timestamp);
 
@@ -327,7 +331,7 @@ async function changeusername(token, newusername) {
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
     const updatedUser = await User.findByIdAndUpdate(
-      decode_id,
+      decode._id,
       { usename: newusername },
       { new: true }
     );
@@ -357,6 +361,22 @@ async function changeadmin(userid) {
   }
 }
 
+async function checktrackname(token, name) {
+  const decode = jwt.verify(token, process.env.REGISTER_JWT);
+  const user = User.findById(decode._id);
+  const search = user.tracks.find((e) => e.name == name);
+
+  return search.lenght > 0 ? false : true;
+}
+
+async function checkalbumname(token, name) {
+  const decode = jwt.verify(token, process.env.REGISTER_JWT);
+  const user = User.findById(decode._id);
+  const search = user.albuns.find((e) => e.name == name);
+
+  return search.lenght > 0 ? false : true;
+}
+
 async function addrequesttrack(
   id,
   name,
@@ -367,56 +387,94 @@ async function addrequesttrack(
   schdule,
   feat,
   cover,
-  track
+  track,
+  visibility
 ) {
-  try {
-    const user = await User.findOneAndUpdate(
-      { _id: id },
-      {
-        $push: {
-          requests: {
-            track,
-            name,
-            type,
-            genre,
-            description,
-            lyric,
-            schdule,
-            feat,
-            cover,
-            status: "pending",
+  const user = await User.findById(id);
+  if (user.isverify) {
+    //TODO after music routes
+
+    await trackDB
+      .addtrack(
+        name,
+        type,
+        genre,
+        id,
+        description,
+        album,
+        lyric,
+        cover,
+        feat,
+        track,
+        schdule,
+        visibility
+      )
+      .then((res) => {
+        return res;
+      });
+  } else {
+    try {
+      const decode = jwt.verify(token, process.env.REGISTER_JWT);
+
+      const user = await User.findOneAndUpdate(
+        { _id: decode._id },
+        {
+          $push: {
+            requests: {
+              artistid: id,
+              track,
+              name,
+              type,
+              genre,
+              description,
+              lyric,
+              schdule,
+              feat,
+              cover,
+              status: "pending",
+              visibility,
+              msg: "",
+            },
           },
         },
-      },
-      { new: true }
-    );
-    return user;
-  } catch {
-    return false;
+        { new: true }
+      );
+      return user;
+    } catch {
+      return false;
+    }
   }
 }
 
 async function addrequestalbum(id, name, tracks, cover, description, schdule) {
-  try {
-    const user = await User.findOneAndUpdate(
-      { _id: id },
-      {
-        $push: {
-          requests: {
-            name,
-            tracks,
-            status: "pending",
-            cover,
-            description,
-            schdule,
+  const user = await User.findById(id);
+  if (user.isverify) {
+    //TODO after music routes
+  } else {
+    try {
+      const decode = jwt.verify(token, process.env.REGISTER_JWT);
+      const user = await User.findOneAndUpdate(
+        { _id: decode._id },
+        {
+          $push: {
+            requests: {
+              artistid: id,
+              name,
+              tracks,
+              status: "pending",
+              cover,
+              description,
+              schdule,
+              msg: "",
+            },
           },
         },
-      },
-      { new: true }
-    );
-    return user;
-  } catch {
-    return false;
+        { new: true }
+      );
+      return user;
+    } catch {
+      return false;
+    }
   }
 }
 
@@ -433,6 +491,232 @@ async function addprofile(id, url) {
   }
 }
 
+async function subscribe(token, id) {
+  const decode = jwt.verify(token, process.env.REGISTER_JWT);
+  await User.findOneAndUpdate(
+    { _id: decode._id },
+    {
+      $push: {
+        artists: {
+          id,
+        },
+      },
+    },
+    { new: true }
+  );
+
+  await User.findOneAndUpdate(
+    { _id: id },
+    {
+      $push: {
+        subsribe: {
+          decode_id,
+        },
+      },
+    },
+    { new: true }
+  );
+  return true;
+}
+
+async function changebio(token, text) {
+  const decode = jwt.verify(token, process.env.REGISTER_JWT);
+  try {
+    await User.findByIdAndUpdate(decode._id, {
+      $set: {
+        bio: text,
+      },
+    });
+    return {
+      msg: "Bio changed successfully",
+      status: true,
+    };
+  } catch {
+    return {
+      status: false,
+      msg: "Please try again later",
+    };
+  }
+}
+
+async function savealbum(token, albumid) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    await User.findByIdAndUpdate(decode._id, {
+      $push: {
+        saveAlbums: albumid,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function savetrack(token, trackid) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    await User.findByIdAndUpdate(decode._id, {
+      $push: {
+        saveTracks: trackid,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function changefavouritegenre(token, text) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    await User.findByIdAndUpdate(decode._id, {
+      $set: {
+        favouriteGenre: text,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function addsocialmedia(token, file, name, link) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    await User.findByIdAndUpdate(decode._id, {
+      $push: {
+        socialmedia: {
+          file,
+          name,
+          link,
+        },
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function deletsocial(token, name) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findByIdAndRemove(decode._id);
+    await User.findByIdAndUpdate(decode._id, {
+      $pull: {
+        socialmedia: { "file.name": name },
+      },
+    });
+  } catch {
+    return false;
+  }
+}
+
+async function verifytrack(token, name) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const userId = decode._id;
+
+    const user = await User.findById(userId);
+    const requests = user.requests;
+
+    const updatedRequests = requests.map((request) => {
+      if (request.name === name) {
+        return {
+          ...request,
+          status: undefined,
+          msg: undefined,
+        };
+      }
+      return request;
+    });
+
+    await User.findByIdAndUpdate(userId, {
+      $set: {
+        requests: updatedRequests,
+      },
+    });
+    await trackDB.addtrack(...Object.values(updatedRequests)).then((res) => {
+      return res;
+    });
+  } catch {
+    return false;
+  }
+}
+
+async function rejectrack(token, name, msg) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const userId = decode._id;
+
+    const user = await User.findById(userId);
+    const requests = user.requests;
+
+    const updatedRequests = requests.map((request) => {
+      if (request.name === name) {
+        return {
+          ...request,
+          status: "reject",
+          msg,
+        };
+      }
+    });
+
+    await User.findByIdAndUpdate(userId, {
+      $set: {
+        requests: updatedRequests,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function searchbyusername(name){
+return await User.find({username:name})
+}
+
+
+async function addrecomendeuser(token, id) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findOneAndUpdate(
+      { _id: decode._id },
+      {
+        $push: {
+          recommendUser: id,
+        },
+      },
+      { new: true }
+    );
+    return user;
+  } catch {
+    return false;
+  }
+}
+
+async function removerecommandeuser(token, id) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findOneAndUpdate(
+      { _id: decode._id },
+      {
+        $pull: {
+          recommendUser: id,
+        },
+      },
+      { new: true }
+    );
+    return user;
+  } catch {
+    return false;
+  }
+}
+
+
+
 module.exports = {
   checkusername,
   checkemail,
@@ -448,4 +732,18 @@ module.exports = {
   addrequesttrack,
   addrequestalbum,
   addprofile,
+  subscribe,
+  changebio,
+  checktrackname,
+  checkalbumname,
+  savealbum,
+  savetrack,
+  changefavouritegenre,
+  addsocialmedia,
+  deletsocial,
+  verifytrack,
+  rejectrack,
+  addrecomendeuser,
+  removerecommandeuser,
+  searchbyusername
 };

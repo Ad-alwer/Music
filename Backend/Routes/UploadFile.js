@@ -2,6 +2,7 @@ const AWS = require("aws-sdk");
 const multer = require("multer");
 const express = require("express");
 const multerS3 = require("multer-s3");
+
 require("dotenv").config();
 
 const usersDB = require("../Databases/users");
@@ -23,13 +24,13 @@ const uploadtracks = multer({
     key: function (req, file, cb) {
       const uniqueKey = Date.now().toString() + "-" + file.originalname;
       if (file.mimetype == "audio/mpeg") {
-        cb(null, `request/${uniqueKey}`);
+        cb(null, `tracks/${uniqueKey}`);
       } else if (
         file.mimetype == "image/png" ||
         file.mimetype == "image/jpeg" ||
         file.mimetype == "image/jpg"
       ) {
-        cb(null, `tumbnails/${uniqueKey}`);
+        cb(null, `covers/${uniqueKey}`);
       }
     },
   }),
@@ -46,7 +47,16 @@ const uploadprofile = multer({
   }),
 });
 
-
+const uploadsociamedia = multer({
+  storage: multerS3({
+    s3,
+    bucket: process.env.LIARA_BUCKET_NAME,
+    key: function (req, file, cb) {
+      const uniqueKey = Date.now().toString() + "-" + file.originalname;
+      cb(null, `socialicn/${uniqueKey}`);
+    },
+  }),
+});
 
 Router.post(
   "/album",
@@ -58,16 +68,19 @@ Router.post(
     await Promise.all(
       req.files.map(async (file) => {
         if (file.mimetype === "audio/mpeg") {
-          files.push(file.location);
+          files.push({
+            url: file.location,
+            name: file.key,
+          });
         } else {
-          thumbnail = file.location;
+          thumbnail = { url: file.location, name: file.key };
         }
       })
     );
 
     usersDB
       .addrequestalbum(
-        req.body.id,
+        req.headers.jwt,
         req.body.name,
         files,
         thumbnail,
@@ -89,24 +102,22 @@ Router.post(
   "/track",
   uploadtracks.array("objectKey"),
   async function (req, res) {
-    let coverurl;
-    let trackurl;
+    let cover;
+    let track;
 
     await Promise.all(
       req.files.map(async (file) => {
         if (file.mimetype === "audio/mpeg") {
-          trackurl = file.location;
-          console.log(trackurl);
+          track = { url: file.location, name: file.key };
         } else {
-          coverurl = file.location;
-          console.log(coverurl);
+          cover = { url: file.location, name: file.key };
         }
       })
     );
 
     usersDB
       .addrequesttrack(
-        req.body.id,
+        req.headers.jwt,
         req.body.name,
         req.body.type,
         req.body.genre,
@@ -114,8 +125,9 @@ Router.post(
         req.body.lyrics,
         req.body.schdule,
         req.body.feat,
-        coverurl,
-        trackurl
+        cover,
+        track,
+        visibility
       )
       .then((data) => {
         if (data) {
@@ -132,7 +144,11 @@ Router.post(
   "/profile",
   uploadprofile.single("objectKey"),
   async function (req, res) {
-    usersDB.addprofile(req.body.id, req.file.location).then((data) => {
+    let file = {
+      url: req.file.location,
+      name: req.file.key,
+    };
+    usersDB.addprofile(req.body.id, file).then((data) => {
       if (data) {
         return res.send({
           status: "success",
@@ -140,6 +156,20 @@ Router.post(
         });
       }
     });
+  }
+);
+
+Router.put(
+  "/addsocial",
+  uploadsociamedia.single("objectKey"),
+  async function (req, res) {
+    let file = {
+      url: req.file.location,
+      name: req.file.key,
+    };
+    usersDB
+      .addsocialmedia(req.headers.jwt, file, req.body.name, req.body.link)
+      .then((data) => res.send(data));
   }
 );
 
