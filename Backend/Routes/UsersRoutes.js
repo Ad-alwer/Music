@@ -1,9 +1,11 @@
 const express = require("express");
+const { likes } = require("../Databases/Tracks");
 const Router = express.Router();
 
 require("dotenv").config();
 
 const usersDB = require("../Databases/users");
+const trackDB = require("../Databases/Tracks");
 
 Router.post("/login", (req, res) => {
   usersDB.login(...Object.values(req.body)).then((data) => res.send(data));
@@ -115,6 +117,12 @@ Router.put("/removerecommanduser/:id", (res, res) => {
   usersDB
     .removerecommandeuser(req.headers.jwt, req.params.id)
     .then((data) => res.send(data));
+});
+
+Router.put("/like/:tackid", (res, res) => {
+  usersDB.favourite(req.headers.jwt, req.params.trackidid).then((data) => {
+    trackDB.like(trackid, data).then((data) => res.send(data));
+  });
 });
 
 module.exports = Router;

@@ -392,8 +392,6 @@ async function addrequesttrack(
 ) {
   const user = await User.findById(id);
   if (user.isverify) {
-    //TODO after music routes
-
     await trackDB
       .addtrack(
         name,
@@ -674,10 +672,9 @@ async function rejectrack(token, name, msg) {
   }
 }
 
-async function searchbyusername(name){
-return await User.find({username:name})
+async function searchbyusername(name) {
+  return await User.find({ username: name });
 }
-
 
 async function addrecomendeuser(token, id) {
   try {
@@ -715,7 +712,28 @@ async function removerecommandeuser(token, id) {
   }
 }
 
-
+async function favourite(token, trackid) {
+  const decode = jwt.verify(token, process.env.REGISTER_JWT);
+  const user = await User.findById(decode._id);
+  let userlikes = user.favourite;
+  let index = userlikes.findindex((e) => e === trackid);
+  if (index) {
+    userlikes.splite(index, 1);
+    await User.findByIdAndUpdate(decode_id, {
+      $set: {
+        favourite: userlikes,
+      },
+    });
+    return "add";
+  } else {
+    await User.findByIdAndUpdate(decode_id, {
+      $push: {
+        favourite: userlikes,
+      },
+    });
+    return "remove";
+  }
+}
 
 module.exports = {
   checkusername,
@@ -745,5 +763,6 @@ module.exports = {
   rejectrack,
   addrecomendeuser,
   removerecommandeuser,
-  searchbyusername
+  searchbyusername,
+  favourite
 };

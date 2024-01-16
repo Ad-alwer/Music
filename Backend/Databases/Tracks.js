@@ -51,51 +51,73 @@ async function addtrack(
   schdule,
   status
 ) {
-try{
-  const currentDate = new Date();
-  const scheduledDate = new Date(schdule);
-  if (scheduledDate <= currentDate) {
-    const track = new Track({
-      name,
-      type,
-      genre,
-      artist,
-      description,
-      album,
-      lyric,
-      cover,
-      feat,
-      track,
-      status,
-      releaseDate: currentDate,
-    });
-    await track.save();
-    return track;
-  } else {
-    const track = new Track({
-      name,
-      type,
-      genre,
-      artist,
-      description,
-      album,
-      lyric,
-      cover,
-      feat,
-      track,
-      status,
-      schdule,
-      releaseDate: null,
-    });
-    await track.save();
-    return track;
+  try {
+    const currentDate = new Date();
+    const scheduledDate = new Date(schdule);
+    if (scheduledDate <= currentDate) {
+      const track = new Track({
+        name,
+        type,
+        genre,
+        artist,
+        description,
+        album,
+        lyric,
+        cover,
+        feat,
+        track,
+        status,
+        releaseDate: currentDate,
+      });
+      await track.save();
+      return track;
+    } else {
+      const track = new Track({
+        name,
+        type,
+        genre,
+        artist,
+        description,
+        album,
+        lyric,
+        cover,
+        feat,
+        track,
+        status,
+        schdule,
+        releaseDate: null,
+      });
+      await track.save();
+      return track;
+    }
+  } catch {
+    return false;
   }
-}catch{
-  return false
-}
 }
 
-
-module.exports={
-  addtrack
+async function like(id, status) {
+  try {
+    if (status == "add") {
+      await Track.findByIdAndUpdate(id, {
+        $inc: {
+          likes: -1,
+        },
+      });
+      return true;
+    } else if (status == "remove") {
+      await Track.findByIdAndUpdate(id, {
+        $inc: {
+          likes: -1,
+        },
+      });
+      return true;
+    }
+  } catch {
+    return false;
+  }
 }
+
+module.exports = {
+  addtrack,
+  like
+};
