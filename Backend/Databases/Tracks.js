@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
-const jwt = require("jsonwebtoken");
+const { notification, getuser } = require("./Users");
+
 require("dotenv").config();
 
-mongoose.connect(process.env.DB_ADRESS).then(() => console.log("conect"));
+mongoose.connect(process.env.DB_ADRESS).then(() => {
+  console.log("conect");
+schduletrack()
+});
 
 const musicschema = new mongoose.Schema({
   name: {
@@ -26,9 +30,9 @@ const musicschema = new mongoose.Schema({
   },
   album: { type: mongoose.Schema.Types.ObjectId, default: null },
   lyric: String,
-  cover: String,
+  cover: {},
   feat: [],
-  track: String,
+  track: {},
   monthlyListener: [],
   schedule: Date,
   releaseDate: Date,
@@ -36,6 +40,33 @@ const musicschema = new mongoose.Schema({
 musicschema.plugin(timestamp);
 
 const Track = mongoose.model("track", musicschema);
+
+
+async function schduletrack(){
+const currentDate = new Date();
+const year = currentDate.getFullYear();
+const month = String(currentDate.getMonth() + 1).padStart(2, '0'); 
+const day = String(currentDate.getDate()).padStart(2, '0'); 
+const today = `${year}-${month}-${day}`;
+
+const pendingtracks = await Track.find({releaseDate: { $ne: null }})
+pendingtracks.forEach(e=>{
+const date = new Date(e.createdAt);
+const extractedDate = date.toISOString().split("T")[0];
+ if(today.getTime() >= extractedDate.getTime()){
+  await Track.findByIdAndUpdate(e.id,{
+    $set:{
+      status:'public',
+      releaseDate:currentDate,
+      schedule:null
+    }
+  })
+ }
+
+    
+  })
+}
+
 
 async function addtrack(
   name,
@@ -55,7 +86,7 @@ async function addtrack(
     const currentDate = new Date();
     const scheduledDate = new Date(schdule);
     if (scheduledDate <= currentDate) {
-      const track = new Track({
+      const usertrack = new Track({
         name,
         type,
         genre,
@@ -69,10 +100,10 @@ async function addtrack(
         status,
         releaseDate: currentDate,
       });
-      await track.save();
-      return track;
+      await usertrack.save();
+      return usertrack;
     } else {
-      const track = new Track({
+      const usertrack = new Track({
         name,
         type,
         genre,
@@ -87,22 +118,34 @@ async function addtrack(
         schdule,
         releaseDate: null,
       });
-      await track.save();
-      return track;
+      await usertrack.save();
+      return usertrack;
     }
   } catch {
     return false;
   }
 }
 
-async function like(id, status) {
+async function like(token, id, status) {
   try {
     if (status == "add") {
-      await Track.findByIdAndUpdate(id, {
-        $inc: {
-          likes: -1,
+      const updatedtrack = await Track.findByIdAndUpdate(
+        id,
+        {
+          $inc: {
+            likes: +1,
+          },
         },
-      });
+        { new: true }
+      );
+
+      const user = await getuser(token);
+      await notification(
+        { _id: user.id },
+        TODO,
+        `${user.username} like ${updatedtrack.name}`,
+        updatedtrack.cover
+      );
       return true;
     } else if (status == "remove") {
       await Track.findByIdAndUpdate(id, {
@@ -117,7 +160,120 @@ async function like(id, status) {
   }
 }
 
+async function edittrack(
+  id,
+  name,
+  type,
+  genre,
+  status,
+  description,
+  album,
+  lyric,
+  cover,
+  feat
+) {
+  try {
+    await Track.findByIdAndUpdate(id, {
+      $set: {
+        name,
+        type,
+        genre,
+        status,
+        description,
+        album,
+        lyric,
+        cover,
+        feat,
+      },
+    });
+
+    return {
+      msg: "Edited successfully",
+      status: true,
+    };
+  } catch {
+    return {
+      msg: "Please try again",
+      status: false,
+    };
+  }
+}
+
+async function deletetrack(id) {
+  try {
+    await Track.findByIdAndRemove(id);
+    return {
+      msg: "Deleted successfully",
+      status: true,
+    };
+  } catch {
+    return {
+      msg: "Please try again",
+      status: false,
+    };
+  }
+}
+
+async function changestatus(id, newstatus) {
+  try {
+    await Track.findByIdAndUpdate(id, {
+      $set: {
+        status: newstatus,
+      },
+    });
+    return {
+      msg: "Track status changed",
+      status: true,
+    };
+  } catch {
+    return false;
+  }
+}
+
+async function playtrack() {
+  try {
+    await Track.findByIdAndUpdate(id, {
+      $inc: {
+        plays: +1,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+async function monthlyListener(id) {
+  const track = await Track.findById(id);
+  let monthlylistners = track.monthlyListener;
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth() + 1;
+  const today = `${currentYear} - ${currentMonth}`;
+  const search = monthlylistners.find((e) => {
+    return e.date === today;
+  });
+  if (search) {
+    search.view++;
+  } else {
+    monthlyListener.push({
+      date: today,
+      view: 1,
+    });
+  }
+
+  await Track.findByIdAndUpdate(id, {
+    $set: {
+      monthlyListener: monthlyListener,
+    },
+  });
+}
+
 module.exports = {
   addtrack,
-  like
+  like,
+  edittrack,
+  deletetrack,
+  changestatus,
+  playtrack,
+  monthlyListener,
 };

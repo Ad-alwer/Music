@@ -2,11 +2,28 @@ const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const schedule = require("node-schedule");
 
 const trackDB = require("./Tracks");
+
 require("dotenv").config();
 
-mongoose.connect(process.env.DB_ADRESS).then(() => console.log("conect"));
+mongoose.connect(process.env.DB_ADRESS).then(() => {
+  console.log("conect")
+;
+  schedule.scheduleJob('0 0 1 * *', () => {
+    let query = {
+      "user.tracks": {
+        $exists: true,
+        $not: {
+          $size: 0
+        }
+      }
+    }
+   await notification(query,'/profile/monthlylistener',`Your monthlylistener report is available nowimg/profile`)
+    
+  });
+});
 
 const musicschema = new mongoose.Schema({
   username: {
@@ -41,7 +58,7 @@ const musicschema = new mongoose.Schema({
   artists: [],
   saveAlbums: [],
   saveTracks: [],
-  lastplays: {},
+  lastplay: {},
   notification: [],
   profile: { type: String, default: null },
   favouriteGenre: { type: String, default: null },
@@ -491,7 +508,7 @@ async function addprofile(id, url) {
 
 async function subscribe(token, id) {
   const decode = jwt.verify(token, process.env.REGISTER_JWT);
-  await User.findOneAndUpdate(
+ const subscriber =  await User.findOneAndUpdate(
     { _id: decode._id },
     {
       $push: {
@@ -514,6 +531,8 @@ async function subscribe(token, id) {
     },
     { new: true }
   );
+
+  await notification({'_id':id},`/profile`,`${subscriber.username} subscribe you`,subscriber.profile)
   return true;
 }
 
@@ -636,8 +655,18 @@ async function verifytrack(token, name) {
       },
     });
     await trackDB.addtrack(...Object.values(updatedRequests)).then((res) => {
-      return res;
+      await User.findByIdAndUpdate(userId, {
+        $push: {
+          track:{
+            name,
+            id:res._id
+          },
+        },
+      });
+      return res
     });
+
+    await notification({'_id':userId},'/profile/request',`${name} was been verified`,updatedRequests.cover)
   } catch {
     return false;
   }
@@ -666,6 +695,7 @@ async function rejectrack(token, name, msg) {
         requests: updatedRequests,
       },
     });
+    await notification({'_id':userId},'/profile/request',`${name} was been rejected`,updatedRequests.cover)
     return true;
   } catch {
     return false;
@@ -735,6 +765,88 @@ async function favourite(token, trackid) {
   }
 }
 
+
+async function checknameandrequest(token,name){
+const decode = jwt.verify(token, process.env.REGISTER_JWT);
+const trackname = await checktrackname(token,name)
+const user= await User.findById(decode._id)
+const requestname = user.requests.find(e=> {
+  return e.name == name
+ })
+
+return trackname && !requestname ? true : false
+}
+
+async function edittrack(token,id,newname){
+   try{
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findById(decode._id)
+    const usertracks =user.tracks
+    usertracks.map(e => { if(e.id === id){
+      e.name = newname}
+    })
+    await User.findByIdAndUpdate(decode._id,{
+      $set:{
+        tracks:usertracks
+      }
+      
+    })
+    return true
+   }catch{
+    return false
+   }
+  }
+
+async function deletetrack(token,id){
+try{
+  const decode = jwt.verify(token, process.env.REGISTER_JWT);
+  await User.findByIdAndUpdate(decode._id,{
+    $pull:{
+      tracks:id
+    }
+    
+  })
+  return true
+}catch{
+  return false
+}
+}
+
+async function lastplay(token,value){
+  try{
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+  await User.findByIdAndUpdate(decode._id,{
+    $set:{
+      lastpaly:value
+    }
+    
+  })
+  return true
+  }catch{
+return false
+  }
+  
+}
+
+async function notification(query,link,text,img){
+  
+let users = await User.find(query)
+ for (const user of users) {
+  await User.findByIdAndUpdate(user._id, {
+    $push: {
+      notification: {
+        text,
+        link,
+        img,
+        seen: false,
+      },
+    },
+  });
+}
+
+
+}
+
 module.exports = {
   checkusername,
   checkemail,
@@ -764,5 +876,10 @@ module.exports = {
   addrecomendeuser,
   removerecommandeuser,
   searchbyusername,
-  favourite
+  favourite,
+  checknameandrequest,
+  deletetrack,
+  edittrack,
+  lastplay,
+  notification
 };

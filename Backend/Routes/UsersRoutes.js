@@ -121,8 +121,14 @@ Router.put("/removerecommanduser/:id", (res, res) => {
 
 Router.put("/like/:tackid", (res, res) => {
   usersDB.favourite(req.headers.jwt, req.params.trackidid).then((data) => {
-    trackDB.like(trackid, data).then((data) => res.send(data));
+    trackDB.like(req.headers.jwt,trackid, data).then((data) => res.send(data));
   });
+});
+
+Router.put("/lastplay", (req, res) => {
+  usersDB
+    .lastplay(req.headers.jwt, req.body.data)
+    .then((data) => res.send(data));
 });
 
 module.exports = Router;

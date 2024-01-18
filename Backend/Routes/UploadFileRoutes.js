@@ -173,4 +173,16 @@ Router.put(
   }
 );
 
+Router.put(
+  "/changecover",
+  uploadtracks.single("objectKey"),
+  async function (req, res) {
+    let file = {
+      url: req.file.location,
+      name: req.file.key,
+    };
+    res.send(file);
+  }
+);
+
 module.exports = Router;
