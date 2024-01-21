@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 const schedule = require("node-schedule");
 
 const trackDB = require("./Tracks");
+const albumDB = require("./Albums")
 
 require("dotenv").config();
 
@@ -642,7 +643,6 @@ async function verifytrack(token, name) {
       if (request.name === name) {
         return {
           ...request,
-          status: undefined,
           msg: undefined,
         };
       }
@@ -657,7 +657,7 @@ async function verifytrack(token, name) {
     await trackDB.addtrack(...Object.values(updatedRequests)).then((res) => {
       await User.findByIdAndUpdate(userId, {
         $push: {
-          track:{
+          tracks:{
             name,
             id:res._id
           },
@@ -667,6 +667,8 @@ async function verifytrack(token, name) {
     });
 
     await notification({'_id':userId},'/profile/request',`${name} was been verified`,updatedRequests.cover)
+
+    return true
   } catch {
     return false;
   }
@@ -847,6 +849,113 @@ let users = await User.find(query)
 
 }
 
+async function verifyalbum(token,name){
+ try{
+  const user = await User.findById(userId);
+  const requests = user.requests;
+
+  const updatedRequests = requests.map((request) => {
+    if (request.name === name) {
+      return {
+        ...request,
+        msg: undefined,
+      };
+    }
+    return request;
+  });
+  await User.findByIdAndUpdate(userId, {
+    $set: {
+      requests: updatedRequests,
+    },
+  });
+  await albumDB.addalbum(...Object.values(updatedRequests)).then((res)=>{
+    await User.findByIdAndUpdate(userId, {
+      $push: {
+        albums:{
+          name,
+          id:res._id
+        },
+      },
+    });
+    return res
+  })
+
+  await notification({'_id':userId},'/profile/request',`${name} was been verified`,updatedRequests.cover)
+  return true
+
+ }catch{
+  return false
+ }
+}
+async function rejectalbum(token,name,msg){
+ try{
+  const decode = jwt.verify(token, process.env.REGISTER_JWT);
+  const userId = decode._id;
+
+  const user = await User.findById(userId);
+  const requests = user.requests;
+  
+  const updatedRequests = requests.map((request) => {
+    if (request.name === name) {
+      return {
+        ...request,
+        status: "reject",
+        msg,
+      };
+    }
+  });
+
+  await User.findByIdAndUpdate(userId, {
+    $set: {
+      requests: updatedRequests,
+    },
+  });
+
+  await notification({'_id':userId},'/profile/request',`${name} was been rejected`,updatedRequests.cover)
+  return true;
+
+ }catch{
+return false
+ }
+}
+
+async function editalbum(token,id,newname){
+  try{
+   const decode = jwt.verify(token, process.env.REGISTER_JWT);
+   const user = await User.findById(decode._id)
+   const useralbums =user.albums
+   useralbums.map(e => { if(e.id === id){
+     e.name = newname}
+   })
+   await User.findByIdAndUpdate(decode._id,{
+     $set:{
+       albums:useralbums
+     }
+     
+   })
+   return true
+  }catch{
+   return false
+  }
+ }
+
+
+ 
+async function deletealbum(token,id){
+  try{
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    await User.findByIdAndUpdate(decode._id,{
+      $pull:{
+        albums:id
+      }
+      
+    })
+    return true
+  }catch{
+    return false
+  }
+  }
+
 module.exports = {
   checkusername,
   checkemail,
@@ -881,5 +990,9 @@ module.exports = {
   deletetrack,
   edittrack,
   lastplay,
-  notification
+  notification,
+  verifyalbum,
+  rejectalbum,
+  editalbum,
+  deletealbum
 };

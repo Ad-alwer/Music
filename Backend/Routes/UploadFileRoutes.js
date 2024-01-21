@@ -181,7 +181,7 @@ Router.put(
       url: req.file.location,
       name: req.file.key,
     };
-    res.send(file);
+    return file
   }
 );
 

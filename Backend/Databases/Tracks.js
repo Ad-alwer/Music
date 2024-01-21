@@ -2,11 +2,14 @@ const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 const { notification, getuser } = require("./Users");
 
+
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
   console.log("conect");
-schduletrack()
+  schedule.scheduleJob("00 02 * * *", () => {
+    schduletrack()
+  });
 });
 
 const musicschema = new mongoose.Schema({
@@ -99,6 +102,7 @@ async function addtrack(
         track,
         status,
         releaseDate: currentDate,
+        schdule:null
       });
       await usertrack.save();
       return usertrack;
@@ -268,6 +272,20 @@ async function monthlyListener(id) {
   });
 }
 
+async function changealbum(trackid,albumid){
+  try{
+    await Track.findByIdAndUpdate(trackid,{
+      $set:{
+        album:albumid
+      }
+    })
+    return true
+  }
+  catch{
+    return false
+  }
+}
+
 module.exports = {
   addtrack,
   like,
@@ -276,4 +294,5 @@ module.exports = {
   changestatus,
   playtrack,
   monthlyListener,
+  changealbum
 };
