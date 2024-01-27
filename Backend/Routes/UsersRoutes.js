@@ -6,9 +6,13 @@ require("dotenv").config();
 
 const usersDB = require("../Databases/users");
 const trackDB = require("../Databases/Tracks");
+const { loginback } = require("../Databases/DeletedAccounts");
 
 Router.post("/login", (req, res) => {
-  usersDB.login(...Object.values(req.body)).then((data) => res.send(data));
+  usersDB.login(...Object.values(req.body)).then(async (data) => {
+    data ? await loginback(data.userid) : null;
+    res.send(data);
+  });
 });
 
 Router.get("/forgetpassword/:username", (req, res) => {

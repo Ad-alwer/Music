@@ -6,6 +6,8 @@ const schedule = require("node-schedule");
 
 const trackDB = require("./Tracks");
 const albumDB = require("./Albums")
+const deleteaccountDB = require("./DeletedAccounts")
+
 
 require("dotenv").config();
 
@@ -109,10 +111,13 @@ async function login(user, password) {
   const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/;
   if (emailRegex.test(user)) {
     const foundUser = await User.findOne({ email: user });
+    let token = jwt.sign({ _id: foundUser._id }, process.env.REGISTER_JWT);
     if (foundUser && foundUser.password === password) {
       return {
         status: true,
         msg: "Login successfully",
+        token,
+        userid:foundUser._id
       };
     } else {
       return {
@@ -126,6 +131,10 @@ async function login(user, password) {
       return {
         status: true,
         msg: "Login successfully",
+token,
+userid:foundUser._id
+
+
       };
     } else {
       return {
@@ -956,6 +965,32 @@ async function deletealbum(token,id){
   }
   }
 
+async function deletacccount(id){
+await trackDB.deletedaccounttracks(id)
+await User.findByIdAndUpdate(id,{
+  $set:{
+    status:"deleted"
+  }
+})
+}
+
+
+async function loginback(id){
+try{
+  await Users.findByIdAndUpdate(id,{
+    $set:{
+      status:'active'
+    }
+  })
+  await trackDB.loginback(id)
+  await deletacccount.loginback(id)
+  
+return true
+}catch{
+  return false
+}
+}
+
 module.exports = {
   checkusername,
   checkemail,
@@ -994,5 +1029,7 @@ module.exports = {
   verifyalbum,
   rejectalbum,
   editalbum,
-  deletealbum
+  deletealbum,
+  deletacccount,
+  loginback
 };

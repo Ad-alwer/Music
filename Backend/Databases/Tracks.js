@@ -23,7 +23,8 @@ const musicschema = new mongoose.Schema({
   type: { enum: ["music", "podcast"] },
   genre: String,
   artist: mongoose.Schema.Types.ObjectId,
-  status: { enum: ["public", "deleted", "private", "pending"] },
+  status: { enum: ["public", "private", "pending"] },
+  isdeletaccount:{type:Boolean,default:false},
   likes: { type: String, default: 0 },
   plays: { type: String, default: 0 },
   description: {
@@ -286,6 +287,40 @@ async function changealbum(trackid,albumid){
   }
 }
 
+
+async function deletedaccounttracks(id){
+try {
+  const tracks =await Track.find({artist:id})
+for (const track of tracks) {
+  await Track.findByIdAndUpdate(track._id, {
+    $set: {
+      isdeletaccount:true,
+    },
+  });
+}
+return true
+} catch {
+  return false
+}
+}
+async function loginback(){
+  try {
+  const tracks =await Track.find({artist:id})
+  
+for (const track of tracks) {
+  await Track.findByIdAndUpdate(track._id, {
+    $set: {
+      isdeletaccount:false,
+    },
+  });
+}
+return true
+} catch {
+  return false
+}
+
+}
+
 module.exports = {
   addtrack,
   like,
@@ -294,5 +329,7 @@ module.exports = {
   changestatus,
   playtrack,
   monthlyListener,
-  changealbum
+  changealbum,
+  deletedaccounttracks,
+  loginback
 };
