@@ -25,8 +25,8 @@ const musicschema = new mongoose.Schema({
   artist: mongoose.Schema.Types.ObjectId,
   status: { enum: ["public", "private", "pending"] },
   isdeletaccount:{type:Boolean,default:false},
-  likes: { type: String, default: 0 },
-  plays: { type: String, default: 0 },
+  likes: { type: Number, default: 0 },
+  plays: { type: Number, default: 0 },
   description: {
     type: String,
     maxlength: 4000,

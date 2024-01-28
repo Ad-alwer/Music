@@ -6,7 +6,8 @@ const schedule = require("node-schedule");
 
 const trackDB = require("./Tracks");
 const albumDB = require("./Albums")
-const deleteaccountDB = require("./DeletedAccounts")
+const deleteaccountDB = require("./DeletedAccounts");
+const { deletaccountplaylists } = require("./Playlists");
 
 
 require("dotenv").config();
@@ -966,12 +967,18 @@ async function deletealbum(token,id){
   }
 
 async function deletacccount(id){
-await trackDB.deletedaccounttracks(id)
+try{
+  await trackDB.deletedaccounttracks(id)
+await deletaccountplaylists(id)
 await User.findByIdAndUpdate(id,{
   $set:{
     status:"deleted"
   }
 })
+return true
+}catch{
+  return false
+}
 }
 
 
@@ -990,6 +997,8 @@ return true
   return false
 }
 }
+
+
 
 module.exports = {
   checkusername,
