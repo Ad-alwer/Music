@@ -6,6 +6,7 @@ const multerS3 = require("multer-s3");
 require("dotenv").config();
 
 const usersDB = require("../Databases/users");
+const { addbanner, addresbanner } = require("../Databases/Base");
 
 const config = {
   endpoint: process.env.LIARA_ENDPOINT,
@@ -31,6 +32,25 @@ const uploadtracks = multer({
         file.mimetype == "image/jpg"
       ) {
         cb(null, `covers/${uniqueKey}`);
+      }
+    },
+  }),
+});
+
+const uploadbanner = multer({
+  storage: multerS3({
+    s3,
+    bucket: process.env.LIARA_BUCKET_NAME,
+    key: function (req, file, cb) {
+      const uniqueKey = Date.now().toString() + "-" + file.originalname;
+      if (file.mimetype == "audio/mpeg") {
+        cb(null, `tracks/${uniqueKey}`);
+      } else if (
+        file.mimetype == "image/png" ||
+        file.mimetype == "image/jpeg" ||
+        file.mimetype == "image/jpg"
+      ) {
+        cb(null, `banner/${uniqueKey}`);
       }
     },
   }),
@@ -181,7 +201,33 @@ Router.put(
       url: req.file.location,
       name: req.file.key,
     };
-    return file
+    return file;
+  }
+);
+
+Router.put(
+  "/addbanner",
+  uploadtracks.single("objectKey"),
+  async function (req, res) {
+    let file = {
+      url: req.file.location,
+      name: req.file.key,
+      link: req.body.link,
+    };
+    addbanner(file).then((data) => res.send(data));
+  }
+);
+
+Router.put(
+  "/addresbanner",
+  uploadtracks.single("objectKey"),
+  async function (req, res) {
+    let file = {
+      url: req.file.location,
+      name: req.file.key,
+      link: req.body.link,
+    };
+    addresbanner(file).then((data) => res.send(data));
   }
 );
 
