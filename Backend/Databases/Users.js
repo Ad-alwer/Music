@@ -5,27 +5,28 @@ const nodemailer = require("nodemailer");
 const schedule = require("node-schedule");
 
 const trackDB = require("./Tracks");
-const albumDB = require("./Albums")
+const albumDB = require("./Albums");
 const deleteaccountDB = require("./DeletedAccounts");
 const { deletaccountplaylists } = require("./Playlists");
-
 
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
-  console.log("conect")
-;
-  schedule.scheduleJob('0 0 1 * *', () => {
+  console.log("conect");
+  schedule.scheduleJob("0 0 1 * *", async () => {
     let query = {
       "user.tracks": {
         $exists: true,
         $not: {
-          $size: 0
-        }
-      }
-    }
-   await notification(query,'/profile/monthlylistener',`Your monthlylistener report is available nowimg/profile`)
-    
+          $size: 0,
+        },
+      },
+    };
+    await notification(
+      query,
+      "/profile/monthlylistener",
+      `Your monthlylistener report is available nowimg/profile`
+    );
   });
 });
 
@@ -118,7 +119,7 @@ async function login(user, password) {
         status: true,
         msg: "Login successfully",
         token,
-        userid:foundUser._id
+        userid: foundUser._id,
       };
     } else {
       return {
@@ -132,10 +133,8 @@ async function login(user, password) {
       return {
         status: true,
         msg: "Login successfully",
-token,
-userid:foundUser._id
-
-
+        token,
+        userid: foundUser._id,
       };
     } else {
       return {
@@ -519,7 +518,7 @@ async function addprofile(id, url) {
 
 async function subscribe(token, id) {
   const decode = jwt.verify(token, process.env.REGISTER_JWT);
- const subscriber =  await User.findOneAndUpdate(
+  const subscriber = await User.findOneAndUpdate(
     { _id: decode._id },
     {
       $push: {
@@ -543,7 +542,12 @@ async function subscribe(token, id) {
     { new: true }
   );
 
-  await notification({'_id':id},`/profile`,`${subscriber.username} subscribe you`,subscriber.profile)
+  await notification(
+    { _id: id },
+    `/profile`,
+    `${subscriber.username} subscribe you`,
+    subscriber.profile
+  );
   return true;
 }
 
@@ -664,21 +668,28 @@ async function verifytrack(token, name) {
         requests: updatedRequests,
       },
     });
-    await trackDB.addtrack(...Object.values(updatedRequests)).then((res) => {
-      await User.findByIdAndUpdate(userId, {
-        $push: {
-          tracks:{
-            name,
-            id:res._id
+    await trackDB
+      .addtrack(...Object.values(updatedRequests))
+      .then(async (res) => {
+        await User.findByIdAndUpdate(userId, {
+          $push: {
+            tracks: {
+              name,
+              id: res._id,
+            },
           },
-        },
+        });
+        return res;
       });
-      return res
-    });
 
-    await notification({'_id':userId},'/profile/request',`${name} was been verified`,updatedRequests.cover)
+    await notification(
+      { _id: userId },
+      "/profile/request",
+      `${name} was been verified`,
+      updatedRequests.cover
+    );
 
-    return true
+    return true;
   } catch {
     return false;
   }
@@ -707,7 +718,12 @@ async function rejectrack(token, name, msg) {
         requests: updatedRequests,
       },
     });
-    await notification({'_id':userId},'/profile/request',`${name} was been rejected`,updatedRequests.cover)
+    await notification(
+      { _id: userId },
+      "/profile/request",
+      `${name} was been rejected`,
+      updatedRequests.cover
+    );
     return true;
   } catch {
     return false;
@@ -777,228 +793,227 @@ async function favourite(token, trackid) {
   }
 }
 
-
-async function checknameandrequest(token,name){
-const decode = jwt.verify(token, process.env.REGISTER_JWT);
-const trackname = await checktrackname(token,name)
-const user= await User.findById(decode._id)
-const requestname = user.requests.find(e=> {
-  return e.name == name
- })
-
-return trackname && !requestname ? true : false
-}
-
-async function edittrack(token,id,newname){
-   try{
-    const decode = jwt.verify(token, process.env.REGISTER_JWT);
-    const user = await User.findById(decode._id)
-    const usertracks =user.tracks
-    usertracks.map(e => { if(e.id === id){
-      e.name = newname}
-    })
-    await User.findByIdAndUpdate(decode._id,{
-      $set:{
-        tracks:usertracks
-      }
-      
-    })
-    return true
-   }catch{
-    return false
-   }
-  }
-
-async function deletetrack(token,id){
-try{
+async function checknameandrequest(token, name) {
   const decode = jwt.verify(token, process.env.REGISTER_JWT);
-  await User.findByIdAndUpdate(decode._id,{
-    $pull:{
-      tracks:id
-    }
-    
-  })
-  return true
-}catch{
-  return false
-}
+  const trackname = await checktrackname(token, name);
+  const user = await User.findById(decode._id);
+  const requestname = user.requests.find((e) => {
+    return e.name == name;
+  });
+
+  return trackname && !requestname ? true : false;
 }
 
-async function lastplay(token,value){
-  try{
+async function edittrack(token, id, newname) {
+  try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
-  await User.findByIdAndUpdate(decode._id,{
-    $set:{
-      lastpaly:value
-    }
-    
-  })
-  return true
-  }catch{
-return false
-  }
-  
-}
-
-async function notification(query,link,text,img){
-  
-let users = await User.find(query)
- for (const user of users) {
-  await User.findByIdAndUpdate(user._id, {
-    $push: {
-      notification: {
-        text,
-        link,
-        img,
-        seen: false,
+    const user = await User.findById(decode._id);
+    const usertracks = user.tracks;
+    usertracks.map((e) => {
+      if (e.id === id) {
+        e.name = newname;
+      }
+    });
+    await User.findByIdAndUpdate(decode._id, {
+      $set: {
+        tracks: usertracks,
       },
-    },
-  });
+    });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-
+async function deletetrack(token, id) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    await User.findByIdAndUpdate(decode._id, {
+      $pull: {
+        tracks: id,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-async function verifyalbum(token,name){
- try{
-  const user = await User.findById(userId);
-  const requests = user.requests;
+async function lastplay(token, value) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    await User.findByIdAndUpdate(decode._id, {
+      $set: {
+        lastpaly: value,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
 
-  const updatedRequests = requests.map((request) => {
-    if (request.name === name) {
-      return {
-        ...request,
-        msg: undefined,
-      };
-    }
-    return request;
-  });
-  await User.findByIdAndUpdate(userId, {
-    $set: {
-      requests: updatedRequests,
-    },
-  });
-  await albumDB.addalbum(...Object.values(updatedRequests)).then((res)=>{
-    await User.findByIdAndUpdate(userId, {
+async function notification(query, link, text, img) {
+  let users = await User.find(query);
+  for (const user of users) {
+    await User.findByIdAndUpdate(user._id, {
       $push: {
-        albums:{
-          name,
-          id:res._id
+        notification: {
+          text,
+          link,
+          img,
+          seen: false,
         },
       },
     });
-    return res
-  })
-
-  await notification({'_id':userId},'/profile/request',`${name} was been verified`,updatedRequests.cover)
-  return true
-
- }catch{
-  return false
- }
-}
-async function rejectalbum(token,name,msg){
- try{
-  const decode = jwt.verify(token, process.env.REGISTER_JWT);
-  const userId = decode._id;
-
-  const user = await User.findById(userId);
-  const requests = user.requests;
-  
-  const updatedRequests = requests.map((request) => {
-    if (request.name === name) {
-      return {
-        ...request,
-        status: "reject",
-        msg,
-      };
-    }
-  });
-
-  await User.findByIdAndUpdate(userId, {
-    $set: {
-      requests: updatedRequests,
-    },
-  });
-
-  await notification({'_id':userId},'/profile/request',`${name} was been rejected`,updatedRequests.cover)
-  return true;
-
- }catch{
-return false
- }
-}
-
-async function editalbum(token,id,newname){
-  try{
-   const decode = jwt.verify(token, process.env.REGISTER_JWT);
-   const user = await User.findById(decode._id)
-   const useralbums =user.albums
-   useralbums.map(e => { if(e.id === id){
-     e.name = newname}
-   })
-   await User.findByIdAndUpdate(decode._id,{
-     $set:{
-       albums:useralbums
-     }
-     
-   })
-   return true
-  }catch{
-   return false
   }
- }
+}
 
+async function verifyalbum(token, name) {
+  try {
+    const user = await User.findById(userId);
+    const requests = user.requests;
 
- 
-async function deletealbum(token,id){
-  try{
-    const decode = jwt.verify(token, process.env.REGISTER_JWT);
-    await User.findByIdAndUpdate(decode._id,{
-      $pull:{
-        albums:id
+    const updatedRequests = requests.map((request) => {
+      if (request.name === name) {
+        return {
+          ...request,
+          msg: undefined,
+        };
       }
-      
-    })
-    return true
-  }catch{
-    return false
+      return request;
+    });
+    await User.findByIdAndUpdate(userId, {
+      $set: {
+        requests: updatedRequests,
+      },
+    });
+    await albumDB
+      .addalbum(...Object.values(updatedRequests))
+      .then(async (res) => {
+        await User.findByIdAndUpdate(userId, {
+          $push: {
+            albums: {
+              name,
+              id: res._id,
+            },
+          },
+        });
+        return res;
+      });
+
+    await notification(
+      { _id: userId },
+      "/profile/request",
+      `${name} was been verified`,
+      updatedRequests.cover
+    );
+    return true;
+  } catch {
+    return false;
   }
+}
+async function rejectalbum(token, name, msg) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const userId = decode._id;
+
+    const user = await User.findById(userId);
+    const requests = user.requests;
+
+    const updatedRequests = requests.map((request) => {
+      if (request.name === name) {
+        return {
+          ...request,
+          status: "reject",
+          msg,
+        };
+      }
+    });
+
+    await User.findByIdAndUpdate(userId, {
+      $set: {
+        requests: updatedRequests,
+      },
+    });
+
+    await notification(
+      { _id: userId },
+      "/profile/request",
+      `${name} was been rejected`,
+      updatedRequests.cover
+    );
+    return true;
+  } catch {
+    return false;
   }
+}
 
-async function deletacccount(id){
-try{
-  await trackDB.deletedaccounttracks(id)
-await deletaccountplaylists(id)
-await User.findByIdAndUpdate(id,{
-  $set:{
-    status:"deleted"
+async function editalbum(token, id, newname) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findById(decode._id);
+    const useralbums = user.albums;
+    useralbums.map((e) => {
+      if (e.id === id) {
+        e.name = newname;
+      }
+    });
+    await User.findByIdAndUpdate(decode._id, {
+      $set: {
+        albums: useralbums,
+      },
+    });
+    return true;
+  } catch {
+    return false;
   }
-})
-return true
-}catch{
-  return false
-}
 }
 
-
-async function loginback(id){
-try{
-  await Users.findByIdAndUpdate(id,{
-    $set:{
-      status:'active'
-    }
-  })
-  await trackDB.loginback(id)
-  await deletacccount.loginback(id)
-  
-return true
-}catch{
-  return false
-}
+async function deletealbum(token, id) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    await User.findByIdAndUpdate(decode._id, {
+      $pull: {
+        albums: id,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
+async function deletacccount(id) {
+  try {
+    await trackDB.deletedaccounttracks(id);
+    await deletaccountplaylists(id);
+    await User.findByIdAndUpdate(id, {
+      $set: {
+        status: "deleted",
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
 
+async function loginback(id) {
+  try {
+    await Users.findByIdAndUpdate(id, {
+      $set: {
+        status: "active",
+      },
+    });
+    await trackDB.loginback(id);
+    await deletacccount.loginback(id);
+
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 module.exports = {
   checkusername,
@@ -1040,5 +1055,5 @@ module.exports = {
   editalbum,
   deletealbum,
   deletacccount,
-  loginback
+  loginback,
 };

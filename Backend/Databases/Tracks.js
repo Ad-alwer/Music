@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
+const schedule = require("node-schedule");
 const { notification, getuser } = require("./Users");
-
 
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
   console.log("conect");
   schedule.scheduleJob("00 02 * * *", () => {
-    schduletrack()
+    schduletrack();
   });
 });
 
@@ -24,7 +24,7 @@ const musicschema = new mongoose.Schema({
   genre: String,
   artist: mongoose.Schema.Types.ObjectId,
   status: { enum: ["public", "private", "pending"] },
-  isdeletaccount:{type:Boolean,default:false},
+  isdeletaccount: { type: Boolean, default: false },
   likes: { type: Number, default: 0 },
   plays: { type: Number, default: 0 },
   description: {
@@ -43,34 +43,30 @@ const musicschema = new mongoose.Schema({
 });
 musicschema.plugin(timestamp);
 
-const Track = mongoose.model("track", musicschema);
+const Track = mongoose.models.Track || mongoose.model("Track", musicschema);
 
+async function schduletrack() {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
+  const today = `${year}-${month}-${day}`;
 
-async function schduletrack(){
-const currentDate = new Date();
-const year = currentDate.getFullYear();
-const month = String(currentDate.getMonth() + 1).padStart(2, '0'); 
-const day = String(currentDate.getDate()).padStart(2, '0'); 
-const today = `${year}-${month}-${day}`;
-
-const pendingtracks = await Track.find({releaseDate: { $ne: null }})
-pendingtracks.forEach(e=>{
-const date = new Date(e.createdAt);
-const extractedDate = date.toISOString().split("T")[0];
- if(today.getTime() >= extractedDate.getTime()){
-  await Track.findByIdAndUpdate(e.id,{
-    $set:{
-      status:'public',
-      releaseDate:currentDate,
-      schedule:null
+  const pendingtracks = await Track.find({ releaseDate: { $ne: null } });
+  pendingtracks.forEach(async (e) => {
+    const date = new Date(e.createdAt);
+    const extractedDate = date.toISOString().split("T")[0];
+    if (today.getTime() >= extractedDate.getTime()) {
+      await Track.findByIdAndUpdate(e.id, {
+        $set: {
+          status: "public",
+          releaseDate: currentDate,
+          schedule: null,
+        },
+      });
     }
-  })
- }
-
-    
-  })
+  });
 }
-
 
 async function addtrack(
   name,
@@ -103,7 +99,7 @@ async function addtrack(
         track,
         status,
         releaseDate: currentDate,
-        schdule:null
+        schdule: null,
       });
       await usertrack.save();
       return usertrack;
@@ -273,52 +269,49 @@ async function monthlyListener(id) {
   });
 }
 
-async function changealbum(trackid,albumid){
-  try{
-    await Track.findByIdAndUpdate(trackid,{
-      $set:{
-        album:albumid
-      }
-    })
-    return true
-  }
-  catch{
-    return false
-  }
-}
-
-
-async function deletedaccounttracks(id){
-try {
-  const tracks =await Track.find({artist:id})
-for (const track of tracks) {
-  await Track.findByIdAndUpdate(track._id, {
-    $set: {
-      isdeletaccount:true,
-    },
-  });
-}
-return true
-} catch {
-  return false
-}
-}
-async function loginback(){
+async function changealbum(trackid, albumid) {
   try {
-  const tracks =await Track.find({artist:id})
-  
-for (const track of tracks) {
-  await Track.findByIdAndUpdate(track._id, {
-    $set: {
-      isdeletaccount:false,
-    },
-  });
-}
-return true
-} catch {
-  return false
+    await Track.findByIdAndUpdate(trackid, {
+      $set: {
+        album: albumid,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
+async function deletedaccounttracks(id) {
+  try {
+    const tracks = await Track.find({ artist: id });
+    for (const track of tracks) {
+      await Track.findByIdAndUpdate(track._id, {
+        $set: {
+          isdeletaccount: true,
+        },
+      });
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+async function loginback() {
+  try {
+    const tracks = await Track.find({ artist: id });
+
+    for (const track of tracks) {
+      await Track.findByIdAndUpdate(track._id, {
+        $set: {
+          isdeletaccount: false,
+        },
+      });
+    }
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 module.exports = {
@@ -331,5 +324,5 @@ module.exports = {
   monthlyListener,
   changealbum,
   deletedaccounttracks,
-  loginback
+  loginback,
 };

@@ -2,14 +2,13 @@ const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 const schedule = require("node-schedule");
 
-
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
-  console.log("conect")
-schedule.scheduleJob("00 01 * * *", () => {
-  schdulealbum();
-});
+  console.log("conect");
+  schedule.scheduleJob("00 01 * * *", () => {
+    schdulealbum();
+  });
 });
 
 const musicschema = new mongoose.Schema({
@@ -40,32 +39,28 @@ musicschema.plugin(timestamp);
 
 const Album = mongoose.model("album", musicschema);
 
-
-
-async function schdulealbum(){
+async function schdulealbum() {
   const currentDate = new Date();
   const year = currentDate.getFullYear();
-  const month = String(currentDate.getMonth() + 1).padStart(2, '0'); 
-  const day = String(currentDate.getDate()).padStart(2, '0'); 
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
   const today = `${year}-${month}-${day}`;
-  
-  const pendeingalbum = await Album.find({releaseDate: { $ne: null }})
-  pendeingalbum.forEach(e=>{
-  const date = new Date(e.createdAt);
-  const extractedDate = date.toISOString().split("T")[0];
-   if(today.getTime() >= extractedDate.getTime()){
-    await Album.findByIdAndUpdate(e.id,{
-      $set:{
-        status:'public',
-        releaseDate:currentDate,
-        schedule:null
-      }
-    })
-   }
-  
-      
-    })
-  }
+
+  const pendeingalbum = await Album.find({ releaseDate: { $ne: null } });
+  pendeingalbum.forEach(async (e) => {
+    const date = new Date(e.createdAt);
+    const extractedDate = date.toISOString().split("T")[0];
+    if (today.getTime() >= extractedDate.getTime()) {
+      await Album.findByIdAndUpdate(e.id, {
+        $set: {
+          status: "public",
+          releaseDate: currentDate,
+          schedule: null,
+        },
+      });
+    }
+  });
+}
 
 async function addalbum(
   name,
@@ -120,23 +115,22 @@ async function editalbum(
   cover,
   tracks
 ) {
-try{
-  await Album.findByIdAndUpdate(id, {
-    $set: {
-      name,
-      type,
-      genre,
-      status,
-      description,
-      cover,
-      tracks,
-    },
-  });
-  return true
-}
-catch{
-  return false
-}
+  try {
+    await Album.findByIdAndUpdate(id, {
+      $set: {
+        name,
+        type,
+        genre,
+        status,
+        description,
+        cover,
+        tracks,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function deletealbum(id) {
@@ -174,5 +168,5 @@ module.exports = {
   addalbum,
   editalbum,
   deletealbum,
-  changestatus
+  changestatus,
 };

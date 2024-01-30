@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 
 require("dotenv").config();
-
 mongoose.connect(process.env.DB_ADRESS).then(() => console.log("conect"));
+
 
 const musicschema = new mongoose.Schema({
   genres: [],
@@ -21,7 +21,7 @@ const musicschema = new mongoose.Schema({
 
 musicschema.plugin(timestamp);
 
-const Base = mongoose.model("base", musicschema);
+const Base = mongoose.model("base", musicschema)
 
 isempty();
 
