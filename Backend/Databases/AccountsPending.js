@@ -41,13 +41,15 @@ const Account = mongoose.model("accountsPending", musicschema);
 async function finalcheckusername(value) {
   const usercheck = await userDB.checkusername(value);
   const username = await Account.findOne({ username: value });
-  if (!username && !usercheck) {
+  if (!username && usercheck) {
     return {
       msg: "Availabe",
+      status:true
     };
   } else {
     return {
       msg: "This username already exists",
+      status:false
     };
   }
 }

@@ -88,10 +88,12 @@ async function checkemail(value) {
   if (!email) {
     return {
       msg: "Availabe",
+      status:true
     };
   } else {
     return {
       msg: "This email already exists",
+      status:false
     };
   }
 }
