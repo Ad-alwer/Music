@@ -2,7 +2,7 @@ const express = require("express");
 const Router = express.Router();
 
 const playlistDB = require("../Databases/Playlists");
-const { getuser } = require("./Users");
+const { getuser } = require("../Databases/Users");
 
 require("dotenv").config();
 
@@ -27,18 +27,18 @@ Router.post("/add", async (req, res) => {
 });
 
 
-Router.put("/edit",(req,res)=>{
+Router.put("/edit", async(req,res)=>{
     const user = await getuser(req.headers.jwt);
     playlistDB.editplaylist(user._id,...Object.keys(req.params)).then(data=>res.send(data))
 })
 
-Router.put("/changeplayliststatus/:playlistname&&:status",(req,res)=>{
+Router.put("/changeplayliststatus/:playlistname&&:status", async(req,res)=>{
     const user = await getuser(req.headers.jwt);
     playlistDB.changeplayliststatus(user._id,req.paramsplaylistname,req.params.status).then(data=>res.send(data))
 })
 
 
-Router.put("/addtrack/:name&&:track",(req,res)=>{
+Router.put("/addtrack/:name&&:track", async (req,res)=>{
     const user = await getuser(req.headers.jwt);
     playlistDB.addtracktoplaylist(user._id,req.params.name,req.params.track).then(data=>res.send(data))
 })

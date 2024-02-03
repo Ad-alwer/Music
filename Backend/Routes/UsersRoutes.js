@@ -94,13 +94,13 @@ Router.delete("/deletesocial/:name", async (req, res) => {
     .then((data) => res.send(data));
 });
 
-Router.put("/verifytrack/:name", (res, res) => {
+Router.put("/verifytrack/:name", (res, req) => {
   usersDB
     .verifytrack(req.headers.jwt, req.params.name)
     .then((data) => res.send(data));
 });
 
-Router.put("/rejectrack/:name", (res, res) => {
+Router.put("/rejectrack/:name", (res, req) => {
   usersDB
     .rejectrack(req.headers.jwt, req.params.name, req.body.msg)
     .then((data) => res.send(data));
@@ -110,19 +110,19 @@ Router.get("/search/:username", (req, res) => {
   usersDB.searchbyusername(req.params.username).then((data) => res.send(data));
 });
 
-Router.put("/addrecommanduser/:id", (res, res) => {
+Router.put("/addrecommanduser/:id", (res, req) => {
   usersDB
     .addrecomendeuser(req.headers.jwt, req.params.id)
     .then((data) => res.send(data));
 });
 
-Router.put("/removerecommanduser/:id", (res, res) => {
+Router.put("/removerecommanduser/:id", (res, req) => {
   usersDB
     .removerecommandeuser(req.headers.jwt, req.params.id)
     .then((data) => res.send(data));
 });
 
-Router.put("/like/:tackid", (res, res) => {
+Router.put("/like/:tackid", (res, req) => {
   usersDB.favourite(req.headers.jwt, req.params.trackidid).then((data) => {
     trackDB.like(req.headers.jwt, trackid, data).then((data) => res.send(data));
   });
