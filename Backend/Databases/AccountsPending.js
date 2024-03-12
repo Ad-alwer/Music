@@ -64,7 +64,7 @@ async function adduser(username, email, password) {
   });
   await account.save();
   token = jwt.sign({ _id: account.id, code }, process.env.PENDING_JWT);
-  const link = `http://localhost:${process.env.PORT}/v/${token}`;
+  const link = `http://localhost:8080/v/${token}`;
   const html = `    <h1 style="text-align: center">Hello , ${username}</h1>
   <p style="font-size:1.5rem;text-align: center;font-weight:bold;  text-transform: capitalize;">You are create account in our site,Click on blow button to verify that or copy text in your browser</p>
   <div style="display: flex; justify-content: center">
@@ -157,12 +157,13 @@ async function verify(token) {
     let user = await Account.findById(decode._id);
 
     if (user.code === decode.code) {
-      const token = await userDB.register(
+      const newuser = await userDB.register(
         user.username,
         user.email,
         user.password
       );
       await deleteVerified(user.email);
+      let token = jwt.sign({ _id: newuser._id }, process.env.REGISTER_JWT);
       return token;
     } else {
       return "Verification Failed!";
