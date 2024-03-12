@@ -113,9 +113,10 @@ async function register(username, email, password) {
 
 async function login(user, password) {
   const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/;
+  let token;
   if (emailRegex.test(user)) {
     const foundUser = await User.findOne({ email: user });
-    let token = jwt.sign({ _id: foundUser._id }, process.env.REGISTER_JWT);
+    foundUser ?  token = jwt.sign({ _id: foundUser._id }, process.env.REGISTER_JWT) :null
     if (foundUser && foundUser.password === password) {
       return {
         status: true,
