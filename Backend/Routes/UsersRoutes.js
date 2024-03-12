@@ -9,7 +9,7 @@ const { loginback } = require("../Databases/DeletedAccounts");
 
 Router.post("/login", (req, res) => {
   usersDB.login(...Object.values(req.body)).then(async (data) => {
-    data ? await loginback(data.userid) : null;
+    data.status ? await loginback(data.userid) : null;
     res.send(data);
   });
 });
