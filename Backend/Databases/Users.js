@@ -88,12 +88,12 @@ async function checkemail(value) {
   if (!email) {
     return {
       msg: "Availabe",
-      status:true
+      status: true,
     };
   } else {
     return {
       msg: "This email already exists",
-      status:false
+      status: false,
     };
   }
 }
@@ -113,11 +113,13 @@ async function register(username, email, password) {
 
 async function login(user, password) {
   const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/;
-  let token;
+
   if (emailRegex.test(user)) {
     const foundUser = await User.findOne({ email: user });
-    foundUser ?  token = jwt.sign({ _id: foundUser._id }, process.env.REGISTER_JWT) :null
+
     if (foundUser && foundUser.password === password) {
+      let token = jwt.sign({ _id: foundUser._id }, process.env.REGISTER_JWT);
+
       return {
         status: true,
         msg: "Login successfully",
@@ -133,6 +135,8 @@ async function login(user, password) {
   } else {
     const foundUser = await User.findOne({ username: user });
     if (foundUser && foundUser.password === password) {
+      let token = jwt.sign({ _id: foundUser._id }, process.env.REGISTER_JWT);
+
       return {
         status: true,
         msg: "Login successfully",
