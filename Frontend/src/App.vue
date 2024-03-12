@@ -17,6 +17,10 @@ export default {
   --blue-main:#4343EF,
 }
 
+*{
+  /* overflow: hidden!important; */
+}
+
 /* CSS rese */
 
 *,

@@ -481,9 +481,11 @@ export default {
         this.verifyarr.password.show = true;
         this.verifyarr.password.value = false;
       }
+      this.$refs.passwordagaininput.value
+        ? this.checkpasswordagain(this.$refs.passwordagaininput.value)
+        : null;
     },
     checkpasswordagain: function (e) {
-      console.log(this.verifyarr.passwordagain.value);
       if (e == this.$refs.passwordinput.value) {
         this.verifyarr.passwordagain.show = true;
         this.verifyarr.passwordagain.value = true;
@@ -566,11 +568,12 @@ label {
 img {
   height: 650px;
   position: relative;
-  top: -70px;
+  top: -80px;
+  right: -40px;
 }
 form {
   margin-top: 20%;
-  scale: 1.2;
+  scale: 1.1;
   position: relative;
   left: 3%;
 }

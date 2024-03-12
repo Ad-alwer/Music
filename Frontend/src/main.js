@@ -8,10 +8,13 @@ import bootstrap from "bootstrap/dist/js/bootstrap.bundle.js";
 
 import login from "../src/components/Login.vue";
 import register from "../src/components/Register.vue";
+import verifyaccount from "../src/components/Verifyaccount.vue"
 
 const routes = [
   { path: "/register", component: register },
   { path: "/login", component: login },
+  { path: "/v/:token", component: verifyaccount },
+
 
 ];
 
