@@ -1,25 +1,22 @@
 <template>
-   <router-view></router-view>
+  <router-view></router-view>
 </template>
 
 <script>
-
-
 export default {
-  name: 'App',
- 
-}
+  name: "App",
+};
 </script>
 
 <style>
+:root {
+  --blue-main: #4343ef;
+  --gray-main: #b3b3bc;
+  --black-main: #24242E;
 
-:root{
-  --blue-main:#4343EF,
 }
 
-*{
-  /* overflow: hidden!important; */
-}
+
 
 /* CSS rese */
 
@@ -68,18 +65,56 @@ a {
   text-decoration: none;
 }
 
-/*  */
+/* Utilty class */
 
-*{
-  font-family: 'Montserrat'
-}
 
-.pointer{
+
+.pointer {
   cursor: pointer;
 }
 
+.color-gray {
+  color: var(--gray-main);
+}
+.color-black{
+  color: var(--black-main);
+}
+
+/* Scroll*/ 
+
+*::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+*::-webkit-scrollbar-track {
+  border-radius: 7px;
+  background-color: #DFE9EB;
+}
+
+*::-webkit-scrollbar-track:hover {
+  background-color: #B8C0C2;
+}
+
+*::-webkit-scrollbar-track:active {
+  background-color: #B8C0C2;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #4343EF;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #5D52EF;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background-color: #676BEF;
+}
 
 
-
-
+/* Other syle*/
+* {
+  font-family: "Montserrat";
+}
 </style>
