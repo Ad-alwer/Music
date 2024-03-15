@@ -221,6 +221,7 @@ export default {
 <style scoped>
 #parent {
   margin-top: 5% !important;
+
 }
 .img-parent {
   width: 724px;
@@ -228,7 +229,7 @@ export default {
   background-color: brown;
 }
 .slider-img {
-  width: 800px;
+  width: 820px;
   height: 308px;
 
   cursor: pointer;
@@ -280,9 +281,7 @@ export default {
   object-fit: cover;
 }
 
-.topcollactions {
-  overflow-y: auto;
-}
+
 .img-topcollactions {
   /* width: 110px; */
   /* height: 110px; */

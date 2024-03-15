@@ -1,6 +1,6 @@
 <template>
   <div id="parent ">
-    <header class="d-flex align-items-center gap-3 mt-3">
+    <header class="d-flex align-items-center gap-1 mt-3">
       <hmheader />
     </header>
     <main class="d-flex">
@@ -10,7 +10,9 @@
       <section class="content">
         <discover />
       </section>
-      <aside class="player"></aside>
+      <aside class="player">
+        <player />
+      </aside>
     </main>
   </div>
 </template>
@@ -19,6 +21,7 @@
 import hmheader from "./home components/header";
 import hmmenu from "./home components/menu";
 import discover from "./home components/discover.vue";
+import player from "./home components/Player.vue"
 export default {
   name: "home",
   data() {
@@ -29,6 +32,7 @@ export default {
     hmheader,
     hmmenu,
     discover,
+    player
   },
 };
 </script>
@@ -39,11 +43,16 @@ export default {
 }
 .content {
   width: 62%;
+  overflow-y: scroll !important;
+  max-height: 90vh;
+  
 }
 aside.menu {
-  width: 270px;
+  width: 240px;
+height: 92vh;
 }
 aside.player {
-  width: 20%;
+  width: 25%;
+  /* background-color: aqua; */
 }
 </style>
