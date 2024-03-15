@@ -3,7 +3,7 @@
     <section class="slider d-flex px-5 ms-3 position-relative">
       <div class="img-parent rounded-4">
         <img
-          class="slider-img rounded-4"
+          class="slider-img rounded-4 img-fluid"
           src="../../assets/img/test/pinterestdownloader.com-1710335413.293773.jpg"
           alt=""
         />
@@ -13,7 +13,7 @@
         <div class="circle-box rounded-circle pointer"></div>
       </div>
     </section>
-    <section class="mt-4 topartists px-5">
+    <section class="mt-4 topartists px-4">
       <div class="d-flex justify-content-between">
         <span class="text-uppercase color-black fs-5 fw-semibold"
           >top artists</span
@@ -23,17 +23,14 @@
       <Swiper
         class="py-4"
         :modules="modules"
-        :slides-per-view="4"
-        :space-between="10"
+        :slides-per-view="3"
+        :space-between="20"
         :scrollbar="{ draggable: true }"
         loop="true"
         @swiper="onSwiper"
         @slideChange="onSlideChange"
         :autoplay="autoplay"
-        centerInsufficientSlides="true"
-        center-insufficient-slides="true"
-        centered-slides-bounds="true"
-        centered-slides="true"
+       
       >
         <swiper-slide
           data-swiper-autoplay="2000"
@@ -99,8 +96,8 @@
     </section>
     <section class="d-flex gap-5 w-100 mt-3">
       <div class="w-50">
-        <div class="mt-4 topcollactions d-flex justify-content-between">
-          <span class="text-uppercase color-black px-5 fs-5 fw-semibold"
+        <div class="mt-4 topcollactions d-flex align-items-center justify-content-between ps-4">
+          <span class="text-uppercase color-black  fs-5 fw-semibold"
             >Top Collection</span
           >
           <span class="text-capitalize color-gray pointer">More List</span>
@@ -124,11 +121,11 @@
         </div>
       </div>
       <div class="w-50 ">
-        <div class="mt-4 topcollactions d-flex justify-content-between">
+        <div class="mt-4 topcollactions d-flex justify-content-between align-items-center">
           <span class="text-uppercase color-black  fs-5 fw-semibold"
             >Top Genre</span
           >
-          <span class="text-capitalize color-gray pointer">More List</span>
+          <span class="text-capitalize color-gray pointer px-3">More List</span>
         </div>
         <div class="d-flex  mt-4 flex-wrap justify-content-evenly">
           <div
@@ -224,12 +221,11 @@ export default {
 
 }
 .img-parent {
-  width: 724px;
+  width: 860px;
   height: 308px;
-  background-color: brown;
+  
 }
 .slider-img {
-  width: 820px;
   height: 308px;
 
   cursor: pointer;
@@ -248,7 +244,7 @@ export default {
   z-index: 999;
   position: absolute;
   top: 0;
-  right: 14%;
+  right: 11%;
   height: 100%;
   width: auto;
   display: flex;
@@ -262,8 +258,9 @@ export default {
   height: 10px;
   background-color: #d0d0fb;
 }
+
 .swiper-child {
-  width: 120px;
+  width: 140px;
   /* background-color: aqua; */
 }
 .swiper-child p {
@@ -276,8 +273,8 @@ export default {
   font-size: 12px;
 }
 .swiper-img {
-  width: 160px !important;
-  height: 160px !important;
+  width: 180px !important;
+  height: 180px !important;
   object-fit: cover;
 }
 
