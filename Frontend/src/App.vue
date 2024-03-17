@@ -11,14 +11,14 @@ export default {
 <style>
 :root {
   --blue-main: #4343ef;
-  --gray-main: #b3b3bc;
+  --gray-main: #787887;
   --black-main: #24242E;
 
 }
 
 
 
-/* CSS rese */
+/* CSS reset */
 
 *,
 *::before,
