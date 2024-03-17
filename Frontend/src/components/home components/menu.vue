@@ -151,6 +151,12 @@
       <li
         class="py-2 text-capitalize d-flex justify-content-start align-items-center gap-3"
       >
+        <img src="../../assets/icons/upload.png" class="img-fluid upload-img" alt="">
+        <a href="">Upload</a>
+      </li>
+      <li
+        class="py-2 text-capitalize d-flex justify-content-start align-items-center gap-3"
+      >
         <svg
           width="16"
           height="16"
@@ -279,5 +285,8 @@ img {
 .podcast-img {
   width: 20px;
   height: 20px;
+}
+a{
+  cursor: pointer;
 }
 </style>
