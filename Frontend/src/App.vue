@@ -79,6 +79,9 @@ a {
 .color-black{
   color: var(--black-main);
 }
+.color-blue{
+  color: var(--blue-main);
+}
 
 /* Scroll*/ 
 

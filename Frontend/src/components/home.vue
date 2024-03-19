@@ -8,7 +8,9 @@
         <hmmenu />
       </aside>
       <section class="content">
-        <discover />
+        <discover v-if="component == 'discover'" />
+        <explore />
+
       </section>
       <aside class="player">
         <player />
@@ -22,17 +24,21 @@ import hmheader from "./home components/header";
 import hmmenu from "./home components/menu";
 import discover from "./home components/discover.vue";
 import player from "./home components/Player.vue"
+import explore from "./home components/explor.vue"
 export default {
   name: "home",
   data() {
-    return {};
+    return {
+      component:'explore'
+    };
   },
   methods: {},
   components: {
     hmheader,
     hmmenu,
     discover,
-    player
+    player,
+    explore
   },
 };
 </script>

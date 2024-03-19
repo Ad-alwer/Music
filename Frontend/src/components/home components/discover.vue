@@ -271,6 +271,7 @@ export default {
 }
 .swiper-child span {
   font-size: 12px;
+  text-transform: capitalize;
 }
 .swiper-img {
   width: 180px !important;

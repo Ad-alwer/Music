@@ -131,7 +131,7 @@ export default {
 
 <style scoped>
 .tumbnail {
-  width: 100px;
+  width: 140px;
   height: 100px;
 }
 input[type="range"] {
