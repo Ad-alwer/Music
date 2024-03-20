@@ -9,8 +9,8 @@
       </aside>
       <section class="content">
         <discover v-if="component == 'discover'" />
-        <explore />
-
+        <explore v-if="component == 'explore'" />
+        <search v-if="component == 'search'" />
       </section>
       <aside class="player">
         <player />
@@ -22,14 +22,17 @@
 <script>
 import hmheader from "./home components/header";
 import hmmenu from "./home components/menu";
+
 import discover from "./home components/discover.vue";
-import player from "./home components/Player.vue"
-import explore from "./home components/explor.vue"
+import player from "./home components/Player.vue";
+import explore from "./home components/explor.vue";
+import search from "./home components/search.vue";
+
 export default {
   name: "home",
   data() {
     return {
-      component:'explore'
+      component: "search",
     };
   },
   methods: {},
@@ -38,7 +41,8 @@ export default {
     hmmenu,
     discover,
     player,
-    explore
+    explore,
+    search,
   },
 };
 </script>
@@ -51,11 +55,10 @@ export default {
   width: 62%;
   overflow-y: scroll !important;
   max-height: 90vh;
-  
 }
 aside.menu {
   width: 240px;
-height: 92vh;
+  height: 92vh;
 }
 aside.player {
   width: 25%;

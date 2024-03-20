@@ -95,35 +95,7 @@
             <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
           </svg>
         </div>
-        <div class="monthly-box d-flex gap-3 align-items-center">
-          <div
-            class="monthly-num d-flex justify-content-center align-items-center"
-          >
-            <span class="color-gray fs-3">04</span>
-          </div>
-          <img
-            class="monthly-img img-fluid rounded-3"
-            src="../../assets/img/test/eminem.jpg"
-            alt=""
-          />
-          <div class="d-flex flex-column monthly-text">
-            <p class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer">
-              Track
-            </p>
-            <span class="text-capitalize color-gray pointer">eminem</span>
-          </div>
-          <span class="me-3">03:15</span>
-          <svg
-            width="18"
-            height="6"
-            viewBox="0 0 18 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="3" cy="3" r="3" fill="#B3B3BC" />
-            <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
-          </svg>
-        </div>
+       
       </div>
     </section>
     <hr class="mx-5" />

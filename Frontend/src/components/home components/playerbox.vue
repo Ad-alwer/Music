@@ -1,7 +1,7 @@
 <template>
   <div id="parent">
     <section class="">
-      <div  class="d-flex flex-column align-items-center px-4">
+      <div class="d-flex flex-column align-items-center px-4">
         <h4 class="text-center text-uppercase fw-semibold">now playing</h4>
         <img
           class="tumbnail rounded-4 img-fluid mt-1"
@@ -11,7 +11,9 @@
         <span class="text-capitalize color-dark mt-2 fs-5 fw-semibold"
           >track</span
         >
-        <span class="text-capitalize color-gray artistname pointer">eminem</span>
+        <span class="text-capitalize color-gray artistname pointer"
+          >eminem</span
+        >
         <div class="w-100 timeline">
           <audio src="">
             <source />
@@ -92,14 +94,38 @@
             />
           </svg>
 
-          <p class="text-capitalize color-gray tex-center fw-semibold">lyrics</p>
+          <p class="text-capitalize color-gray tex-center fw-semibold">
+            lyrics
+          </p>
         </div>
       </div>
       <div v-if="x">
         <h4 class="text-capitalize fw-bold xolor-black text-center">track</h4>
-        <p   class="px-4 lyric color-gray ">Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias magni earum asperiores magnam voluptatum voluptatem necessitatibus aperiam saepe facilis ipsa ipsam, ex laborum debitis animi cumque soluta, expedita iure odit eligendi accusantium molestiae nam? Ullam, libero officia. Doloremque impedit nostrum odit. Quibusdam suscipit harum, voluptates culpa nobis doloribus debitis tenetur odio atque sequi dolore.Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias magni earum asperiores magnam voluptatum voluptatem necessitatibus aperiam saepe facilis ipsa ipsam, ex laborum debitis animi cumque soluta, expedita iure odit eligendi accusantium molestiae nam? Ullam, libero officia. Doloremque impedit nostrum odit. Quibusdam suscipit harum, voluptates culpa nobis doloribus debitis tenetur odio atque sequi dolore.Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias magni earum asperiores magnam voluptatum voluptatem necessitatibus aperiam saepe facilis ipsa ipsam, ex laborum debitis animi cumque soluta, expedita iure odit eligendi accusantium molestiae nam? Ullam, libero officia. Doloremque impedit nostrum odit. Quibusdam suscipit harum, voluptates culpa nobis doloribus debitis tenetur odio atque sequi dolore.</p>
-        <div class="d-flex justify-content-center align-items-center pointer-event">
-            <svg
+        <p class="px-4 lyric color-gray">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias magni
+          earum asperiores magnam voluptatum voluptatem necessitatibus aperiam
+          saepe facilis ipsa ipsam, ex laborum debitis animi cumque soluta,
+          expedita iure odit eligendi accusantium molestiae nam? Ullam, libero
+          officia. Doloremque impedit nostrum odit. Quibusdam suscipit harum,
+          voluptates culpa nobis doloribus debitis tenetur odio atque sequi
+          dolore.Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias
+          magni earum asperiores magnam voluptatum voluptatem necessitatibus
+          aperiam saepe facilis ipsa ipsam, ex laborum debitis animi cumque
+          soluta, expedita iure odit eligendi accusantium molestiae nam? Ullam,
+          libero officia. Doloremque impedit nostrum odit. Quibusdam suscipit
+          harum, voluptates culpa nobis doloribus debitis tenetur odio atque
+          sequi dolore.Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          Alias magni earum asperiores magnam voluptatum voluptatem
+          necessitatibus aperiam saepe facilis ipsa ipsam, ex laborum debitis
+          animi cumque soluta, expedita iure odit eligendi accusantium molestiae
+          nam? Ullam, libero officia. Doloremque impedit nostrum odit. Quibusdam
+          suscipit harum, voluptates culpa nobis doloribus debitis tenetur odio
+          atque sequi dolore.
+        </p>
+        <div
+          class="d-flex justify-content-center align-items-center pointer-event"
+        >
+          <svg
             width="18"
             height="8"
             viewBox="0 0 18 8"
@@ -112,7 +138,6 @@
             />
           </svg>
         </div>
-
       </div>
     </section>
   </div>
@@ -131,8 +156,8 @@ export default {
 
 <style scoped>
 .tumbnail {
-  width: 140px;
-  height: 100px;
+  width: 200px;
+  height: 180px;
 }
 input[type="range"] {
   -webkit-appearance: none;
@@ -172,10 +197,8 @@ input[type="range"]::-webkit-slider-thumb {
   position: relative;
   left: 2px;
 }
-.lyric{
-    
-    height: 300px;
-    overflow-y: auto;
+.lyric {
+  height: 300px;
+  overflow-y: auto;
 }
-
 </style>
