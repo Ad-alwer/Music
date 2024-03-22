@@ -12,6 +12,8 @@
         <explore v-if="component == 'explore'" />
         <search v-if="component == 'search'" />
         <laibrarytrack v-if="component == 'laibrarytrack'" />
+        <laibraryAlbumVue v-if="component == 'laibraryalbum'" />
+
       </section>
       <aside class="player">
         <player />
@@ -29,12 +31,14 @@ import player from "./home components/Player.vue";
 import explore from "./home components/explor.vue";
 import search from "./home components/search.vue";
 import laibrarytrack from "./home components/libraryTrack.vue";
+import laibraryAlbumVue from './home components/laibraryAlbum.vue';
+
 
 export default {
   name: "home",
   data() {
     return {
-      component: "laibrarytrack",
+      component: "laibraryalbum",
     };
   },
   methods: {},
@@ -46,6 +50,8 @@ export default {
     explore,
     search,
     laibrarytrack,
+    laibraryAlbumVue
+
   },
 };
 </script>
