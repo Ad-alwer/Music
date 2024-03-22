@@ -13,11 +13,17 @@
         <search v-if="component == 'search'" />
         <laibrarytrack v-if="component == 'laibrarytrack'" />
         <laibraryAlbum v-if="component == 'laibraryalbum'" />
-        <laibraryAlbum v-if="component == 'laibraryalbum'" />
+        <laibraryplaylist v-if="component == 'laibraryplaylist'" />
+<<<<<<<<< Temporary merge branch 1
+=========
         <laibraryArtist v-if="component == 'laibraryartist'" />
 
-        
+>>>>>>>>> Temporary merge branch 2
 
+
+=======
+        <laibraryAlbumVue v-if="component == 'laibraryalbum'" />
+>>>>>>> a74d5c5eab1727f3e32b54a572b1c7baaecc03b5
 
       </section>
       <aside class="player">
@@ -37,15 +43,22 @@ import explore from "./home components/explor.vue";
 import search from "./home components/search.vue";
 import laibrarytrack from "./home components/libraryTrack.vue";
 import laibraryAlbum from './home components/laibraryAlbum.vue';
+import laibraryplaylist from './home components/laibraryPlaylist.vue';
+<<<<<<<<< Temporary merge branch 1
+=========
 import laibraryArtist from './home components/laibraryArtist.vue';
-
+>>>>>>>>> Temporary merge branch 2
 
 
 export default {
   name: "home",
   data() {
     return {
+<<<<<<<<< Temporary merge branch 1
+      component: "laibraryplaylist",
+=========
       component: "laibraryartist",
+>>>>>>>>> Temporary merge branch 2
     };
   },
   methods: {},
@@ -58,7 +71,12 @@ export default {
     search,
     laibrarytrack,
     laibraryAlbum,
+<<<<<<<<< Temporary merge branch 1
+    laibraryplaylist
+=========
+    laibraryplaylist,
     laibraryArtist
+>>>>>>>>> Temporary merge branch 2
 
   },
 };
