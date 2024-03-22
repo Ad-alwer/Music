@@ -11,6 +11,7 @@
         <discover v-if="component == 'discover'" />
         <explore v-if="component == 'explore'" />
         <search v-if="component == 'search'" />
+        <laibrarytrack v-if="component == 'laibrarytrack'" />
       </section>
       <aside class="player">
         <player />
@@ -27,12 +28,13 @@ import discover from "./home components/discover.vue";
 import player from "./home components/Player.vue";
 import explore from "./home components/explor.vue";
 import search from "./home components/search.vue";
+import laibrarytrack from "./home components/libraryTrack.vue";
 
 export default {
   name: "home",
   data() {
     return {
-      component: "search",
+      component: "laibrarytrack",
     };
   },
   methods: {},
@@ -43,6 +45,7 @@ export default {
     player,
     explore,
     search,
+    laibrarytrack,
   },
 };
 </script>

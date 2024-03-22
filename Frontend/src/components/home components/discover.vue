@@ -23,7 +23,7 @@
       <Swiper
         class="py-4"
         :modules="modules"
-        :slides-per-view="3"
+        :slides-per-view="4"
         :space-between="20"
         :scrollbar="{ draggable: true }"
         loop="true"
