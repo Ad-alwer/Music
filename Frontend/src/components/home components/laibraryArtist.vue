@@ -15,7 +15,6 @@
               alt=""
             />
 
-          
             <div
               class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
             >
@@ -30,7 +29,6 @@
               alt=""
             />
 
-          
             <div
               class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
             >
@@ -38,7 +36,6 @@
               <span>2k followers</span>
             </div>
           </div>
-          
         </div>
       </div>
     </section>
@@ -87,5 +84,4 @@ export default {
   display: flex;
   justify-content: center;
 }
-
 </style>
