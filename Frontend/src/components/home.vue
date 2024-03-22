@@ -36,7 +36,7 @@ import laibraryAlbum from './home components/laibraryAlbum.vue';
 import laibraryplaylist from './home components/laibraryPlaylist.vue';
 import laibraryArtist from './home components/laibraryArtist.vue';
 
-import laibraryArtist from "./home components/laibraryArtist.vue";
+
 
 export default {
   name: "home",
@@ -55,7 +55,6 @@ export default {
     search,
     laibrarytrack,
     laibraryAlbum,
-    laibraryplaylist,
     laibraryplaylist,
     laibraryArtist
 

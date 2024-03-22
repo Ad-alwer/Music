@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 <template>
   <div id="parent" class="container mt-5 px-3 position-relative">
     <section>
