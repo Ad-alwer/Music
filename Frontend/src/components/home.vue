@@ -14,6 +14,8 @@
         <laibrarytrack v-if="component == 'laibrarytrack'" />
         <laibraryAlbum v-if="component == 'laibraryalbum'" />
         <laibraryplaylist v-if="component == 'laibraryplaylist'" />
+        <laibraryArtist v-if="component == 'laibraryartist'" />
+
 
 
       </section>
@@ -35,13 +37,14 @@ import search from "./home components/search.vue";
 import laibrarytrack from "./home components/libraryTrack.vue";
 import laibraryAlbum from './home components/laibraryAlbum.vue';
 import laibraryplaylist from './home components/laibraryPlaylist.vue';
+import laibraryArtist from './home components/laibraryArtist.vue';
 
 
 export default {
   name: "home",
   data() {
     return {
-      component: "laibraryplaylist",
+      component: "laibraryartist",
     };
   },
   methods: {},
@@ -54,7 +57,8 @@ export default {
     search,
     laibrarytrack,
     laibraryAlbum,
-    laibraryplaylist
+    laibraryplaylist,
+    laibraryArtist
 
   },
 };
