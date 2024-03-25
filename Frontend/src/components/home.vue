@@ -15,6 +15,8 @@
         <laibraryAlbum v-if="component == 'laibraryalbum'" />
         <laibraryplaylist v-if="component == 'laibraryplaylist'" />
         <laibraryArtist v-if="component == 'laibraryartist'" />
+        <upload v-if="component == 'upload'" />
+
       </section>
       <aside class="player">
         <player />
@@ -35,6 +37,7 @@ import laibrarytrack from "./home components/libraryTrack.vue";
 import laibraryAlbum from './home components/laibraryAlbum.vue';
 import laibraryplaylist from './home components/laibraryPlaylist.vue';
 import laibraryArtist from './home components/laibraryArtist.vue';
+import upload from "./home components/upload.vue";
 
 
 
@@ -42,7 +45,7 @@ export default {
   name: "home",
   data() {
     return {
-      component: "laibraryartist",
+      component: "upload",
     };
   },
   methods: {},
@@ -56,7 +59,8 @@ export default {
     laibrarytrack,
     laibraryAlbum,
     laibraryplaylist,
-    laibraryArtist
+    laibraryArtist,
+    upload
 
   },
 };
