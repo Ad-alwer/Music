@@ -195,6 +195,33 @@
         </svg>
         <a href="">album</a>
       </li>
+      <li
+        class="py-2 text-capitalize d-flex justify-content-start align-items-center gap-3"
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          width="50"
+          height="50"
+        >
+          <path
+            d="M0 0 C15.18 0 30.36 0 46 0 C46 10.56 46 21.12 46 32 C30.82 32 15.64 32 0 32 C0 21.44 0 10.88 0 0 Z M19 11 C19 14.3 19 17.6 19 21 C21.64 19.68 24.28 18.36 27 17 C27 16.34 27 15.68 27 15 C24.36 13.68 21.72 12.36 19 11 Z "
+            fill="#4D4D56"
+            transform="translate(2,13)"
+          />
+          <path
+            d="M0 0 C12.21 0 24.42 0 37 0 C37 0.66 37 1.32 37 2 C24.79 2 12.58 2 0 2 C0 1.34 0 0.68 0 0 Z "
+            fill="#4D4D55"
+            transform="translate(6,9)"
+          />
+          <path
+            d="M0 0 C8.91 0 17.82 0 27 0 C27 0.66 27 1.32 27 2 C18.09 2 9.18 2 0 2 C0 1.34 0 0.68 0 0 Z "
+            fill="#4D4D55"
+            transform="translate(11,5)"
+          />
+        </svg>
+        <a href="">playlists</a>
+      </li>
 
       <li
         class="menu-title py-2 text-capitalize d-flex justify-content-start align-items-center gap-3"
@@ -222,6 +249,7 @@
         </svg>
         <a href="">settings</a>
       </li>
+      
       <li
         class="py-2 text-capitalize d-flex justify-content-start align-items-center gap-3"
       >
