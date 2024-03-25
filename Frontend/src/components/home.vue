@@ -42,7 +42,7 @@ export default {
   name: "home",
   data() {
     return {
-      component: "laibrarytrack",
+      component: "laibraryartist",
     };
   },
   methods: {},
