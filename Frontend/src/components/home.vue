@@ -16,6 +16,8 @@
         <laibraryplaylist v-if="component == 'laibraryplaylist'" />
         <laibraryArtist v-if="component == 'laibraryartist'" />
         <upload v-if="component == 'upload'" />
+        <publishTrack v-if="component == 'publishmusic'|| 'publishpodcast'" :type="component == 'publishmusic' ? 'music' :'podcast'" />
+
 
       </section>
       <aside class="player">
@@ -38,6 +40,7 @@ import laibraryAlbum from './home components/laibraryAlbum.vue';
 import laibraryplaylist from './home components/laibraryPlaylist.vue';
 import laibraryArtist from './home components/laibraryArtist.vue';
 import upload from "./home components/upload.vue";
+import publishTrack from "./home components/PublishTrack.vue";
 
 
 
@@ -45,7 +48,7 @@ export default {
   name: "home",
   data() {
     return {
-      component: "upload",
+      component: "publishpodcast",
     };
   },
   methods: {},
@@ -60,7 +63,8 @@ export default {
     laibraryAlbum,
     laibraryplaylist,
     laibraryArtist,
-    upload
+    upload,
+    publishTrack
 
   },
 };
