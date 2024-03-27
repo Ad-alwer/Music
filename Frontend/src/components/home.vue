@@ -20,7 +20,10 @@
           v-if="component == 'publishmusic' || component == 'publishpodcast'"
           :type="component == 'publishmusic' ? 'music' : 'podcast'"
         />
-        <PublishAlbum v-if="component == 'publishalbum'" />
+        <PublishAlbum
+          v-if="component == 'publishalbum' || component == 'publishplaylist'"
+          :type="component == 'publishalbum' ? 'albums' : 'plylists'"
+        />
       </section>
       <aside class="player">
         <player />

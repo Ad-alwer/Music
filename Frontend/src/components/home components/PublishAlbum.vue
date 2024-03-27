@@ -3,7 +3,7 @@
     <section>
       <div>
         <div class="d-flex justify-content-between p">
-          <span class="text-uppercase color-blue fw-semibold">albums</span>
+          <span class="text-uppercase color-blue fw-semibold">{{ type }}</span>
         </div>
         <div class="d-flex justify-content-start mt-4 gap-3 flex-wrap">
           <div class="track-body position-relative">
@@ -84,7 +84,7 @@
 
            <div class="d-flex align-items-center gap-1 px-2 cursor">
             <div
-              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center pt-1"
             >
               <p class="color-black">album1</p>
               <span>25 Tracks</span>
@@ -113,6 +113,8 @@
 export default {
   name: "libraryAlbum",
   components: {},
+  props: ["type"],
+  
 };
 </script>
 
