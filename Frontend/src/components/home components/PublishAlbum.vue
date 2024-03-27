@@ -3,7 +3,7 @@
     <section>
       <div>
         <div class="d-flex justify-content-between p">
-          <span class="text-uppercase color-blue fw-semibold">{{ type }}</span>
+          <span class="text-uppercase color-blue fw-semibold fs-5">{{ type }}</span>
         </div>
         <div class="d-flex justify-content-start mt-4 gap-3 flex-wrap">
           <div class="track-body position-relative">
