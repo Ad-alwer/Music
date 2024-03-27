@@ -24,6 +24,9 @@
           v-if="component == 'publishalbum' || component == 'publishplaylist'"
           :type="component == 'publishalbum' ? 'albums' : 'plylists'"
         />
+        <settings v-if="component == 'settings'" />
+
+
       </section>
       <aside class="player">
         <player />
@@ -47,12 +50,13 @@ import laibraryArtist from "./home components/laibraryArtist.vue";
 import upload from "./home components/upload.vue";
 import publishTrack from "./home components/PublishTrack.vue";
 import PublishAlbum from "./home components/PublishAlbum.vue";
+import settings from "./home components/setting.vue";
 
 export default {
   name: "home",
   data() {
     return {
-      component: "publishalbum",
+      component: "settings",
     };
   },
   methods: {},
@@ -70,11 +74,13 @@ export default {
     upload,
     publishTrack,
     PublishAlbum,
+    settings,
   },
 };
 </script>
 
 <style scoped>
+
 * {
   overflow: hidden;
 }
