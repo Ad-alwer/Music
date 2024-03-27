@@ -265,7 +265,7 @@
             fill="#787887"
           />
         </svg>
-        <a href="">logout</a>
+        <a href="/login">logout</a>
       </li>
     </ul>
   </div>
