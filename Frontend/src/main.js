@@ -12,6 +12,8 @@ import verifyaccount from "../src/components/Verifyaccount.vue";
 import home from "../src/components/home.vue"
 import profile from "../src/components/Profile.vue"
 import profileRequest from "../src/components/profile components/request.vue"
+import profileSocialmedia from "../src/components/profile components/socialmedia.vue"
+
 
 const routes = [
   { path: "/register", component: register },
@@ -21,6 +23,8 @@ const routes = [
   { path: "/", component: home },
   { path: "/profile", component: profile },
   { path: "/profile/request", component: profileRequest },
+  { path: "/profile/socialmedia", component: profileSocialmedia },
+
 
 
 
