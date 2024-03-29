@@ -1,5 +1,5 @@
 <template>
-  <div id="parent ">
+  <div id="parent">
     <header class="d-flex align-items-center gap-1 mt-3">
       <hmheader />
     </header>
@@ -817,7 +817,7 @@ export default {
   },
   data() {
     return {
-      whichcomponent: "detail",
+      whichcomponent: "request",
     };
   },
 };
