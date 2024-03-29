@@ -13,6 +13,7 @@ import home from "../src/components/home.vue"
 import profile from "../src/components/Profile.vue"
 import profileRequest from "../src/components/profile components/request.vue"
 import profileSocialmedia from "../src/components/profile components/socialmedia.vue"
+import profileMonthlylistener from "../src/components/profile components/monthlylistener.vue"
 
 
 const routes = [
@@ -24,6 +25,8 @@ const routes = [
   { path: "/profile", component: profile },
   { path: "/profile/request", component: profileRequest },
   { path: "/profile/socialmedia", component: profileSocialmedia },
+  { path: "/profile/monthlylistener", component: profileMonthlylistener },
+
 
 
 
