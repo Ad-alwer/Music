@@ -10,6 +10,7 @@ import login from "../src/components/Login.vue";
 import register from "../src/components/Register.vue";
 import verifyaccount from "../src/components/Verifyaccount.vue";
 import home from "../src/components/home.vue"
+import profile from "../src/components/Profile.vue"
 
 const routes = [
   { path: "/register", component: register },
@@ -17,6 +18,8 @@ const routes = [
   { path: "/v/:token", component: verifyaccount },
   { path: "/login", component: login },
   { path: "/", component: home },
+  { path: "/profile", component: profile },
+
 
 ];
 

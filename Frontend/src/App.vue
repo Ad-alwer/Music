@@ -12,11 +12,8 @@ export default {
 :root {
   --blue-main: #4343ef;
   --gray-main: #787887;
-  --black-main: #24242E;
-
+  --black-main: #24242e;
 }
-
-
 
 /* CSS reset */
 
@@ -67,8 +64,6 @@ a {
 
 /* Utilty class */
 
-
-
 .pointer {
   cursor: pointer;
 }
@@ -76,14 +71,14 @@ a {
 .color-gray {
   color: var(--gray-main);
 }
-.color-black{
+.color-black {
   color: var(--black-main);
 }
-.color-blue{
+.color-blue {
   color: var(--blue-main);
 }
 
-/* Scroll*/ 
+/* Scroll*/
 
 *::-webkit-scrollbar {
   height: 6px;
@@ -91,33 +86,36 @@ a {
 }
 *::-webkit-scrollbar-track {
   border-radius: 7px;
-  background-color: #DFE9EB;
+  background-color: #dfe9eb;
 }
 
 *::-webkit-scrollbar-track:hover {
-  background-color: #B8C0C2;
+  background-color: #b8c0c2;
 }
 
 *::-webkit-scrollbar-track:active {
-  background-color: #B8C0C2;
+  background-color: #b8c0c2;
 }
 
 *::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: #4343EF;
+  background-color: #4343ef;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: #5D52EF;
+  background-color: #5d52ef;
 }
 
 *::-webkit-scrollbar-thumb:active {
-  background-color: #676BEF;
+  background-color: #676bef;
 }
-
 
 /* Other syle*/
 * {
   font-family: "Montserrat";
+}
+
+.img-thumbnail {
+  border-color: #78788762 !important;
 }
 </style>
