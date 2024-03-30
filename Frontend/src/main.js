@@ -9,12 +9,12 @@ import bootstrap from "bootstrap/dist/js/bootstrap.bundle.js";
 import login from "../src/components/Login.vue";
 import register from "../src/components/Register.vue";
 import verifyaccount from "../src/components/Verifyaccount.vue";
-import home from "../src/components/home.vue"
-import profile from "../src/components/Profile.vue"
-import profileRequest from "../src/components/profile components/request.vue"
-import profileSocialmedia from "../src/components/profile components/socialmedia.vue"
-import profileMonthlylistener from "../src/components/profile components/monthlylistener.vue"
-
+import home from "../src/components/home.vue";
+import profile from "../src/components/Profile.vue";
+import profileRequest from "../src/components/profile components/request.vue";
+import profileSocialmedia from "../src/components/profile components/socialmedia.vue";
+import profileMonthlylistener from "../src/components/profile components/monthlylistener.vue";
+import notification from "../src/components/notification.vue";
 
 const routes = [
   { path: "/register", component: register },
@@ -26,11 +26,7 @@ const routes = [
   { path: "/profile/request", component: profileRequest },
   { path: "/profile/socialmedia", component: profileSocialmedia },
   { path: "/profile/monthlylistener", component: profileMonthlylistener },
-
-
-
-
-
+  { path: "/notification", component: notification },
 ];
 
 const router = createRouter({
