@@ -2,7 +2,7 @@
   <div class="container mt-4 px-4" id="parent">
     <section class="d-flex justify-content-between">
       <span class="text-uppercase color-blue fw-semibold fs-5"
-        >Saved tracks</span
+        >users</span
       >
     </section>
     <section class="mt-4">
@@ -71,12 +71,12 @@ export default {
   background-color: #4343ef !important;
   color: white;
 }
-.table-header th:nth-child(1) {
-  border-top-left-radius: 15px;
-}
-.table-header th:nth-child(6) {
-  border-top-right-radius: 15px;
-}
+.table-header th:first-child {
+    border-top-left-radius: 15px;
+  }
+  .table-header th:last-child {
+    border-top-right-radius: 15px;
+  }
 
 tr {
   border-bottom: 2px solid #4343ef;

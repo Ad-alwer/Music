@@ -9,6 +9,8 @@
       </aside>
       <section class="content">
         <users v-if="component == 'users'"/>
+        <requests v-if="component == 'requests'"/>
+
       </section>
       <aside class="player">
         <player />
@@ -23,12 +25,13 @@ import dashmenu from "./dashboard components/menu.vue";
 import player from "./home components/Player.vue";
 
 import users from "./dashboard components/users.vue";
+import requests from "./dashboard components/requests.vue";
 
 export default {
   name: "dashboard",
   data() {
     return {
-      component: "users",
+      component: "requests",
     };
   },
   methods: {},
@@ -36,7 +39,8 @@ export default {
     hmheader,
     dashmenu,
     player,
-    users
+    users,
+    requests
   },
 };
 </script>
