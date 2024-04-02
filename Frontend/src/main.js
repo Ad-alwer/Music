@@ -15,6 +15,7 @@ import profileRequest from "../src/components/profile components/request.vue";
 import profileSocialmedia from "../src/components/profile components/socialmedia.vue";
 import profileMonthlylistener from "../src/components/profile components/monthlylistener.vue";
 import notification from "../src/components/notification.vue";
+import dashboard from "../src/components/dashboard.vue"
 
 const routes = [
   { path: "/register", component: register },
@@ -27,6 +28,8 @@ const routes = [
   { path: "/profile/socialmedia", component: profileSocialmedia },
   { path: "/profile/monthlylistener", component: profileMonthlylistener },
   { path: "/notification", component: notification },
+  { path: "/dashboard", component: dashboard },
+
 ];
 
 const router = createRouter({
