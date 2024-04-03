@@ -10,6 +10,8 @@
       <section class="content">
         <users v-if="component == 'users'"/>
         <requests v-if="component == 'requests'"/>
+        <verify v-if="component == 'verify'"/>
+
 
       </section>
       <aside class="player">
@@ -26,12 +28,14 @@ import player from "./home components/Player.vue";
 
 import users from "./dashboard components/users.vue";
 import requests from "./dashboard components/requests.vue";
+import verify from "./dashboard components/verify.vue";
+
 
 export default {
   name: "dashboard",
   data() {
     return {
-      component: "requests",
+      component: "verify",
     };
   },
   methods: {},
@@ -40,7 +44,8 @@ export default {
     dashmenu,
     player,
     users,
-    requests
+    requests,
+    verify
   },
 };
 </script>
