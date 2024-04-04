@@ -13,6 +13,7 @@
             >profile</span
           >
         </section>
+       
         <section
           class="mt-4 d-flex flex-column justify-content-center align-items-center"
         >
@@ -33,6 +34,13 @@
               >26 following</span
             >
           </div>
+        </section>
+        <section class="bio-parent mt-4 rounded-4 mx-4 py-2 d-flex flex-column gap-2">
+          <textarea class="form-control text-capitalize" name="" id="" cols="10" rows="10" maxlength="500" placeholder="bio"></textarea>
+          <div class="d-flex justify-content-center">
+            <button class="btn btn-save px-3 py-2 text-white text-capitalize">save</button>
+          </div>
+          
         </section>
         <section class="d-flex justify-content-center mt-4">
           <table class="table table-bordered w-75">
@@ -1003,4 +1011,12 @@ tr {
 /* .search-resault-child{
   border-bottom: 2px solid var(--blue-main);
 } */
+
+.bio-parent{
+  border: 1px solid var(--blue-main);
+}
+textarea{
+  resize: none;
+  height: 200px;
+}
 </style>
