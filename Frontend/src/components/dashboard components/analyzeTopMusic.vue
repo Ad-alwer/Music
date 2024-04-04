@@ -2,7 +2,7 @@
   <div id="parent" class="container mt-4 px-4">
     <section class="d-flex justify-content-between">
       <span class="text-uppercase color-blue fw-semibold fs-5"
-        >Top musics</span
+        >Top {{ type }}</span
       >
     </section>
     <section class="mt-4 d-flex flex-column gap-3">
@@ -85,6 +85,7 @@
 <script>
 export default {
   name: "analyzeTopMusic",
+  props:['type']
 };
 </script>
 

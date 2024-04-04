@@ -13,8 +13,10 @@
         <verify v-if="component == 'verify'" />
         <home v-if="component == 'home'" />
         <analyzeTopArtist v-if="component == 'analyzeTopArtist'" />
-        <analyzeTopMusic v-if="component == 'analyzeTopMusic'" />
-
+        <analyzeTopMusic
+          v-if="component == 'analyzeTopMusic' || 'analyzeTopPodcast'"
+          :type="component == 'analyzeTopMusic' ? 'music' : 'podcast'"
+        />
       </section>
       <aside class="player">
         <player />
