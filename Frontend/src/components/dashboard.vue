@@ -11,6 +11,7 @@
         <users v-if="component == 'users'"/>
         <requests v-if="component == 'requests'"/>
         <verify v-if="component == 'verify'"/>
+        <home v-if="component == 'home'"/>
 
 
       </section>
@@ -29,13 +30,15 @@ import player from "./home components/Player.vue";
 import users from "./dashboard components/users.vue";
 import requests from "./dashboard components/requests.vue";
 import verify from "./dashboard components/verify.vue";
+import home from "./dashboard components/home.vue";
+
 
 
 export default {
   name: "dashboard",
   data() {
     return {
-      component: "verify",
+      component: "home",
     };
   },
   methods: {},
@@ -45,7 +48,8 @@ export default {
     player,
     users,
     requests,
-    verify
+    verify,
+    home
   },
 };
 </script>
