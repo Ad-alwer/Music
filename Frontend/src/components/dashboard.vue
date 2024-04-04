@@ -9,13 +9,21 @@
       </aside>
       <section class="content">
         <users v-if="component == 'users'" />
-        <requests v-if="component == 'requests'" />
-        <verify v-if="component == 'verify'" />
-        <home v-if="component == 'home'" />
-        <analyzeTopArtist v-if="component == 'analyzeTopArtist'" />
+        <requests v-else-if="component == 'requests'" />
+        <verify v-else-if="component == 'verify'" />
+        <home v-else-if="component == 'home'" />
+        <analyzeTopArtist v-else-if="component == 'analyzeTopArtist'" />
         <analyzeTopMusic
-          v-if="component == 'analyzeTopMusic' || 'analyzeTopPodcast'"
+          v-else-if="
+            component == 'analyzeTopMusic' || component == 'analyzeTopPodcast'
+          "
           :type="component == 'analyzeTopMusic' ? 'music' : 'podcast'"
+        />
+        <analyzeTopAlbum
+          v-else-if="
+            component == 'analyzeTopAlbum' || component == 'analyzeTopPlaylist'
+          "
+          :type="component == 'analyzeTopAlbum' ? 'album' : 'playlist'"
         />
       </section>
       <aside class="player">
@@ -36,12 +44,13 @@ import verify from "./dashboard components/verify.vue";
 import home from "./dashboard components/home.vue";
 import analyzeTopArtist from "./dashboard components/analyzeTopArtist.vue";
 import analyzeTopMusic from "./dashboard components/analyzeTopMusic.vue";
+import analyzeTopAlbum from "./dashboard components/analyzeTopAlbum.vue";
 
 export default {
   name: "dashboard",
   data() {
     return {
-      component: "analyzeTopMusic",
+      component: "analyzeTopAlbum",
     };
   },
   methods: {},
@@ -55,6 +64,7 @@ export default {
     home,
     analyzeTopArtist,
     analyzeTopMusic,
+    analyzeTopAlbum,
   },
 };
 </script>
