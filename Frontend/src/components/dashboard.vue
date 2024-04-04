@@ -50,7 +50,7 @@ export default {
   name: "dashboard",
   data() {
     return {
-      component: "analyzeTopAlbum",
+      component: "home",
     };
   },
   methods: {},

@@ -136,6 +136,23 @@
       </div>
     </section>
     <hr class="mx-5" />
+    <section class="mt-4 px-4">
+      <h3 class="text-capitalize text-center">icons</h3>
+
+      <div class="d-flex gap-4 flex-wrap">
+        <button class="btn-add btn px-3 py-2 text-capitalize">Add icons</button>
+        <div
+          class=" px-3 py-2 rounded gap-2 d-flex justify-content-center align-items-center icon-parent pointer"
+        >
+        <img src="../../assets/icons/github.png" alt="">
+        <span class="text-capitalize fw-semibold  color-black">github</span>
+        
+
+         
+        </div>
+      </div>
+    </section>
+    <hr class="mx-5" />
   </div>
 </template>
 
@@ -174,4 +191,8 @@ export default {
   width: 120px;
   height: 65px;
 }
+.icon-parent{
+  border: 2px solid var(--blue-main);
+}
+
 </style>
