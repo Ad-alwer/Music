@@ -16,6 +16,8 @@ import profileSocialmedia from "../src/components/profile components/socialmedia
 import profileMonthlylistener from "../src/components/profile components/monthlylistener.vue";
 import notification from "../src/components/notification.vue";
 import dashboard from "../src/components/dashboard.vue"
+import notfound from "../src/components/404.vue"
+
 
 const routes = [
   { path: "/register", component: register },
@@ -29,6 +31,8 @@ const routes = [
   { path: "/profile/monthlylistener", component: profileMonthlylistener },
   { path: "/notification", component: notification },
   { path: "/dashboard", component: dashboard },
+  { path: "/:pathMatch(.*)", component: notfound },
+
 
 ];
 
