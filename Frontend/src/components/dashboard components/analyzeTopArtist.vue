@@ -3,7 +3,7 @@
     <section class="d-flex justify-content-between">
       <span class="text-uppercase color-blue fw-semibold fs-5">Top Artists</span>
     </section>
-    <section class="mt-4 d-flex gap-2  justify-content-between flex-wrap ">
+    <section class="mt-4 d-flex gap-3  justify-content-between flex-wrap ">
         <div class="monthly-box d-flex gap-3 align-items-center col-5">
           <div
             class="monthly-num d-flex justify-content-center align-items-center"
@@ -102,9 +102,7 @@ export default {
 </script>
 
 <style scoped>
-.monthly-box {
-  /* height: 75px; */
-}
+
 .monthly-img {
   width: 70px;
   height: 70px;

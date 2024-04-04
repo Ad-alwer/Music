@@ -8,13 +8,12 @@
         <dashmenu />
       </aside>
       <section class="content">
-        <users v-if="component == 'users'"/>
-        <requests v-if="component == 'requests'"/>
-        <verify v-if="component == 'verify'"/>
-        <home v-if="component == 'home'"/>
-        <analyzeTopArtist v-if="component == 'analyzeTopArtist'"/>
-
-
+        <users v-if="component == 'users'" />
+        <requests v-if="component == 'requests'" />
+        <verify v-if="component == 'verify'" />
+        <home v-if="component == 'home'" />
+        <analyzeTopArtist v-if="component == 'analyzeTopArtist'" />
+        <analyzeTopMusic v-if="component == 'analyzeTopMusic'" />
 
       </section>
       <aside class="player">
@@ -34,15 +33,13 @@ import requests from "./dashboard components/requests.vue";
 import verify from "./dashboard components/verify.vue";
 import home from "./dashboard components/home.vue";
 import analyzeTopArtist from "./dashboard components/analyzeTopArtist.vue";
-
-
-
+import analyzeTopMusic from "./dashboard components/analyzeTopMusic.vue";
 
 export default {
   name: "dashboard",
   data() {
     return {
-      component: "analyzeTopArtist",
+      component: "analyzeTopMusic",
     };
   },
   methods: {},
@@ -53,7 +50,9 @@ export default {
     users,
     requests,
     verify,
-    home,analyzeTopArtist
+    home,
+    analyzeTopArtist,
+    analyzeTopMusic,
   },
 };
 </script>
