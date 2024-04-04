@@ -4,7 +4,7 @@
     <section>
       <div class="d-flex justify-content-between pt-4">
         <span class="text-uppercase color-black fw-semibold"
-          >Featured Playlists</span
+          >Featured Album</span
         >
         <span class="text-capitalize color-gray pointer color-blue"
           >See All</span
@@ -349,6 +349,7 @@
         </swiper-slide>
       </Swiper>
     </section>
+    
   </div>
 </template>
 

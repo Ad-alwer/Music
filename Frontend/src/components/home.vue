@@ -25,6 +25,8 @@
           :type="component == 'publishalbum' ? 'albums' : 'plylists'"
         />
         <settings v-if="component == 'settings'" />
+        <user v-if="component == 'user'" />
+
 
 
       </section>
@@ -51,12 +53,14 @@ import upload from "./home components/upload.vue";
 import publishTrack from "./home components/PublishTrack.vue";
 import PublishAlbum from "./home components/PublishAlbum.vue";
 import settings from "./home components/setting.vue";
+import user from "./home components/user.vue";
+
 
 export default {
   name: "home",
   data() {
     return {
-      component: "settings",
+      component: "user",
     };
   },
   methods: {},
@@ -75,6 +79,7 @@ export default {
     publishTrack,
     PublishAlbum,
     settings,
+    user
   },
 };
 </script>
@@ -97,4 +102,5 @@ aside.player {
   width: 25%;
   /* background-color: aqua; */
 }
+
 </style>

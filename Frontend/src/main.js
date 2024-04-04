@@ -33,7 +33,6 @@ const routes = [
   { path: "/notification", component: notification },
   { path: "/dashboard", component: dashboard },
   { path: "/vp/:token", component: verifypassword },
-
   { path: "/:pathMatch(.*)", component: notfound },
 
 

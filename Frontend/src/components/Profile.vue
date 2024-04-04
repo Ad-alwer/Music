@@ -1013,7 +1013,7 @@ tr {
 } */
 
 .bio-parent{
-  border: 1px solid var(--blue-main);
+  border: 2px solid var(--blue-main);
 }
 textarea{
   resize: none;
