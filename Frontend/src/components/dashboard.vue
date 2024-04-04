@@ -12,6 +12,8 @@
         <requests v-if="component == 'requests'"/>
         <verify v-if="component == 'verify'"/>
         <home v-if="component == 'home'"/>
+        <analyzeTopArtist v-if="component == 'analyzeTopArtist'"/>
+
 
 
       </section>
@@ -31,6 +33,8 @@ import users from "./dashboard components/users.vue";
 import requests from "./dashboard components/requests.vue";
 import verify from "./dashboard components/verify.vue";
 import home from "./dashboard components/home.vue";
+import analyzeTopArtist from "./dashboard components/analyzeTopArtist.vue";
+
 
 
 
@@ -38,7 +42,7 @@ export default {
   name: "dashboard",
   data() {
     return {
-      component: "home",
+      component: "analyzeTopArtist",
     };
   },
   methods: {},
@@ -49,7 +53,7 @@ export default {
     users,
     requests,
     verify,
-    home
+    home,analyzeTopArtist
   },
 };
 </script>
