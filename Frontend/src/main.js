@@ -15,27 +15,24 @@ import profileRequest from "../src/components/profile components/request.vue";
 import profileSocialmedia from "../src/components/profile components/socialmedia.vue";
 import profileMonthlylistener from "../src/components/profile components/monthlylistener.vue";
 import notification from "../src/components/notification.vue";
-import dashboard from "../src/components/dashboard.vue"
-import verifypassword from "../src/components/profile components/verifynewpassword.vue"
-import notfound from "../src/components/404.vue"
-
+import dashboard from "../src/components/dashboard.vue";
+import verifypassword from "../src/components/profile components/verifynewpassword.vue";
+import notfound from "../src/components/404.vue";
 
 const routes = [
   { path: "/register", component: register },
   { path: "/login", component: login },
   { path: "/v/:token", component: verifyaccount },
   { path: "/login", component: login },
-  { path: "/", component: home },
+  { path: "/:component?/:part?", component: home },
   { path: "/profile", component: profile },
   { path: "/profile/request", component: profileRequest },
   { path: "/profile/socialmedia", component: profileSocialmedia },
   { path: "/profile/monthlylistener", component: profileMonthlylistener },
   { path: "/notification", component: notification },
-  { path: "/dashboard", component: dashboard },
+  { path: "/dashboard/:component?", component: dashboard },
   { path: "/vp/:token", component: verifypassword },
   { path: "/:pathMatch(.*)", component: notfound },
-
-
 ];
 
 const router = createRouter({
