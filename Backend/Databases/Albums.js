@@ -1,14 +1,10 @@
 const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
-const schedule = require("node-schedule");
 
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
   console.log("conect");
-  schedule.scheduleJob("00 01 * * *", () => {
-    schdulealbum();
-  });
 });
 
 const musicschema = new mongoose.Schema({
@@ -32,35 +28,12 @@ const musicschema = new mongoose.Schema({
   cover: String,
   tracks: [],
   monthlyListener: [],
-  schedule: Date,
+  totalduaration: 0,
   releaseDate: Date,
 });
 musicschema.plugin(timestamp);
 
 const Album = mongoose.model("album", musicschema);
-
-async function schdulealbum() {
-  const currentDate = new Date();
-  const year = currentDate.getFullYear();
-  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-  const day = String(currentDate.getDate()).padStart(2, "0");
-  const today = `${year}-${month}-${day}`;
-
-  const pendeingalbum = await Album.find({ releaseDate: { $ne: null } });
-  pendeingalbum.forEach(async (e) => {
-    const date = new Date(e.createdAt);
-    const extractedDate = date.toISOString().split("T")[0];
-    if (today.getTime() >= extractedDate.getTime()) {
-      await Album.findByIdAndUpdate(e.id, {
-        $set: {
-          status: "public",
-          releaseDate: currentDate,
-          schedule: null,
-        },
-      });
-    }
-  });
-}
 
 async function addalbum(
   name,
@@ -69,38 +42,22 @@ async function addalbum(
   cover,
   status,
   genre,
-  schdule
+  totalduaration
 ) {
   try {
     const currentDate = new Date();
-    const scheduledDate = new Date(schdule);
-    if (scheduledDate <= currentDate) {
-      const useralbum = new Album({
-        name,
-        artist,
-        status,
-        description,
-        cover,
-        tracks,
-        schdule: null,
-        releaseDate: currentDate,
-        genre,
-      });
-      return useralbum;
-    } else {
-      const useralbum = new Album({
-        name,
-        artist,
-        status,
-        description,
-        cover,
-        tracks,
-        schdule,
-        releaseDate: null,
-        genre,
-      });
-      return useralbum;
-    }
+    const useralbum = new Album({
+      name,
+      artist,
+      status,
+      description,
+      cover,
+      tracks,
+      totalduaration,
+      releaseDate: currentDate,
+      genre,
+    });
+    return useralbum;
   } catch {
     return false;
   }

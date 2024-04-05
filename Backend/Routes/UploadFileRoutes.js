@@ -8,6 +8,10 @@ require("dotenv").config();
 const usersDB = require("../Databases/users");
 const { addbanner, addresbanner } = require("../Databases/Base");
 
+const ffmpeg = require("fluent-ffmpeg");
+const ffprobePath = require("ffprobe-static").path;
+ffmpeg.setFfprobePath(ffprobePath);
+
 const config = {
   endpoint: process.env.LIARA_ENDPOINT,
   accessKeyId: process.env.LIARA_ACCESS_KEY,
@@ -84,13 +88,24 @@ Router.post(
   async function (req, res) {
     let files = [];
     let thumbnail;
+    let totalduration = 0;
+    let duration;
 
     await Promise.all(
       req.files.map(async (file) => {
         if (file.mimetype === "audio/mpeg") {
-          files.push({
-            url: file.location,
-            name: file.key,
+          ffmpeg.ffprobe(file.location, (err, metadata) => {
+            if (err) {
+              console.error("Error while getting metadata:", err);
+            } else {
+              duration = metadata.format.duration;
+              totalduration = totalduration + duration;
+              files.push({
+                url: file.location,
+                name: file.key,
+                duration: Math.floor(duration),
+              });
+            }
           });
         } else {
           thumbnail = { url: file.location, name: file.key };
@@ -102,10 +117,13 @@ Router.post(
       .addrequestalbum(
         req.headers.jwt,
         req.body.name,
+        req.body.status,
+        req.body.genre,
         files,
         thumbnail,
         req.body.description,
-        req.body.schdule
+        totalduration
+        
       )
       .then((data) => {
         if (data) {
@@ -124,11 +142,24 @@ Router.post(
   async function (req, res) {
     let cover;
     let track;
+    let duration;
 
     await Promise.all(
       req.files.map(async (file) => {
         if (file.mimetype === "audio/mpeg") {
-          track = { url: file.location, name: file.key };
+          ffmpeg.ffprobe(file.location, (err, metadata) => {
+            if (err) {
+              console.error("Error while getting metadata:", err);
+            } else {
+              duration = metadata.format.duration;
+              track = {
+                url: file.location,
+                name: file.key,
+                duration: Math.floor(duration),
+              };
+              console.log(track);
+            }
+          });
         } else {
           cover = { url: file.location, name: file.key };
         }

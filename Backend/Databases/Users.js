@@ -418,7 +418,6 @@ async function addrequesttrack(
   genre,
   description,
   lyric,
-  schdule,
   feat,
   cover,
   track,
@@ -438,7 +437,6 @@ async function addrequesttrack(
         cover,
         feat,
         track,
-        schdule,
         visibility
       )
       .then((res) => {
@@ -478,10 +476,22 @@ async function addrequesttrack(
   }
 }
 
-async function addrequestalbum(id, name, tracks, cover, description, schdule) {
+async function addrequestalbum(id, name, status,genre,tracks, cover, description,totalduaration) {
   const user = await User.findById(id);
   if (user.isverify) {
-    //TODO after music routes
+    await albumDB
+    .addalbum(name,id,description,cover,status,genre,totalduaration)
+    .then(async (res) => {
+      await User.findByIdAndUpdate(userId, {
+        $push: {
+          albums: {
+            name,
+            id: res._id,
+          },
+        },
+      });
+      return res;
+    });
   } else {
     try {
       const decode = jwt.verify(token, process.env.REGISTER_JWT);
@@ -496,7 +506,6 @@ async function addrequestalbum(id, name, tracks, cover, description, schdule) {
               status: "pending",
               cover,
               description,
-              schdule,
               msg: "",
             },
           },

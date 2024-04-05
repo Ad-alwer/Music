@@ -38,7 +38,6 @@ const musicschema = new mongoose.Schema({
   feat: [],
   track: {},
   monthlyListener: [],
-  schedule: Date,
   releaseDate: Date,
 });
 musicschema.plugin(timestamp);
@@ -79,49 +78,26 @@ async function addtrack(
   cover,
   feat,
   track,
-  schdule,
   status
 ) {
   try {
     const currentDate = new Date();
-    const scheduledDate = new Date(schdule);
-    if (scheduledDate <= currentDate) {
-      const usertrack = new Track({
-        name,
-        type,
-        genre,
-        artist,
-        description,
-        album,
-        lyric,
-        cover,
-        feat,
-        track,
-        status,
-        releaseDate: currentDate,
-        schdule: null,
-      });
-      await usertrack.save();
-      return usertrack;
-    } else {
-      const usertrack = new Track({
-        name,
-        type,
-        genre,
-        artist,
-        description,
-        album,
-        lyric,
-        cover,
-        feat,
-        track,
-        status,
-        schdule,
-        releaseDate: null,
-      });
-      await usertrack.save();
-      return usertrack;
-    }
+    const usertrack = new Track({
+      name,
+      type,
+      genre,
+      artist,
+      description,
+      album,
+      lyric,
+      cover,
+      feat,
+      track,
+      status,
+      releaseDate: currentDate,
+    });
+    await usertrack.save();
+    return usertrack;
   } catch {
     return false;
   }
