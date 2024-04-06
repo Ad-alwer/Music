@@ -5,10 +5,10 @@
     </header>
     <main class="d-flex">
       <aside class="menu">
-        <hmmenu />
+        <hmmenu @change="changecomponent" :component="component" />
       </aside>
       <section class="content">
-        <discover v-if="component == 'discover'" />
+        <discover v-if="component == 'discover'" class="active" />
         <explore v-if="component == 'explore'" />
         <search v-if="component == 'search'" />
         <laibrarytrack v-if="component == 'laibrarytrack'" />
@@ -26,9 +26,6 @@
         />
         <settings v-if="component == 'settings'" />
         <user v-if="component == 'user'" />
-
-
-
       </section>
       <aside class="player">
         <player />
@@ -55,15 +52,18 @@ import PublishAlbum from "./home components/PublishAlbum.vue";
 import settings from "./home components/setting.vue";
 import user from "./home components/user.vue";
 
-
 export default {
   name: "home",
   data() {
     return {
-      component: "user",
+      component: "discover",
     };
   },
-  methods: {},
+  methods: {
+    changecomponent: function (e) {
+      this.component = e;
+    },
+  },
   components: {
     hmheader,
     hmmenu,
@@ -79,13 +79,12 @@ export default {
     publishTrack,
     PublishAlbum,
     settings,
-    user
+    user,
   },
 };
 </script>
 
 <style scoped>
-
 * {
   overflow: hidden;
 }
