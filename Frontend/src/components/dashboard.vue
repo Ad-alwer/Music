@@ -5,7 +5,7 @@
     </header>
     <main class="d-flex">
       <aside class="menu">
-        <dashmenu />
+        <dashmenu :component="component" @change="change" />
       </aside>
       <section class="content">
         <users v-if="component == 'users'" />
@@ -53,7 +53,11 @@ export default {
       component: "home",
     };
   },
-  methods: {},
+  methods: {
+    change: function (e) {
+      this.component = e;
+    },
+  },
   components: {
     hmheader,
     dashmenu,
