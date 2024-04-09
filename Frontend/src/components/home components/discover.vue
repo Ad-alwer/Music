@@ -30,7 +30,6 @@
         @swiper="onSwiper"
         @slideChange="onSlideChange"
         :autoplay="autoplay"
-       
       >
         <swiper-slide
           data-swiper-autoplay="2000"
@@ -96,13 +95,15 @@
     </section>
     <section class="d-flex gap-5 w-100 mt-3">
       <div class="w-50">
-        <div class="mt-4 topcollactions d-flex align-items-center justify-content-between ps-4">
-          <span class="text-uppercase color-black  fs-5 fw-semibold"
+        <div
+          class="mt-4 topcollactions d-flex align-items-center justify-content-between ps-4"
+        >
+          <span class="text-uppercase color-black fs-5 fw-semibold"
             >Top Collection</span
           >
           <span class="text-capitalize color-gray pointer">More List</span>
         </div>
-        <div class="mt-4  d-flex gap-4 px-5">
+        <div class="mt-4 d-flex gap-4 px-5">
           <img
             src="../../assets/img/test/eminem.jpg"
             alt=""
@@ -120,17 +121,17 @@
           />
         </div>
       </div>
-      <div class="w-50 ">
-        <div class="mt-4 topcollactions d-flex justify-content-between align-items-center">
-          <span class="text-uppercase color-black  fs-5 fw-semibold"
+      <div class="w-50">
+        <div
+          class="mt-4 topcollactions d-flex justify-content-between align-items-center"
+        >
+          <span class="text-uppercase color-black fs-5 fw-semibold"
             >Top Genre</span
           >
           <span class="text-capitalize color-gray pointer px-3">More List</span>
         </div>
-        <div class="d-flex  mt-4 flex-wrap justify-content-evenly">
-          <div
-            class="d-flex justify-content-center align-items-center "
-          >
+        <div class="d-flex mt-4 flex-wrap justify-content-evenly">
+          <div class="d-flex justify-content-center align-items-center">
             <p
               class="text-white p-3 text-capitalize rounded-3 bg-danger fs-5 rounded-3"
             >
@@ -200,12 +201,8 @@ export default {
     SwiperSlide,
   },
   setup() {
-    const onSwiper = (swiper) => {
-      console.log(swiper);
-    };
-    const onSlideChange = () => {
-      console.log("slide change");
-    };
+    const onSwiper = () => {};
+    const onSlideChange = () => {};
     return {
       onSwiper,
       onSlideChange,
@@ -218,12 +215,10 @@ export default {
 <style scoped>
 #parent {
   margin-top: 5% !important;
-
 }
 .img-parent {
   width: 860px;
   height: 308px;
-  
 }
 .slider-img {
   height: 308px;
@@ -278,7 +273,6 @@ export default {
   height: 180px !important;
   object-fit: cover;
 }
-
 
 .img-topcollactions {
   /* width: 110px; */

@@ -24,13 +24,19 @@
       class="div-main d-flex ms-3 align-items-center justify-content-between me-4"
     >
       <div class="d-flex justify-content-center gap-4">
-        <span class="text-capitalize pointer links position-relative"
+        <span
+          class="text-capitalize pointer links position-relative"
+          @click="goto('/explore/music')"
           >Music</span
         >
-        <span class="text-capitalize pointer links position-relative"
+        <span
+          class="text-capitalize pointer links position-relative"
+          @click="goto('/explore/podcast')"
           >Podcast</span
         >
-        <span class="text-capitalize pointer links position-relative"
+        <span
+          class="text-capitalize pointer links position-relative"
+          @click="goto('/explore/album')"
           >Album</span
         >
       </div>
@@ -43,9 +49,16 @@
           class="search-input"
           maxlength="43"
           placeholder="Search ..."
+          ref="searchinput"
         />
         <svg
-          class="search-icon pointer "
+          @click="
+            this.$refs.searchinput.value
+              ? goto(`search/${this.$refs.searchinput.value}`) &&
+                this.refs.searchinput.value == null
+              : null
+          "
+          class="search-icon pointer"
           width="20"
           height="20"
           viewBox="0 0 20 20"
@@ -62,6 +75,7 @@
     </div>
     <div class="d-flex align-items-center gap-3 px-4">
       <svg
+        @click="goto('laibrarytrack')"
         width="20"
         height="20"
         viewBox="0 0 20 18"
@@ -78,7 +92,14 @@
         />
       </svg>
       <div>
-        <!-- <svg
+        <notificationpopup
+          @close="popups.notifacation = false"
+          v-if="popups.notifacation"
+        />
+
+        <svg
+          v-if="!unreadnofification"
+          @click="popups.notifacation = true"
           width="20"
           height="22"
           viewBox="0 0 20 22"
@@ -100,8 +121,10 @@
             stroke-linecap="round"
             stroke-linejoin="round"
           />
-        </svg> -->
+        </svg>
         <svg
+          @click="popups.notifacation = true"
+          v-if="unreadnofification"
           width="22"
           height="22"
           viewBox="0 0 20 22"
@@ -127,13 +150,27 @@
         </svg>
       </div>
       <div class="d-flex gap-2 ms-2 align-items-center">
+        <profilepopup
+          v-if="popups.profile"
+          :admin="user.isadmin"
+          @close="popups.profile = false"
+        />
         <img
+          v-if="user.profile"
+          class="rounded-circle img-thumbnail"
+          :src="user.profile"
+          alt=""
+        />
+        <img
+          v-if="!user.profile"
           class="rounded-circle img-thumbnail"
           src="../../assets/img/icon.jpg"
           alt=""
         />
-        <span class="text-capitalize fw-bold">alwer</span>
+        <span class="text-capitalize fw-bold">{{ user.username }}</span>
         <svg
+          class="pointer"
+          @click="popups.profile = true"
           width="14"
           height="8"
           viewBox="0 0 14 8"
@@ -154,13 +191,57 @@
 </template>
 
 <script>
+import notificationpopup from "./notificationpopup.vue";
+import profilepopup from "./profilepopup.vue";
+import Register from "../Register.vue";
+import info from "../../../default";
+import axios from "axios";
+
 export default {
   name: "header",
   data() {
-    return {};
+    return {
+      apiaddress: info.Api_ADDRESS,
+      user: {},
+      unreadnofification: false,
+      popups: {
+        notifacation: false,
+        profile: false,
+      },
+    };
   },
-  methods: {},
-  mounted() {},
+  methods: {
+    getdata: function () {
+      axios
+        .get(`${this.apiaddress}users/user`, {
+          headers: {
+            jwt: Register.methods.getcookies("jwt"),
+          },
+        })
+        .then((res) => {
+          this.user = res.data;
+          this.user.notifacation
+            ? this.user.notifacation.forEach((e) => {
+                e.status == "unread" ? (this.unreadnofification = true) : null;
+              })
+            : null;
+        });
+    },
+    goto: function (e) {
+      location.href = e;
+    },
+  },
+  beforeMount() {
+    if (Register.methods.getcookies("jwt")) {
+      this.getdata();
+    } else {
+      location.href = "/login";
+    }
+  },
+  components: {
+    notificationpopup,
+    profilepopup,
+  },
 };
 </script>
 
@@ -191,7 +272,7 @@ export default {
 .links {
   font-size: 21px;
   font-weight: 600;
-  color:#4D4D56;
+  color: #4d4d56;
   transition: all 500ms;
 }
 .links:hover {
@@ -201,7 +282,7 @@ export default {
   content: "";
   position: absolute;
   top: 29px;
-  left:30%;
+  left: 30%;
   min-height: 2px;
   border-radius: 10%;
   min-width: 25px;
@@ -210,7 +291,6 @@ export default {
 }
 .div-main {
   width: 60vw;
- 
 }
 img {
   width: 45px;

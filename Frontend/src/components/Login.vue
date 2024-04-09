@@ -91,10 +91,10 @@
             </label>
           </div>
 
-          <div class="form-check form-switch d-flex">
-            <input class="form-check-input" type="checkbox" ref="switch" />
-            <label class="form-check-label" for="flexSwitchCheckDefault"
-              >Default switch checkbox input</label
+          <div class="form-check form-switch d-flex ">
+            <input class="form-check-input pointer" type="checkbox" ref="switch" cla />
+            <label class="form-check-label  text-capitalize" for="flexSwitchCheckDefault"
+              >remember me</label
             >
           </div>
 

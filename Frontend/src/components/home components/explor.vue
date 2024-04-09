@@ -201,9 +201,7 @@
     </section>
     <section>
       <div class="d-flex justify-content-between pt-5">
-        <span class="text-uppercase color-black fw-semibold"
-          >Playlist You Need</span
-        >
+        <span class="text-uppercase color-black fw-semibold">new podcast</span>
         <span class="text-capitalize color-gray pointer color-blue"
           >See All</span
         >
@@ -211,7 +209,7 @@
       <Swiper
         class="py-4"
         :modules="modules"
-        :slides-per-view="6"
+        :slides-per-view="5"
         :space-between="20"
         :scrollbar="{ draggable: true }"
         loop="true"
@@ -220,135 +218,68 @@
         :autoplay="autoplay"
       >
         <swiper-slide
-          data-swiper-autoplay="5000"
-          class="swiper-playlist-child d-flex justify-content-center align-items-center flex-column pointer position-relative"
+          data-swiper-autoplay="2000"
+          class="swiper-newmusic-child d-flex justify-content-center align-items-center flex-column pointer"
         >
           <img
             src="../../assets/img/test/eminem.jpg"
-            class="img-fluid swiper-img rounded-4 w-100 h-100"
+            class="img-fluid swiper-img rounded-4"
             alt=""
           />
-          <div
-            class="swiper-playlist-text d-flex flex-column align-items-center"
-          >
-            <p class="color-black text-capitalize">Name</p>
-          </div>
+          <p class="color-black">Eminem</p>
+          <span>23M palys</span>
         </swiper-slide>
         <swiper-slide
           data-swiper-autoplay="5000"
-          class="swiper-playlist-child d-flex justify-content-center align-items-center flex-column pointer position-relative"
+          class="swiper-newmusic-child d-flex justify-content-center align-items-center flex-column pointer"
         >
           <img
             src="../../assets/img/test/eminem.jpg"
-            class="img-fluid swiper-img rounded-4 w-100 h-100"
+            class="img-fluid swiper-img rounded-4"
             alt=""
           />
-          <div
-            class="swiper-playlist-text d-flex flex-column align-items-center"
-          >
-            <p class="color-black text-capitalize">Name</p>
-          </div>
-        </swiper-slide> <swiper-slide
-          data-swiper-autoplay="5000"
-          class="swiper-playlist-child d-flex justify-content-center align-items-center flex-column pointer position-relative"
+          <p class="color-black">Eminem</p>
+          <span>23M palys</span>
+        </swiper-slide>
+        <swiper-slide
+          data-swiper-autoplay="2000"
+          class="swiper-newmusic-child d-flex justify-content-center align-items-center flex-column pointer"
         >
           <img
             src="../../assets/img/test/eminem.jpg"
-            class="img-fluid swiper-img rounded-4 w-100 h-100"
+            class="img-fluid swiper-img rounded-4"
             alt=""
           />
-          <div
-            class="swiper-playlist-text d-flex flex-column align-items-center"
-          >
-            <p class="color-black text-capitalize">Name</p>
-          </div>
-        </swiper-slide> <swiper-slide
-          data-swiper-autoplay="5000"
-          class="swiper-playlist-child d-flex justify-content-center align-items-center flex-column pointer position-relative"
+          <p class="color-black">Eminem</p>
+          <span>23M palys</span>
+        </swiper-slide>
+        <swiper-slide
+          data-swiper-autoplay="2000"
+          class="swiper-newmusic-child d-flex justify-content-center align-items-center flex-column pointer"
         >
           <img
             src="../../assets/img/test/eminem.jpg"
-            class="img-fluid swiper-img rounded-4 w-100 h-100"
+            class="img-fluid swiper-img rounded-4"
             alt=""
           />
-          <div
-            class="swiper-playlist-text d-flex flex-column align-items-center"
-          >
-            <p class="color-black text-capitalize">Name</p>
-          </div>
-        </swiper-slide> <swiper-slide
-          data-swiper-autoplay="5000"
-          class="swiper-playlist-child d-flex justify-content-center align-items-center flex-column pointer position-relative"
+          <p class="color-black">Eminem</p>
+          <span>23M palys</span>
+        </swiper-slide>
+        <swiper-slide
+          data-swiper-autoplay="2000"
+          class="swiper-newmusic-child d-flex justify-content-center align-items-center flex-column pointer"
         >
           <img
             src="../../assets/img/test/eminem.jpg"
-            class="img-fluid swiper-img rounded-4 w-100 h-100"
+            class="img-fluid swiper-img rounded-4"
             alt=""
           />
-          <div
-            class="swiper-playlist-text d-flex flex-column align-items-center"
-          >
-            <p class="color-black text-capitalize">Name</p>
-          </div>
-        </swiper-slide> <swiper-slide
-          data-swiper-autoplay="5000"
-          class="swiper-playlist-child d-flex justify-content-center align-items-center flex-column pointer position-relative"
-        >
-          <img
-            src="../../assets/img/test/eminem.jpg"
-            class="img-fluid swiper-img rounded-4 w-100 h-100"
-            alt=""
-          />
-          <div
-            class="swiper-playlist-text d-flex flex-column align-items-center"
-          >
-            <p class="color-black text-capitalize">Name</p>
-          </div>
-        </swiper-slide> <swiper-slide
-          data-swiper-autoplay="5000"
-          class="swiper-playlist-child d-flex justify-content-center align-items-center flex-column pointer position-relative"
-        >
-          <img
-            src="../../assets/img/test/eminem.jpg"
-            class="img-fluid swiper-img rounded-4 w-100 h-100"
-            alt=""
-          />
-          <div
-            class="swiper-playlist-text d-flex flex-column align-items-center"
-          >
-            <p class="color-black text-capitalize">Name</p>
-          </div>
-        </swiper-slide> <swiper-slide
-          data-swiper-autoplay="5000"
-          class="swiper-playlist-child d-flex justify-content-center align-items-center flex-column pointer position-relative"
-        >
-          <img
-            src="../../assets/img/test/eminem.jpg"
-            class="img-fluid swiper-img rounded-4 w-100 h-100"
-            alt=""
-          />
-          <div
-            class="swiper-playlist-text d-flex flex-column align-items-center"
-          >
-            <p class="color-black text-capitalize">Name</p>
-          </div>
-        </swiper-slide> <swiper-slide
-          data-swiper-autoplay="5000"
-          class="swiper-playlist-child d-flex justify-content-center align-items-center flex-column pointer position-relative"
-        >
-          <img
-            src="../../assets/img/test/eminem.jpg"
-            class="img-fluid swiper-img rounded-4 w-100 h-100"
-            alt=""
-          />
-          <div
-            class="swiper-playlist-text d-flex flex-column align-items-center"
-          >
-            <p class="color-black text-capitalize">Name</p>
-          </div>
+          <p class="color-black">Eminem</p>
+          <span>23M palys</span>
         </swiper-slide>
       </Swiper>
     </section>
+   
     
   </div>
 </template>
