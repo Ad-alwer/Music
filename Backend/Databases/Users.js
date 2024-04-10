@@ -395,6 +395,35 @@ async function changeadmin(userid) {
   }
 }
 
+async function changeverify(userid) {
+  try {
+    const user = await User.findById(userid);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userid,
+      { isverify: !user.isverify },
+      { new: true }
+    );
+    return updatedUser ? true : false;
+  } catch {
+    return false;
+  }
+}
+async function changebanupload(userid) {
+  try {
+    const user = await User.findById(userid);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userid,
+      { banupload: !user.banupload },
+      { new: true }
+    );
+    return updatedUser ? true : false;
+  } catch {
+    return false;
+  }
+}
+
 async function checktrackname(token, name) {
   const decode = jwt.verify(token, process.env.REGISTER_JWT);
   const user = User.findById(decode._id);
@@ -747,7 +776,7 @@ async function rejectrack(token, name, msg) {
 }
 
 async function searchbyusername(name) {
-  return await User.find({ username: name });
+  return await User.find({ username: { $regex: name, $options: 'i' } });
 }
 
 async function addrecomendeuser(token, id) {
@@ -1072,4 +1101,6 @@ module.exports = {
   deletealbum,
   deletacccount,
   loginback,
+  changeverify,
+  changebanupload
 };

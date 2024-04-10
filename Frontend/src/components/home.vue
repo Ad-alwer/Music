@@ -5,7 +5,11 @@
     </header>
     <main class="d-flex">
       <aside class="menu">
-        <hmmenu @change="changecomponent" :component="component" />
+        <hmmenu
+          @change="changecomponent"
+          :component="component"
+          :reload="reloadheader"
+        />
       </aside>
       <section class="content">
         <discover v-if="component == 'discover'" class="active" />
@@ -57,6 +61,7 @@ export default {
   data() {
     return {
       component: "discover",
+      reloadheader: false,
     };
   },
   methods: {
@@ -101,5 +106,4 @@ aside.player {
   width: 25%;
   /* background-color: aqua; */
 }
-
 </style>

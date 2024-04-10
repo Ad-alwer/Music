@@ -44,12 +44,12 @@ async function finalcheckusername(value) {
   if (!username && usercheck) {
     return {
       msg: "Availabe",
-      status:true
+      status: true,
     };
   } else {
     return {
       msg: "This username already exists",
-      status:false
+      status: false,
     };
   }
 }
@@ -135,18 +135,20 @@ async function deletepending() {
     .toISOString()
     .split("T")[0];
 
-  for await (const e of accounts) {
-    e.year = new Date(e.createdAt.toISOString().split("T")[0]);
-    year = new Date(year);
+  if (accounts.length > 0) {
+    for await (const e of accounts) {
+      e.year = new Date(e.createdAt.toISOString().split("T")[0]);
+      year = new Date(year);
 
-    if (e.year < year) {
-      deletarr.push(e);
+      if (e.year < year) {
+        deletarr.push(e);
+      }
     }
-  }
 
-  if (deletarr.length > 0) {
-    for (const e of deletarr) {
-      await Account.findByIdAndDelete(e._id);
+    if (deletarr.length > 0) {
+      for (const e of deletarr) {
+        await Account.findByIdAndDelete(e._id);
+      }
     }
   }
 }

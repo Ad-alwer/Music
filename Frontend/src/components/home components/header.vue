@@ -225,10 +225,14 @@ export default {
                 e.status == "unread" ? (this.unreadnofification = true) : null;
               })
             : null;
+          this.senduser();
         });
     },
     goto: function (e) {
       location.href = e;
+    },
+    senduser: function () {
+      this.$emit("getuser", this.user);
     },
   },
   beforeMount() {
@@ -241,6 +245,10 @@ export default {
   components: {
     notificationpopup,
     profilepopup,
+  },
+  props: ["reload"],
+  mounted() {
+    this.reload ? this.getdata() : null;
   },
 };
 </script>

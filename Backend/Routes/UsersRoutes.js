@@ -46,6 +46,14 @@ Router.get("/changeadmin/:userid", (req, res) => {
   usersDB.changeadmin(req.params.userid).then((data) => res.send(data));
 });
 
+Router.get("/changeverify/:userid", (req, res) => {
+  usersDB.changeverify(req.params.userid).then((data) => res.send(data));
+});
+
+Router.get("/changebanupload/:userid", (req, res) => {
+  usersDB.changebanupload(req.params.userid).then((data) => res.send(data));
+});
+
 Router.get("/subscribe/:id", (req, res) => {
   usersDB
     .subscribe(req.headers.jwt, req.body.id)
