@@ -32,7 +32,8 @@
       </div>
     </section>
     <section class="mt-4">
-      <table class="table" v-if="users.length > 0">
+      <loader v-if="popups.loader" />
+      <table class="table" v-else-if="!popups.loader && users.length > 0">
         <tr class="table-header align-middle">
           <th class="text-center text-capitalize fw-bold fs-5">username</th>
           <th class="text-center text-capitalize fw-bold fs-5">email</th>
@@ -88,7 +89,7 @@
       </table>
       <div
         class="d-flex justify-content-center align-items-center"
-        v-if="users.length < 1"
+        v-else-if="!popups.loader && users.length < 1"
       >
         <img src="../../assets/img/empty.png" class="img-fluid" alt="" />
       </div>
@@ -104,12 +105,16 @@
 <script>
 import axios from "axios";
 import info from "../../../default";
+import iziToast from "izitoast";
+
+import loader from "../loader.vue";
 
 import profilepopup from "./profilepopup.vue";
 export default {
   name: "users",
   beforeMount() {
     this.getdata();
+    this.popups.loader = false;
   },
   data() {
     return {
@@ -118,6 +123,7 @@ export default {
       selectuser: null,
       popups: {
         profile: false,
+        loader: true,
       },
     };
   },
@@ -141,21 +147,31 @@ export default {
       this.selectuser = null;
     },
     changeverify: function (id) {
-      axios
-        .get(`${this.apiaddress}users/changeverify/${id}`)
-        .then((res) => (res.data ? this.getdata() : null));
+      axios.get(`${this.apiaddress}users/changeverify/${id}`).then((res) => {
+        if (res.data) {
+          this.getdata();
+          this.valuechanged();
+        }
+      });
     },
     changebanupload: function (id) {
-      axios
-        .get(`${this.apiaddress}users/changebanupload/${id}`)
-        .then((res) => (res.data ? this.getdata() : null));
+      axios.get(`${this.apiaddress}users/changebanupload/${id}`).then((res) => {
+        if (res.data) {
+          this.getdata();
+          this.valuechanged();
+        }
+      });
     },
     changeadmin: function (id) {
-      axios
-        .get(`${this.apiaddress}users/changeadmin/${id}`)
-        .then((res) => (res.data ? this.getdata() : null));
+      axios.get(`${this.apiaddress}users/changeadmin/${id}`).then((res) => {
+        if (res.data) {
+          this.getdata();
+          this.valuechanged();
+        }
+      });
     },
     search: function (value) {
+      this.popups.loader = true;
       axios
         .get(`${this.apiaddress}users/search/${value.trim()}`)
         .then((res) => {
@@ -164,18 +180,28 @@ export default {
             return e._id == this.user._id;
           });
           index >= 0 ? this.users.splice(index, 1) : null;
+          this.popups.loader = false;
         });
+    },
+    valuechanged: function () {
+      iziToast.success({
+        message: "value changed successfully",
+        position: "topRight",
+      });
     },
   },
 
   props: ["user"],
   components: {
     profilepopup,
+    loader,
   },
 };
 </script>
 
 <style scoped>
+@import "../../../node_modules/izitoast/dist/css/iziToast.min.css";
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 
 .table-header th {
