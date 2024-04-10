@@ -42,7 +42,7 @@
           <th class="text-center text-capitalize fw-bold fs-5">verify</th>
           <th class="text-center text-capitalize fw-bold fs-5">profile</th>
         </tr>
-        <tr v-for="x in users" class="align-middle" :key="x._id">
+        <tr v-for="(x,i) in users" class="align-middle" :key="x._id">
           <th class="text-center text-capitalize p-2">{{ x.username }}</th>
           <th class="text-center text-capitalize p-2">{{ x.email }}</th>
           <th class="text-center text-capitalize p-2">
@@ -50,34 +50,34 @@
               type="checkbox"
               class="offscreen"
               name="x.username"
-              id="input"
+              :id="'admin'+ i"
               :checked="x.isadmin"
               :disabled="!user.ismaster"
               @click="changeadmin(x._id)"
             />
-            <label class="switch" for="input"></label>
+            <label class="switch" :for="'admin'+ i"></label>
           </th>
           <th class="text-center text-capitalize p-2">
             <input
               type="checkbox"
               class="offscreen"
               name="x.username"
-              id="input2"
+              :id="'banupload' + i"
               :checked="x.banupload"
               @click="changebanupload(x._id)"
             />
-            <label class="switch" for="input2"></label>
+            <label class="switch" :for="'banupload' + i"></label>
           </th>
           <th class="text-center text-capitalize p-2">
             <input
               type="checkbox"
               class="offscreen"
               name="x.username"
-              id="input3"
+              :id="'verify' + i"
               :checked="x.isverify"
               @click.prevent="changeverify(x._id)"
             />
-            <label class="switch" for="input3"></label>
+            <label class="switch" :for="'verify' + i"></label>
           </th>
           <th class="text-center text-capitalize p-2">
             <i
@@ -200,7 +200,6 @@ export default {
 </script>
 
 <style scoped>
-@import "../../../node_modules/izitoast/dist/css/iziToast.min.css";
 
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 
@@ -271,8 +270,8 @@ img {
   color: var(--gray-main);
 }
 .search-parent {
-  width: 500px;
-  height: 33px;
+  width: 800px;
+  height: 45px;
   border: 1px solid var(--gray-main);
 }
 </style>

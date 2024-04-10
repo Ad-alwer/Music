@@ -10,7 +10,7 @@
       <section class="content">
         <users v-if="component == 'users'" :user="user" />
         <requests v-else-if="component == 'requests'" />
-        <verify v-else-if="component == 'verify'" />
+        <verify v-else-if="component == 'verify'" :user="user" />
         <home v-else-if="component == 'home'" />
         <analyzeTopArtist v-else-if="component == 'analyzeTopArtist'" />
         <analyzeTopMusic

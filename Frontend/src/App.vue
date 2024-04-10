@@ -9,6 +9,8 @@ export default {
 </script>
 
 <style>
+@import "../node_modules/izitoast/dist/css/iziToast.min.css";
+
 :root {
   --blue-main: #4343ef;
   --gray-main: #787887;

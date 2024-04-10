@@ -12,6 +12,7 @@
           class="search-input"
           maxlength="69"
           placeholder="Search ..."
+          ref="searchinput"
         />
         <svg
           class="search-icon pointer"
@@ -20,6 +21,7 @@
           viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          @click="search($refs.searchinput.value)"
         >
           <path
             d="M19 19L13.8571 13.8571M8.71429 16.4286C4.4538 16.4286 1 12.9748 1 8.71429C1 4.4538 4.4538 1 8.71429 1C12.9748 1 16.4286 4.4538 16.4286 8.71429C16.4286 12.9748 12.9748 16.4286 8.71429 16.4286Z"
@@ -30,32 +32,107 @@
       </div>
     </section>
     <section class="mt-4">
-      <table class="table">
+      <loader v-if="popups.loader" />
+      <table v-else-if="!popups.loader && verify.length > 0" class="table">
         <tr class="table-header align-middle">
           <th class="text-center text-capitalize fw-bold fs-5">username</th>
           <th class="text-center text-capitalize fw-bold fs-5">verify</th>
         </tr>
-        <tr class="align-middle">
-          <th class="text-center text-capitalize p-2">adalwer</th>
+        <tr class="align-middle" v-for="(x,i) in verify" :key="x._id">
+          <th class="text-center text-capitalize p-2">{{ x.username }}</th>
           <th class="text-center text-capitalize p-2">
             <input
               type="checkbox"
               class="offscreen"
               name="x.username"
-              id="input2"
-              checked="false"
+              :id="'input' + i"
+              :checked="x.isverify"
+              @click="changeverify(x._id)"
             />
-            <label class="switch" for="input2"></label>
+            <label class="switch" :for="'input' +  i"></label>
           </th>
         </tr>
       </table>
+      <div
+        v-else-if="!popups.loader && verify.length < 1"
+        class="d-flex justify-content-center align-items-center"
+      >
+        <img src="../../assets/img/empty.png" class="img-fluid" alt="" />
+      </div>
     </section>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import info from "../../../default";
+import iziToast from "izitoast";
+import loader from "../loader.vue";
+
 export default {
   name: "users",
+  beforeMount() {
+    this.getdata();
+    setTimeout(() => {
+      this.popups.loader = false;
+    }, 300);
+  },
+  data() {
+    return {
+      apiaddress: info.Api_ADDRESS,
+      verify: [],
+      popups: {
+        loader: true,
+      },
+    };
+  },
+  methods: {
+    getdata: function () {
+      axios.get(`${this.apiaddress}users/verifyusers`).then((res) => {
+        this.verify = res.data;
+        const index = this.verify.findIndex((e) => {
+          return e._id == this.user._id;
+        });
+        index >= 0 ? this.verify.splice(index, 1) : null;
+      });
+    },
+    changeverify: function (id) {
+      axios.get(`${this.apiaddress}users/changeverify/${id}`).then((res) => {
+        if (res.data) {
+          this.getdata();
+          this.valuechanged();
+          this.popups.loader = false;
+        }
+      });
+    },
+    valuechanged: function () {
+      iziToast.success({
+        message: "value changed successfully",
+        position: "topRight",
+      });
+    },
+    search: function (value) {
+      this.popups.loader = true;
+      axios
+        .get(`${this.apiaddress}users/search/${value.trim()}`)
+        .then((res) => {
+          this.verify = res.data.filter((e) => {
+            return e.isverify === true;
+          });
+          console.log(this.verify);
+          const index = this.verify.findIndex((e) => {
+            return e._id == this.user._id;
+          });
+          index >= 0 ? this.verify.splice(index, 1) : null;
+          this.popups.loader = false;
+        });
+    },
+  },
+
+  components: {
+    loader,
+  },
+  props: ["user"],
 };
 </script>
 
@@ -165,5 +242,8 @@ input[type="checkbox"]:checked + .switch {
   width: 800px;
   height: 45px;
   border: 1px solid var(--gray-main);
+}
+img {
+  width: 350px;
 }
 </style>

@@ -379,6 +379,10 @@ async function getallusers() {
   const users = await User.find({ ismaster: false });
   return users;
 }
+async function verifyusers() {
+  const users = await User.find({ isverify: true });
+  return users;
+}
 
 async function changeadmin(userid) {
   try {
@@ -505,22 +509,31 @@ async function addrequesttrack(
   }
 }
 
-async function addrequestalbum(id, name, status,genre,tracks, cover, description,totalduaration) {
+async function addrequestalbum(
+  id,
+  name,
+  status,
+  genre,
+  tracks,
+  cover,
+  description,
+  totalduaration
+) {
   const user = await User.findById(id);
   if (user.isverify) {
     await albumDB
-    .addalbum(name,id,description,cover,status,genre,totalduaration)
-    .then(async (res) => {
-      await User.findByIdAndUpdate(userId, {
-        $push: {
-          albums: {
-            name,
-            id: res._id,
+      .addalbum(name, id, description, cover, status, genre, totalduaration)
+      .then(async (res) => {
+        await User.findByIdAndUpdate(userId, {
+          $push: {
+            albums: {
+              name,
+              id: res._id,
+            },
           },
-        },
+        });
+        return res;
       });
-      return res;
-    });
   } else {
     try {
       const decode = jwt.verify(token, process.env.REGISTER_JWT);
@@ -776,7 +789,7 @@ async function rejectrack(token, name, msg) {
 }
 
 async function searchbyusername(name) {
-  return await User.find({ username: { $regex: name, $options: 'i' } });
+  return await User.find({ username: { $regex: name, $options: "i" } });
 }
 
 async function addrecomendeuser(token, id) {
@@ -1060,6 +1073,21 @@ async function loginback(id) {
   }
 }
 
+async function getrequests() {
+  try {
+    const users = await getallusers();
+    const pendingRequests = users.reduce((acc, user) => {
+      const userPendingRequests = user.requests.filter(
+        (request) => request.status === "pending"
+      );
+      return [...acc, ...userPendingRequests];
+    }, []);
+    return pendingRequests;
+  } catch {
+    return false;
+  }
+}
+
 module.exports = {
   checkusername,
   checkemail,
@@ -1102,5 +1130,7 @@ module.exports = {
   deletacccount,
   loginback,
   changeverify,
-  changebanupload
+  changebanupload,
+  getrequests,
+  verifyusers
 };

@@ -41,6 +41,9 @@ Router.put("/changeusername/:newusername", (req, res) => {
 Router.get("/users", (req, res) => {
   usersDB.getallusers().then((data) => res.send(data));
 });
+Router.get("/verifyusers", (req, res) => {
+  usersDB.verifyusers().then((data) => res.send(data));
+});
 
 Router.get("/changeadmin/:userid", (req, res) => {
   usersDB.changeadmin(req.params.userid).then((data) => res.send(data));
@@ -52,6 +55,10 @@ Router.get("/changeverify/:userid", (req, res) => {
 
 Router.get("/changebanupload/:userid", (req, res) => {
   usersDB.changebanupload(req.params.userid).then((data) => res.send(data));
+});
+
+Router.get("/getrequests", (req, res) => {
+  usersDB.getrequests().then((data) => res.send(data));
 });
 
 Router.get("/subscribe/:id", (req, res) => {
