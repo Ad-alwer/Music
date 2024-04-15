@@ -9,6 +9,7 @@ const usersDB = require("../Databases/users");
 const { addbanner, addresbanner } = require("../Databases/Base");
 
 const ffmpeg = require("fluent-ffmpeg");
+const { json } = require("express");
 const ffprobePath = require("ffprobe-static").path;
 ffmpeg.setFfprobePath(ffprobePath);
 
@@ -27,7 +28,7 @@ const uploadtracks = multer({
     s3,
     bucket: process.env.LIARA_BUCKET_NAME,
     key: function (req, file, cb) {
-      const uniqueKey = Date.now().toString() + "-" + file.originalname;
+      const uniqueKey = Date.now().toString() + "-&-" + file.originalname;
       if (file.mimetype == "audio/mpeg") {
         cb(null, `tracks/${uniqueKey}`);
       } else if (
@@ -46,7 +47,7 @@ const uploadbanner = multer({
     s3,
     bucket: process.env.LIARA_BUCKET_NAME,
     key: function (req, file, cb) {
-      const uniqueKey = Date.now().toString() + "-" + file.originalname;
+      const uniqueKey = Date.now().toString() + "-&-" + file.originalname;
       if (file.mimetype == "audio/mpeg") {
         cb(null, `tracks/${uniqueKey}`);
       } else if (
@@ -65,7 +66,7 @@ const uploadprofile = multer({
     s3,
     bucket: process.env.LIARA_BUCKET_NAME,
     key: function (req, file, cb) {
-      const uniqueKey = Date.now().toString() + "-" + file.originalname;
+      const uniqueKey = Date.now().toString() + "-&-" + file.originalname;
       cb(null, `profile/${uniqueKey}`);
     },
   }),
@@ -76,7 +77,7 @@ const uploadsociamedia = multer({
     s3,
     bucket: process.env.LIARA_BUCKET_NAME,
     key: function (req, file, cb) {
-      const uniqueKey = Date.now().toString() + "-" + file.originalname;
+      const uniqueKey = Date.now().toString() + "-&-" + file.originalname;
       cb(null, `socialicn/${uniqueKey}`);
     },
   }),
@@ -94,19 +95,38 @@ Router.post(
     await Promise.all(
       req.files.map(async (file) => {
         if (file.mimetype === "audio/mpeg") {
-          ffmpeg.ffprobe(file.location, (err, metadata) => {
-            if (err) {
-              console.error("Error while getting metadata:", err);
-            } else {
-              duration = metadata.format.duration;
-              totalduration = totalduration + duration;
-              files.push({
-                url: file.location,
-                name: file.key,
-                duration: Math.floor(duration),
-              });
-            }
+          const metadata = await new Promise((resolve, reject) => {
+            ffmpeg.ffprobe(file.location, (err, metadata) => {
+              if (err) {
+                console.error("Error while getting metadata:", err);
+                reject(err);
+              } else {
+                resolve(metadata);
+              }
+            });
           });
+
+          duration = metadata.format.duration;
+          totalduration += duration;
+
+          const track = {
+            url: file.location,
+            name: file.key.split("-&-")[1],
+            duration: Math.floor(duration),
+          };
+
+          const trackDetails = JSON.parse(req.body.trackdetail);
+          const updatedTrack = trackDetails.find(
+            (data) => data.trackname === track.name
+          );
+          if (updatedTrack) {
+            track.name = updatedTrack.name;
+            track.lyrics = updatedTrack.lyrics;
+            track.feat = updatedTrack.feat;
+            track.visibility = req.body.visibility
+          }
+
+          files.push(track);
         } else {
           thumbnail = { url: file.location, name: file.key };
         }
@@ -123,7 +143,6 @@ Router.post(
         thumbnail,
         req.body.description,
         totalduration
-        
       )
       .then((data) => {
         if (data) {
@@ -141,25 +160,28 @@ Router.post(
   uploadtracks.array("objectKey"),
   async function (req, res) {
     let cover;
-    let track;
+    let track = {};
     let duration;
 
     await Promise.all(
       req.files.map(async (file) => {
         if (file.mimetype === "audio/mpeg") {
-          ffmpeg.ffprobe(file.location, (err, metadata) => {
-            if (err) {
-              console.error("Error while getting metadata:", err);
-            } else {
-              duration = metadata.format.duration;
-              track = {
-                url: file.location,
-                name: file.key,
-                duration: Math.floor(duration),
-              };
-              console.log(track);
-            }
+          const duration = await new Promise((resolve, reject) => {
+            ffmpeg.ffprobe(file.location, (err, metadata) => {
+              if (err) {
+                console.error("Error while getting metadata:", err);
+                reject(err);
+              } else {
+                resolve(metadata.format.duration);
+              }
+            });
           });
+
+          track = {
+            url: file.location,
+            name: file.key,
+            duration: Math.ceil(duration),
+          };
         } else {
           cover = { url: file.location, name: file.key };
         }
@@ -174,14 +196,14 @@ Router.post(
         req.body.genre,
         req.body.description,
         req.body.lyrics,
-        req.body.schdule,
-        req.body.feat,
+        JSON.parse(req.body.feat),
         cover,
         track,
-        visibility
+        req.body.visibility
       )
       .then((data) => {
         if (data) {
+          console.log(track);
           return res.send({
             status: "success",
             message: "file uploaded!",

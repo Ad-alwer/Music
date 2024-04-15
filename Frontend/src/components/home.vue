@@ -19,7 +19,7 @@
         <laibraryAlbum v-if="component == 'laibraryalbum'" />
         <laibraryplaylist v-if="component == 'laibraryplaylist'" />
         <laibraryArtist v-if="component == 'laibraryartist'" />
-        <upload v-if="component == 'upload'" />
+        <upload v-if="component == 'upload'" :user="user" />
         <publishTrack
           v-if="component == 'publishmusic' || component == 'publishpodcast'"
           :type="component == 'publishmusic' ? 'music' : 'podcast'"
@@ -56,12 +56,29 @@ import PublishAlbum from "./home components/PublishAlbum.vue";
 import settings from "./home components/setting.vue";
 import user from "./home components/user.vue";
 
+import Register from "./Register.vue";
+import axios from "axios";
+import info from "../../default";
+
 export default {
   name: "home",
+  beforeMount() {
+    axios
+      .get(`${this.apiaddress}users/user`, {
+        headers: {
+          jwt: Register.methods.getcookies("jwt"),
+        },
+      })
+      .then((res) => {
+        this.user = res.data;
+      });
+  },
   data() {
     return {
+      apiaddress: info.Api_ADDRESS,
       component: "discover",
       reloadheader: false,
+      user: {},
     };
   },
   methods: {

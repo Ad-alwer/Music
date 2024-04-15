@@ -67,17 +67,13 @@ Router.get("/subscribe/:id", (req, res) => {
     .then((data) => res.send(data));
 });
 
-Router.get("/checktrackname/:name", (req, res) => {
+Router.get("/checktrackandalbumname/:name", (req, res) => {
   usersDB
-    .checktrackname(req.headers.jwt, req.params.name)
+    .checktrackandalbumname(req.headers.jwt, req.params.name)
     .then((data) => res.send(data));
 });
 
-Router.get("/checkalbumname/:name", (req, res) => {
-  usersDB
-    .checkalbumname(req.headers.jwt, req.params.name)
-    .then((data) => res.send(data));
-});
+
 
 Router.put("/savealbum/:albumid", (req, res) => {
   usersDB

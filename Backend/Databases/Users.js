@@ -428,24 +428,35 @@ async function changebanupload(userid) {
   }
 }
 
-async function checktrackname(token, name) {
+async function checktrackandalbumname(token, name) {
   const decode = jwt.verify(token, process.env.REGISTER_JWT);
-  const user = User.findById(decode._id);
-  const search = user.tracks.find((e) => e.name == name);
+  const user = await User.findById(decode._id);
+  let library = user.tracks.slice();
 
-  return search.lenght > 0 ? false : true;
-}
+  user.albums.forEach((album) => {
+    album.tracks.forEach((track) => {
+      library.push(track);
+    });
+  });
 
-async function checkalbumname(token, name) {
-  const decode = jwt.verify(token, process.env.REGISTER_JWT);
-  const user = User.findById(decode._id);
-  const search = user.albuns.find((e) => e.name == name);
-
-  return search.lenght > 0 ? false : true;
+  user.requests.forEach((request) => {
+    if (request.track.length === 1) {
+      library.push(request.track);
+    } else {
+      request.track.lenght > 0
+        ? request.track.forEach((track) => {
+            library.push(track);
+          })
+        : null;
+    }
+  });
+console.log(library);
+  const search = library.find((e) => e.name == name);
+  return search ? false : true;
 }
 
 async function addrequesttrack(
-  id,
+  token,
   name,
   type,
   genre,
@@ -456,14 +467,15 @@ async function addrequesttrack(
   track,
   visibility
 ) {
-  const user = await User.findById(id);
+  const decode = jwt.verify(token, process.env.REGISTER_JWT);
+  const user = await User.findById(decode._id);
   if (user.isverify) {
     await trackDB
       .addtrack(
         name,
         type,
         genre,
-        id,
+        decode._id,
         description,
         album,
         lyric,
@@ -484,14 +496,13 @@ async function addrequesttrack(
         {
           $push: {
             requests: {
-              artistid: id,
+              artistid: decode._id,
               track,
               name,
               type,
               genre,
               description,
               lyric,
-              schdule,
               feat,
               cover,
               status: "pending",
@@ -502,15 +513,16 @@ async function addrequesttrack(
         },
         { new: true }
       );
+      console.log("in");
       return user;
-    } catch {
-      return false;
+    } catch (errr) {
+      console.log(errr);
     }
   }
 }
 
 async function addrequestalbum(
-  id,
+  token,
   name,
   status,
   genre,
@@ -519,7 +531,8 @@ async function addrequestalbum(
   description,
   totalduaration
 ) {
-  const user = await User.findById(id);
+  const decode = jwt.verify(token, process.env.REGISTER_JWT);
+  const user = await User.findById(decode._id);
   if (user.isverify) {
     await albumDB
       .addalbum(name, id, description, cover, status, genre, totalduaration)
@@ -542,7 +555,7 @@ async function addrequestalbum(
         {
           $push: {
             requests: {
-              artistid: id,
+              artistid: decode._id,
               name,
               tracks,
               status: "pending",
@@ -853,7 +866,7 @@ async function favourite(token, trackid) {
 
 async function checknameandrequest(token, name) {
   const decode = jwt.verify(token, process.env.REGISTER_JWT);
-  const trackname = await checktrackname(token, name);
+  const trackname = await checktrackandalbumname(token, name);
   const user = await User.findById(decode._id);
   const requestname = user.requests.find((e) => {
     return e.name == name;
@@ -1105,8 +1118,7 @@ module.exports = {
   addprofile,
   subscribe,
   changebio,
-  checktrackname,
-  checkalbumname,
+  checktrackandalbumname,
   savealbum,
   savetrack,
   changefavouritegenre,
@@ -1132,5 +1144,5 @@ module.exports = {
   changeverify,
   changebanupload,
   getrequests,
-  verifyusers
+  verifyusers,
 };
