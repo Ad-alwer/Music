@@ -91,7 +91,6 @@ Router.post(
     let thumbnail;
     let totalduration = 0;
     let duration;
-
     await Promise.all(
       req.files.map(async (file) => {
         if (file.mimetype === "audio/mpeg") {
@@ -105,16 +104,13 @@ Router.post(
               }
             });
           });
-
           duration = metadata.format.duration;
           totalduration += duration;
-
           const track = {
             url: file.location,
             name: file.key.split("-&-")[1],
             duration: Math.floor(duration),
           };
-
           const trackDetails = JSON.parse(req.body.trackdetail);
           const updatedTrack = trackDetails.find(
             (data) => data.trackname === track.name
@@ -123,16 +119,14 @@ Router.post(
             track.name = updatedTrack.name;
             track.lyrics = updatedTrack.lyrics;
             track.feat = updatedTrack.feat;
-            track.visibility = req.body.visibility
+            track.visibility = req.body.visibility;
           }
-
           files.push(track);
         } else {
           thumbnail = { url: file.location, name: file.key };
         }
       })
     );
-
     usersDB
       .addrequestalbum(
         req.headers.jwt,
@@ -142,7 +136,7 @@ Router.post(
         files,
         thumbnail,
         req.body.description,
-        totalduration
+        Math.ceil(totalduration)
       )
       .then((data) => {
         if (data) {

@@ -83,7 +83,7 @@ Router.put("/savealbum/:albumid", (req, res) => {
 
 Router.put("/savetrack/:trackid", (req, res) => {
   usersDB
-    .savetrack(req.headers.jwt, req.params.trackidid)
+    .savetrack(req.headers.jwt, req.params.trackid)
     .then((data) => res.send(data));
 });
 
@@ -105,15 +105,15 @@ Router.delete("/deletesocial/:name", async (req, res) => {
     .then((data) => res.send(data));
 });
 
-Router.put("/verifytrack/:name", (res, req) => {
+Router.put("/verifytrack/:jwt/:name", (req, res) => {
   usersDB
-    .verifytrack(req.headers.jwt, req.params.name)
+    .verifytrack(req.params.jwt, req.params.name)
     .then((data) => res.send(data));
 });
 
-Router.put("/rejectrack/:name", (res, req) => {
+Router.put("/rejectrack/:jwt/:name", (req, res) => {
   usersDB
-    .rejectrack(req.headers.jwt, req.params.name, req.body.msg)
+    .rejectrack(req.params.jwt, req.params.name, req.body.msg)
     .then((data) => res.send(data));
 });
 
@@ -152,8 +152,9 @@ Router.put("/verifyalbum/:name", (req, res) => {
 });
 
 Router.put("/rejectalbum/:name", (req, res) => {
+  
   usersDB
-    .rejectalbum(req.headers.jwt, req.params.name, req.body, msg)
+    .rejectalbum(req.headers.jwt, req.params.name, req.body.msg)
     .then((data) => res.send(data));
 });
 

@@ -22,7 +22,7 @@ const musicschema = new mongoose.Schema({
   },
   type: { enum: ["music", "podcast"] },
   genre: String,
-  artist: mongoose.Schema.Types.ObjectId,
+  artist: {},
   status: { enum: ["public", "private", "pending"] },
   isdeletaccount: { type: Boolean, default: false },
   likes: { type: Number, default: 0 },
@@ -38,7 +38,6 @@ const musicschema = new mongoose.Schema({
   feat: [],
   track: {},
   monthlyListener: [],
-  releaseDate: Date,
 });
 musicschema.plugin(timestamp);
 
@@ -73,7 +72,6 @@ async function addtrack(
   genre,
   artist,
   description,
-  album,
   lyric,
   cover,
   feat,
@@ -81,24 +79,24 @@ async function addtrack(
   status
 ) {
   try {
-    const currentDate = new Date();
+
     const usertrack = new Track({
       name,
       type,
       genre,
       artist,
       description,
-      album,
+      album:null,
       lyric,
       cover,
       feat,
       track,
       status,
-      releaseDate: currentDate,
     });
     await usertrack.save();
     return usertrack;
-  } catch {
+  } catch  {
+    ;
     return false;
   }
 }

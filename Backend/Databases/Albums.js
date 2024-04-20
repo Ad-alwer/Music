@@ -15,21 +15,19 @@ const musicschema = new mongoose.Schema({
     lowercase: true,
     trim: true,
   },
-  genre: String,
-  artist: mongoose.Schema.Types.ObjectId,
+  artist: {},
   status: { enum: ["public", "deleted", "private", "pending"] },
-  likes: { type: String, default: 0 },
-  plays: { type: String, default: 0 },
+  likes: { type: Number, default: 0 },
+  plays: { type: Number, default: 0 },
   description: {
     type: String,
     maxlength: 4000,
     trim: true,
   },
-  cover: String,
+  cover: {},
   tracks: [],
-  monthlyListener: [],
   totalduaration: Number,
-  releaseDate: Date,
+  genre:String
 });
 musicschema.plugin(timestamp);
 
@@ -42,23 +40,27 @@ async function addalbum(
   cover,
   status,
   genre,
-  totalduaration
+  totalduaration,
+  tracks
 ) {
   try {
-    const currentDate = new Date();
     const useralbum = new Album({
       name,
       artist,
       status,
       description,
       cover,
+      status,
+      genre,
       tracks,
       totalduaration,
-      releaseDate: currentDate,
-      genre,
     });
+    
+    useralbum.save()
+    console.log(useralbum);
     return useralbum;
-  } catch {
+  } catch (err) {
+    console.log(err);
     return false;
   }
 }
@@ -120,10 +122,15 @@ async function changestatus(id, newstatus) {
     return false;
   }
 }
+async function findalbum(id){
+  const album = await Album.findById(id)
+  return album
+}
 
 module.exports = {
   addalbum,
   editalbum,
   deletealbum,
   changestatus,
+  findalbum
 };

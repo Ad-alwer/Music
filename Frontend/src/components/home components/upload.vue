@@ -15,48 +15,9 @@
             id=""
             placeholder="Name"
             ref="nameinput"
+            @keydown="checkname($event.target.value)"
           />
-          <div class="mt-1 alert-div" v-show="verifyname.show">
-            <div
-              class="pb-1 d-flex align-items-center gap-2 py-1 rounded-3 mx-2 ps-2"
-              v-if="verifyname.value"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="15px"
-                height="15px"
-                viewBox="0 0 1024 1024"
-              >
-                <path
-                  fill="#4db051"
-                  d="M512 0C229.232 0 0 229.232 0 512c0 282.784 229.232 512 512 512c282.784 0 512-229.216 512-512C1024 229.232 794.784 0 512 0m0 961.008c-247.024 0-448-201.984-448-449.01c0-247.024 200.976-448 448-448s448 200.977 448 448s-200.976 449.01-448 449.01m204.336-636.352L415.935 626.944l-135.28-135.28c-12.496-12.496-32.752-12.496-45.264 0c-12.496 12.496-12.496 32.752 0 45.248l158.384 158.4c12.496 12.48 32.752 12.48 45.264 0c1.44-1.44 2.673-3.009 3.793-4.64l318.784-320.753c12.48-12.496 12.48-32.752 0-45.263c-12.512-12.496-32.768-12.496-45.28 0"
-                />
-              </svg>
-              <span class="alert-txt">You can use this name</span>
-            </div>
-            <div
-              class="pb-1 d-flex align-items-center gap-2 py-1 rounded-3 mx-2 ps-2"
-              v-else
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20px"
-                height="20px"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="#db0a0a"
-                  d="M12 21a9 9 0 1 1 9-9a9 9 0 0 1-9 9m0-16.5a7.5 7.5 0 1 0 7.5 7.5A7.5 7.5 0 0 0 12 4.5"
-                />
-                <path
-                  fill="#db0a0a"
-                  d="M12 13a.76.76 0 0 1-.75-.75v-3.5a.75.75 0 0 1 1.5 0v3.5A.76.76 0 0 1 12 13m0 3a.76.76 0 0 1-.75-.75v-.5a.75.75 0 0 1 1.5 0v.5A.76.76 0 0 1 12 16"
-                />
-              </svg>
 
-              <span class="alert-txt">You can't use this name</span>
-            </div>
-          </div>
           <select
             name=""
             id=""
@@ -80,12 +41,55 @@
             ref="genreselect"
             id=""
           >
-            <option value="music" class="text-capitalize" selected>
+            <option value="hiphop" class="text-capitalize" selected>
               hiphop
             </option>
-            <option value="podcast" class="text-capitalize">rock</option>
-            <option value="album" class="text-capitalize">pop</option>
+            <option value="rock" class="text-capitalize">rock</option>
+            <option value="pop" class="text-capitalize">pop</option>
           </select>
+        </div>
+        <div class="mt-1 alert-div" v-show="verifyname.show">
+          <div
+            class="pb-1 d-flex align-items-center gap-2 py-1 rounded-3 mx-2 ps-2"
+            v-if="verifyname.value"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15px"
+              height="15px"
+              viewBox="0 0 1024 1024"
+            >
+              <path
+                fill="#4db051"
+                d="M512 0C229.232 0 0 229.232 0 512c0 282.784 229.232 512 512 512c282.784 0 512-229.216 512-512C1024 229.232 794.784 0 512 0m0 961.008c-247.024 0-448-201.984-448-449.01c0-247.024 200.976-448 448-448s448 200.977 448 448s-200.976 449.01-448 449.01m204.336-636.352L415.935 626.944l-135.28-135.28c-12.496-12.496-32.752-12.496-45.264 0c-12.496 12.496-12.496 32.752 0 45.248l158.384 158.4c12.496 12.48 32.752 12.48 45.264 0c1.44-1.44 2.673-3.009 3.793-4.64l318.784-320.753c12.48-12.496 12.48-32.752 0-45.263c-12.512-12.496-32.768-12.496-45.28 0"
+              />
+            </svg>
+            <span class="alert-txt text-capitalize">You can use this name</span>
+          </div>
+          <div
+            class="pb-1 d-flex align-items-center gap-2 py-1 rounded-3 mx-2 ps-2"
+            v-else
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20px"
+              height="20px"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="#db0a0a"
+                d="M12 21a9 9 0 1 1 9-9a9 9 0 0 1-9 9m0-16.5a7.5 7.5 0 1 0 7.5 7.5A7.5 7.5 0 0 0 12 4.5"
+              />
+              <path
+                fill="#db0a0a"
+                d="M12 13a.76.76 0 0 1-.75-.75v-3.5a.75.75 0 0 1 1.5 0v3.5A.76.76 0 0 1 12 13m0 3a.76.76 0 0 1-.75-.75v-.5a.75.75 0 0 1 1.5 0v.5A.76.76 0 0 1 12 16"
+              />
+            </svg>
+
+            <span class="alert-txt text-capitalize"
+              >You can't use this name</span
+            >
+          </div>
         </div>
         <div class="mt-2">
           <textarea
@@ -251,12 +255,14 @@
             <section class="uploaded-area" v-if="detailshower.feat">
               <li class="rows d-flex" v-for="(x, i) in feats" :key="x">
                 <div class="content upload">
-                  <img v-if="x.profile"
+                  <img
+                    v-if="x.profile"
                     :src="x.profile"
                     class="img-fluid rounded-circle"
                     alt=""
                   />
-                  <img v-else
+                  <img
+                    v-else
                     src="../../assets/img/icon.jpg"
                     class="img-fluid rounded-circle"
                     alt=""
@@ -365,7 +371,7 @@
       </div>
       <div class="w-100 mt-3 d-flex gap-4">
         <button
-          @click="typeselect == 'album' ? savealbum() : savetrack"
+          @click="typeselect == 'album' ? savealbum() : savetrack()"
           class="btn fw-bold btn-save px-3 py-2 w-75 fs-5 text-center text-capitalize"
         >
           Save
@@ -536,7 +542,15 @@ export default {
             jwt: Register.methods.getcookies("jwt"),
           },
         })
-        .then((res) => console.log(res.data));
+        .then((res) => {
+          if (res.data) {
+            this.verifyname.value = true;
+            this.verifyname.show = true;
+          } else {
+            this.verifyname.value = false;
+            this.verifyname.show = true;
+          }
+        });
     },
     addtrack: function (e) {
       this.detailshower.albumtrack = true;
@@ -557,9 +571,12 @@ export default {
         formData.append("type", this.typeselect);
         formData.append("visibility", this.$refs.statusinput.value);
         formData.append("trackdetail", JSON.stringify(this.tracks));
+        formData.append("objectKey", this.$refs.tumbnailinput.files[0]);
+
         this.tracks.forEach((e) => {
           formData.append("objectKey", e.track);
         });
+        console.log(this.$refs.genreselect.value);
 
         axios
           .post(`${this.apiaddress}upload/album`, formData, {

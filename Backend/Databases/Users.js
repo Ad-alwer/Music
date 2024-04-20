@@ -429,30 +429,44 @@ async function changebanupload(userid) {
 }
 
 async function checktrackandalbumname(token, name) {
-  const decode = jwt.verify(token, process.env.REGISTER_JWT);
-  const user = await User.findById(decode._id);
-  let library = user.tracks.slice();
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findById(decode._id);
+    let library = [];
 
-  user.albums.forEach((album) => {
-    album.tracks.forEach((track) => {
-      library.push(track);
+    await Promise.all(
+      user.tracks.map(async (e) => {
+        library.push(e.name.toLowerCase());
+      })
+    );
+
+    let albums = user.albums;
+
+    await Promise.all(
+      albums.map(async (album) => {
+        const albumDetail = await albumDB.findalbum(album.id);
+        albumDetail.tracks.forEach((element) => {
+          library.push(element.name.toLowerCase());
+        });
+      })
+    );
+
+    let requests = user.requests.filter((e) => e.status === "pending");
+
+    requests.forEach((e) => {
+      if (e.type !== "music") {
+        e.tracks.forEach((data) => {
+          library.push(data.name.toLowerCase());
+        });
+      } else {
+        library.push(e.name.toLowerCase());
+      }
     });
-  });
 
-  user.requests.forEach((request) => {
-    if (request.track.length === 1) {
-      library.push(request.track);
-    } else {
-      request.track.lenght > 0
-        ? request.track.forEach((track) => {
-            library.push(track);
-          })
-        : null;
-    }
-  });
-console.log(library);
-  const search = library.find((e) => e.name == name);
-  return search ? false : true;
+    return library.includes(name.toLowerCase()) ? false : true;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 async function addrequesttrack(
@@ -557,11 +571,14 @@ async function addrequestalbum(
             requests: {
               artistid: decode._id,
               name,
+              genre,
               tracks,
               status: "pending",
               cover,
               description,
               msg: "",
+              type: "album",
+              totalduaration,
             },
           },
         },
@@ -726,6 +743,7 @@ async function verifytrack(token, name) {
 
     const updatedRequests = requests.map((request) => {
       if (request.name === name) {
+        request.status = "accept";
         return {
           ...request,
           msg: undefined,
@@ -739,9 +757,11 @@ async function verifytrack(token, name) {
         requests: updatedRequests,
       },
     });
+
     await trackDB
-      .addtrack(...Object.values(updatedRequests))
+      .addtrack(...Object.values(updatedRequests[0]))
       .then(async (res) => {
+        console.log(res);
         await User.findByIdAndUpdate(userId, {
           $push: {
             tracks: {
@@ -756,13 +776,13 @@ async function verifytrack(token, name) {
     await notification(
       { _id: userId },
       "/profile/request",
-      `${name} was been verified`,
-      updatedRequests.cover
+      `${name} has been rejected`,
+      "updatedRequests.cover"
     );
 
     return true;
-  } catch {
-    return false;
+  } catch (err) {
+    console.log(err);
   }
 }
 
@@ -771,18 +791,21 @@ async function rejectrack(token, name, msg) {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
     const userId = decode._id;
 
-    const user = await User.findById(userId);
-    const requests = user.requests;
+    let user = await User.findById(userId);
+    let requests = user.requests;
 
-    const updatedRequests = requests.map((request) => {
-      if (request.name === name) {
-        return {
-          ...request,
-          status: "reject",
-          msg,
-        };
-      }
-    });
+    const updatedRequests = await Promise.all(
+      requests.map(async (request) => {
+        if (request.name === name) {
+          request.status = "reject";
+          return {
+            ...request,
+            msg,
+          };
+        }
+        return request;
+      })
+    );
 
     await User.findByIdAndUpdate(userId, {
       $set: {
@@ -864,7 +887,7 @@ async function favourite(token, trackid) {
   }
 }
 
-async function checknameandrequest(token, name) {
+async function checknameandalbum(token, name) {
   const decode = jwt.verify(token, process.env.REGISTER_JWT);
   const trackname = await checktrackandalbumname(token, name);
   const user = await User.findById(decode._id);
@@ -942,45 +965,63 @@ async function notification(query, link, text, img) {
 
 async function verifyalbum(token, name) {
   try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const userId = decode._id;
     const user = await User.findById(userId);
     const requests = user.requests;
 
-    const updatedRequests = requests.map((request) => {
-      if (request.name === name) {
-        return {
-          ...request,
-          msg: undefined,
-        };
-      }
-      return request;
-    });
+    const updatedRequests = await Promise.all(
+      requests.map(async (request) => {
+        if (request.name === name) {
+          await albumDB
+            .addalbum(
+              request.name,
+              request.artist,
+              request.description,
+              request.cover,
+              request.status,
+              request.genre,
+              request.totalduaration,
+              request.tracks
+            )
+            .then(async (res) => {
+              await User.findByIdAndUpdate(userId, {
+                $push: {
+                  albums: {
+                    name,
+                    id: res._id,
+                  },
+                },
+              });
+              return res;
+            });
+
+          request.status = "accept";
+          return {
+            ...request,
+            msg: undefined,
+          };
+        }
+        return request;
+      })
+    );
+
     await User.findByIdAndUpdate(userId, {
       $set: {
         requests: updatedRequests,
       },
     });
-    await albumDB
-      .addalbum(...Object.values(updatedRequests))
-      .then(async (res) => {
-        await User.findByIdAndUpdate(userId, {
-          $push: {
-            albums: {
-              name,
-              id: res._id,
-            },
-          },
-        });
-        return res;
-      });
 
     await notification(
       { _id: userId },
       "/profile/request",
-      `${name} was been verified`,
+      `${name} has been verified`,
       updatedRequests.cover
     );
+
     return true;
-  } catch {
+  } catch (err) {
+    console.log(err);
     return false;
   }
 }
@@ -992,15 +1033,18 @@ async function rejectalbum(token, name, msg) {
     const user = await User.findById(userId);
     const requests = user.requests;
 
-    const updatedRequests = requests.map((request) => {
-      if (request.name === name) {
-        return {
-          ...request,
-          status: "reject",
-          msg,
-        };
-      }
-    });
+    const updatedRequests = await Promise.all(
+      requests.map(async (request) => {
+        if (request.name === name) {
+          request.status = "reject";
+          return {
+            ...request,
+            msg,
+          };
+        }
+        return request;
+      })
+    );
 
     await User.findByIdAndUpdate(userId, {
       $set: {
@@ -1089,14 +1133,35 @@ async function loginback(id) {
 async function getrequests() {
   try {
     const users = await getallusers();
-    const pendingRequests = users.reduce((acc, user) => {
-      const userPendingRequests = user.requests.filter(
-        (request) => request.status === "pending"
+    let pendingRequests = users.reduce((acc, user) => {
+      let userPendingRequests = user.requests.filter((request) =>
+        request.status ? request.status == "pending" : null
       );
       return [...acc, ...userPendingRequests];
     }, []);
+    await Promise.all(
+      pendingRequests.map(async (e) => {
+        let user = await User.findById(e.artistid);
+        e.artist = user;
+      })
+    );
+    await Promise.all(
+      pendingRequests.map(async (e) => {
+        if (e.type == "podcast" || e.type == "music") {
+          if (e.feat.length > 0) {
+            await Promise.all(
+              e.feat.map(async (feat) => {
+                let user = await User.findById(feat._id);
+                feat = user;
+              })
+            );
+          }
+        }
+      })
+    );
     return pendingRequests;
-  } catch {
+  } catch (error) {
+    console.error(error);
     return false;
   }
 }
@@ -1130,7 +1195,7 @@ module.exports = {
   removerecommandeuser,
   searchbyusername,
   favourite,
-  checknameandrequest,
+  checknameandalbum,
   deletetrack,
   edittrack,
   lastplay,
