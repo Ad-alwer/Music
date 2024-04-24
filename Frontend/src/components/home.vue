@@ -29,7 +29,12 @@
           :type="component == 'publishalbum' ? 'albums' : 'plylists'"
         />
         <settings v-if="component == 'settings'" />
-        <user v-if="component == 'user'" />
+        <user
+          v-if="component == 'user'"
+          :otheruser="finduser"
+          :thisuser="user"
+          @reload="findotheruser"
+        />
       </section>
       <aside class="player">
         <player />
@@ -71,6 +76,30 @@ export default {
       })
       .then((res) => {
         this.user = res.data;
+
+        const urllocation = location.pathname.split("/")[1];
+        const componentsarr = [
+          "discover",
+          "explore",
+          "search",
+          "laibrarytrack",
+          "laibraryalbum",
+          "laibraryplaylist",
+          "laibraryartist",
+          "upload",
+          "publishmusic",
+          "publishpodcast",
+          "publishalbum",
+          "publishplaylist",
+          "user",
+          "settings",
+        ];
+
+        urllocation
+          ? (this.component = componentsarr.find((e) => {
+              return e == urllocation;
+            }))
+          : null;
       });
   },
   data() {
@@ -79,11 +108,34 @@ export default {
       component: "discover",
       reloadheader: false,
       user: {},
+      finduser: {},
     };
+  },
+  watch: {
+    component: function () {
+      if (this.component === "user") {
+        this.findotheruser();
+      }
+    },
   },
   methods: {
     changecomponent: function (e) {
       this.component = e;
+    },
+    findotheruser: function () {
+      const id = location.pathname.split("/user/")[1];
+      axios
+        .get(`${this.apiaddress}users/getuserbyidorusername/${id}`)
+        .then((res) => {
+          if (res.data) {
+            this.finduser = res.data;
+          } else {
+            location.href = "/notfound";
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
     },
   },
   components: {

@@ -1,5 +1,6 @@
 const express = require("express");
 const Router = express.Router();
+const mongoose = require("mongoose");
 
 require("dotenv").config();
 
@@ -63,7 +64,12 @@ Router.get("/getrequests", (req, res) => {
 
 Router.get("/subscribe/:id", (req, res) => {
   usersDB
-    .subscribe(req.headers.jwt, req.body.id)
+    .subscribe(req.headers.jwt, req.params.id)
+    .then((data) => res.send(data));
+});
+Router.get("/unsubscribe/:id", (req, res) => {
+  usersDB
+    .unsubscribe(req.headers.jwt, req.params.id)
     .then((data) => res.send(data));
 });
 
@@ -72,8 +78,6 @@ Router.get("/checktrackandalbumname/:name", (req, res) => {
     .checktrackandalbumname(req.headers.jwt, req.params.name)
     .then((data) => res.send(data));
 });
-
-
 
 Router.put("/savealbum/:albumid", (req, res) => {
   usersDB
@@ -152,10 +156,19 @@ Router.put("/verifyalbum/:name", (req, res) => {
 });
 
 Router.put("/rejectalbum/:name", (req, res) => {
-  
   usersDB
     .rejectalbum(req.headers.jwt, req.params.name, req.body.msg)
     .then((data) => res.send(data));
+});
+
+Router.get("/getuserbyidorusername/:data", async (req, res) => {
+  if (mongoose.Types.ObjectId.isValid(req.params.data)) {
+    await usersDB.getuserbyid(req.params.data).then((data) => res.send(data));
+  } else {
+    await usersDB
+      .getuserbyusername(req.params.data)
+      .then((data) => res.send(data));
+  }
 });
 
 module.exports = Router;
