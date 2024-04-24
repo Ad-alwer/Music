@@ -536,21 +536,26 @@ export default {
       this.$refs.searchinput ? (this.$refs.searchinput.value = null) : null;
     },
     checkname: function (e) {
-      axios
-        .get(`${this.apiaddress}users/checktrackandalbumname/${e}`, {
-          headers: {
-            jwt: Register.methods.getcookies("jwt"),
-          },
-        })
-        .then((res) => {
-          if (res.data) {
-            this.verifyname.value = true;
-            this.verifyname.show = true;
-          } else {
-            this.verifyname.value = false;
-            this.verifyname.show = true;
-          }
-        });
+      if (e.length > 1 ) {
+        axios
+          .get(`${this.apiaddress}users/checktrackandalbumname/${e}`, {
+            headers: {
+              jwt: Register.methods.getcookies("jwt"),
+            },
+          })
+          .then((res) => {
+            if (res.data) {
+              this.verifyname.value = true;
+              this.verifyname.show = true;
+            } else {
+              this.verifyname.value = false;
+              this.verifyname.show = true;
+            }
+          });
+      }else{
+        this.verifyname.value = false;
+              this.verifyname.show = true;
+      }
     },
     addtrack: function (e) {
       this.detailshower.albumtrack = true;

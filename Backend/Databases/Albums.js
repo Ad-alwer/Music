@@ -16,7 +16,7 @@ const musicschema = new mongoose.Schema({
     trim: true,
   },
   artist: {},
-  status: { enum: ["public", "deleted", "private", "pending"] },
+  status: String,
   likes: { type: Number, default: 0 },
   plays: { type: Number, default: 0 },
   description: {
@@ -55,9 +55,7 @@ async function addalbum(
       tracks,
       totalduaration,
     });
-    
     useralbum.save()
-    console.log(useralbum);
     return useralbum;
   } catch (err) {
     console.log(err);

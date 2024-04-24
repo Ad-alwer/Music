@@ -33,6 +33,8 @@ const routes = [
   { path: "/dashboard/:component?", component: dashboard },
   { path: "/vp/:token", component: verifypassword },
   { path: "/:pathMatch(.*)", component: notfound },
+  { path: "/notfound", component: notfound },
+
 ];
 
 const router = createRouter({

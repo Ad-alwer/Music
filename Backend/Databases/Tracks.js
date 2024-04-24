@@ -20,10 +20,10 @@ const musicschema = new mongoose.Schema({
     lowercase: true,
     trim: true,
   },
-  type: { enum: ["music", "podcast"] },
+  type: String,
   genre: String,
   artist: {},
-  status: { enum: ["public", "private", "pending"] },
+  status: String,
   isdeletaccount: { type: Boolean, default: false },
   likes: { type: Number, default: 0 },
   plays: { type: Number, default: 0 },
@@ -79,14 +79,13 @@ async function addtrack(
   status
 ) {
   try {
-
     const usertrack = new Track({
       name,
       type,
       genre,
       artist,
       description,
-      album:null,
+      album: null,
       lyric,
       cover,
       feat,
@@ -95,8 +94,7 @@ async function addtrack(
     });
     await usertrack.save();
     return usertrack;
-  } catch  {
-    ;
+  } catch {
     return false;
   }
 }
@@ -288,6 +286,11 @@ async function loginback() {
   }
 }
 
+async function findtrackbyid(id) {
+  const track = await Track.findById(id);
+  return track;
+}
+
 module.exports = {
   addtrack,
   like,
@@ -299,4 +302,5 @@ module.exports = {
   changealbum,
   deletedaccounttracks,
   loginback,
+  findtrackbyid,
 };

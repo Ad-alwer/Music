@@ -69,6 +69,7 @@ const musicschema = new mongoose.Schema({
   favouriteGenre: { type: String, default: null },
   recommendUser: [],
   albums: [],
+  playlists: [],
 });
 musicschema.plugin(timestamp);
 
@@ -355,12 +356,96 @@ async function changepasswordbylink(id, password) {
 async function getuser(token) {
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
-    const user = await User.findById(decode._id);
+    let user = await User.findById(decode._id);
+    let tracks = [];
+    let album = [];
+
+    if (user.albums.length > 0) {
+      await Promise.all(
+        user.albums.map(async (e) => {
+          const res = await albumDB.findalbum(e.id);
+          album.push(res);
+        })
+      );
+    }
+
+    if (user.tracks.length > 0) {
+      await Promise.all(
+        user.albums.map(async (e) => {
+          const res = await trackDB.findtrackbyid(e.id);
+          tracks.push(res);
+        })
+      );
+    }
+
+    user.tracks = tracks;
+    user.albums = album;
+    return user;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+async function getuserbyid(id) {
+  try {
+    const user = await User.findOne({ username });
+    user.albums = await Promise.all(
+      user.albums.map(async (e) => {
+        return await albumDB.findalbum(e.id);
+      })
+    );
+    user.tracks = await Promise.all(
+      user.tracks.map(async (e) => {
+        return await trackDB.findtrackbyid(e.id);
+      })
+    );
+    user.subscribe = await Promise.all(
+      user.subscribe.map(async (e) => {
+        return await User.findById(e);
+      })
+    );
+    user.artists = await Promise.all(
+      user.artists.map(async (e) => {
+        return await User.findById(e);
+      })
+    );
     return user;
   } catch {
     return false;
   }
 }
+
+async function getuserbyusername(username) {
+  try {
+    const user = await User.findOne({ username });
+    user.albums = await Promise.all(
+      user.albums.map(async (e) => {
+        return await albumDB.findalbum(e.id);
+      })
+    );
+    user.tracks = await Promise.all(
+      user.tracks.map(async (e) => {
+        return await trackDB.findtrackbyid(e.id);
+      })
+    );
+    user.subscribe = await Promise.all(
+      user.subscribe.map(async (e) => {
+        return await User.findById(e);
+      })
+    );
+    user.artists = await Promise.all(
+      user.artists.map(async (e) => {
+        return await User.findById(e);
+      })
+    );
+
+    return user;
+  } catch {
+    return false;
+  }
+}
+
 async function changeusername(token, newusername) {
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
@@ -434,34 +519,40 @@ async function checktrackandalbumname(token, name) {
     const user = await User.findById(decode._id);
     let library = [];
 
-    await Promise.all(
-      user.tracks.map(async (e) => {
-        library.push(e.name.toLowerCase());
-      })
-    );
+    if (user.tracks.lenght > 0) {
+      await Promise.all(
+        user.tracks.map(async (e) => {
+          library.push(e.name.toLowerCase());
+        })
+      );
+    }
 
-    let albums = user.albums;
+    if (user.albums.lenght > 0) {
+      let albums = user.albums;
 
-    await Promise.all(
-      albums.map(async (album) => {
-        const albumDetail = await albumDB.findalbum(album.id);
-        albumDetail.tracks.forEach((element) => {
-          library.push(element.name.toLowerCase());
-        });
-      })
-    );
+      await Promise.all(
+        albums.map(async (album) => {
+          const albumDetail = await albumDB.findalbum(album.id);
+          albumDetail.tracks.forEach((element) => {
+            library.push(element.name.toLowerCase());
+          });
+        })
+      );
+    }
 
-    let requests = user.requests.filter((e) => e.status === "pending");
+    if (user.requests.lenght > 0) {
+      let requests = user.requests.filter((e) => e.status === "pending");
 
-    requests.forEach((e) => {
-      if (e.type !== "music") {
-        e.tracks.forEach((data) => {
-          library.push(data.name.toLowerCase());
-        });
-      } else {
-        library.push(e.name.toLowerCase());
-      }
-    });
+      requests.forEach((e) => {
+        if (e.type !== "music") {
+          e.tracks.forEach((data) => {
+            library.push(data.name.toLowerCase());
+          });
+        } else {
+          library.push(e.name.toLowerCase());
+        }
+      });
+    }
 
     return library.includes(name.toLowerCase()) ? false : true;
   } catch (error) {
@@ -538,7 +629,7 @@ async function addrequesttrack(
 async function addrequestalbum(
   token,
   name,
-  status,
+  visibility,
   genre,
   tracks,
   cover,
@@ -574,6 +665,7 @@ async function addrequestalbum(
               genre,
               tracks,
               status: "pending",
+              visibility,
               cover,
               description,
               msg: "",
@@ -605,38 +697,64 @@ async function addprofile(id, url) {
 }
 
 async function subscribe(token, id) {
-  const decode = jwt.verify(token, process.env.REGISTER_JWT);
-  const subscriber = await User.findOneAndUpdate(
-    { _id: decode._id },
-    {
-      $push: {
-        artists: {
-          id,
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+
+    const subscriber = await User.findOneAndUpdate(
+      { _id: decode._id },
+      {
+        $push: {
+          artists: id,
         },
       },
-    },
-    { new: true }
-  );
+      { new: true }
+    );
 
-  await User.findOneAndUpdate(
-    { _id: id },
-    {
-      $push: {
-        subsribe: {
-          decode_id,
+    await User.findOneAndUpdate(
+      { _id: id },
+      {
+        $push: {
+          subscribe: decode._id,
         },
       },
-    },
-    { new: true }
-  );
+      { new: true }
+    );
 
-  await notification(
-    { _id: id },
-    `/profile`,
-    `${subscriber.username} subscribe you`,
-    subscriber.profile
-  );
-  return true;
+    await notification({ _id: id }, "/profile", ` subscribed to you`, "follow");
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+async function unsubscribe(token, id) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const subscriber = await User.findOneAndUpdate(
+      { _id: decode._id },
+      {
+        $pull: {
+          artists: id,
+        },
+      },
+      { new: true }
+    );
+    await User.findOneAndUpdate(
+      { _id: id },
+      {
+        $pull: {
+          subscribe: decode._id,
+        },
+      },
+      { new: true }
+    );
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 }
 
 async function changebio(token, text) {
@@ -737,52 +855,56 @@ async function verifytrack(token, name) {
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
     const userId = decode._id;
-
     const user = await User.findById(userId);
     const requests = user.requests;
-
-    const updatedRequests = requests.map((request) => {
-      if (request.name === name) {
-        request.status = "accept";
-        return {
-          ...request,
-          msg: undefined,
-        };
-      }
-      return request;
-    });
-
+    const updatedRequests = await Promise.all(
+      requests.map(async (request) => {
+        if (request.name === name) {
+          const res = await trackDB.addtrack(
+            request.name,
+            request.type,
+            request.genre,
+            request.artist,
+            request.description,
+            request.lyric,
+            request.cover,
+            request.feat,
+            request.track,
+            request.visibility
+          );
+          console.log(res);
+          await User.findByIdAndUpdate(userId, {
+            $push: {
+              tracks: {
+                name,
+                id: res._id,
+              },
+            },
+          });
+          request.status = "accept";
+          return {
+            ...request,
+            msg: undefined,
+          };
+        }
+        return request;
+      })
+    );
     await User.findByIdAndUpdate(userId, {
       $set: {
         requests: updatedRequests,
       },
     });
-
-    await trackDB
-      .addtrack(...Object.values(updatedRequests[0]))
-      .then(async (res) => {
-        console.log(res);
-        await User.findByIdAndUpdate(userId, {
-          $push: {
-            tracks: {
-              name,
-              id: res._id,
-            },
-          },
-        });
-        return res;
-      });
-
     await notification(
       { _id: userId },
       "/profile/request",
-      `${name} has been rejected`,
-      "updatedRequests.cover"
+      `${name} has been accepted`,
+      updatedRequests.cover
     );
-
     return true;
   } catch (err) {
     console.log(err);
+    return false;
   }
 }
 
@@ -948,6 +1070,7 @@ async function lastplay(token, value) {
 }
 
 async function notification(query, link, text, img) {
+  console.log(img);
   let users = await User.find(query);
   for (const user of users) {
     await User.findByIdAndUpdate(user._id, {
@@ -979,7 +1102,7 @@ async function verifyalbum(token, name) {
               request.artist,
               request.description,
               request.cover,
-              request.status,
+              request.visibility,
               request.genre,
               request.totalduaration,
               request.tracks
@@ -1210,4 +1333,7 @@ module.exports = {
   changebanupload,
   getrequests,
   verifyusers,
+  getuserbyid,
+  getuserbyusername,
+  unsubscribe,
 };

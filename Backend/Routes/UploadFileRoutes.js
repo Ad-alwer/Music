@@ -97,7 +97,6 @@ Router.post(
           const metadata = await new Promise((resolve, reject) => {
             ffmpeg.ffprobe(file.location, (err, metadata) => {
               if (err) {
-                console.error("Error while getting metadata:", err);
                 reject(err);
               } else {
                 resolve(metadata);
@@ -119,7 +118,11 @@ Router.post(
             track.name = updatedTrack.name;
             track.lyrics = updatedTrack.lyrics;
             track.feat = updatedTrack.feat;
-            track.visibility = req.body.visibility;
+            track.status = req.body.visibility;
+            track.play = 0;
+            track.like = 0;
+            track.genre = req.body.genre;
+            track.monthlyListener = [];
           }
           files.push(track);
         } else {
@@ -131,7 +134,7 @@ Router.post(
       .addrequestalbum(
         req.headers.jwt,
         req.body.name,
-        req.body.status,
+        req.body.visibility,
         req.body.genre,
         files,
         thumbnail,
@@ -197,7 +200,6 @@ Router.post(
       )
       .then((data) => {
         if (data) {
-          console.log(track);
           return res.send({
             status: "success",
             message: "file uploaded!",
