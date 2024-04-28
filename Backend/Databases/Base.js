@@ -4,42 +4,74 @@ const timestamp = require("mongoose-timestamp");
 require("dotenv").config();
 mongoose.connect(process.env.DB_ADRESS).then(() => console.log("conect"));
 
-
 const musicschema = new mongoose.Schema({
   genres: [],
   banners: [],
   responsivebanners: [],
+  socialicon: [],
   icn: String,
   newMusic: { type: Boolean, default: false },
   trendMusic: { type: Boolean, default: false },
   trendpodcast: { type: Boolean, default: false },
-  trendPodcast: { type: Boolean, default: false },
-  trendArtists: { type: Boolean, default: false },
   topArtists: { type: Boolean, default: false },
   topPlaylist: { type: Boolean, default: false },
 });
 
 musicschema.plugin(timestamp);
 
-const Base = mongoose.model("base", musicschema)
-
+const Base = mongoose.model("base", musicschema);
 isempty();
 
+async function getdata() {
+  const newbase = await Base.findOne({});
+  return newbase;
+}
+
 async function isempty() {
-  const data = Base.find({});
-  if (data.lenght < 1) {
+  const data = await Base.find({});
+  if (data.length == 0) {
     const newbase = new Base({});
     newbase.save();
   }
 }
 
 async function change(field, val) {
+
   try {
-    await Base.findOneAndUpdate(
+ await Base.findOneAndUpdate(
       {},
       {
         $set: {
-          [field]: !val,
+          [field]: val,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      msg: "Saved successfully",
+    };
+  } catch (error) {
+    console.error("Error updating field:", error);
+    return {
+      status: false,
+      msg: "Please try again",
+    };
+  }
+}
+
+async function addgenre(name, color) {
+  try {
+    const newObjectId = new mongoose.Types.ObjectId();
+    await Base.findOneAndUpdate(
+      {},
+      {
+        $push: {
+          genres: {
+            _id: newObjectId,
+            name,
+            color,
+          },
         },
       }
     );
@@ -54,14 +86,41 @@ async function change(field, val) {
     };
   }
 }
+async function removegenre(id) {
+  try {
+    await Base.findOneAndUpdate(
+      {},
+      {
+        $pull: {
+          genres: { _id: new mongoose.Types.ObjectId(id) },
+        },
+      }
+    );
 
-async function addgenre(genre) {
+    return {
+      status: true,
+      msg: "Deleted successfully",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: false,
+      msg: "Please try again",
+    };
+  }
+}
+async function addsocialicon(name, file) {
+  const newObjectId = new mongoose.Types.ObjectId();
   try {
     await Base.findOneAndUpdate(
       {},
       {
         $push: {
-          genres: genre,
+          socialicon: {
+            _id: newObjectId,
+            name,
+            file,
+          },
         },
       }
     );
@@ -73,61 +132,42 @@ async function addgenre(genre) {
     return {
       status: false,
       msg: "please try again",
+    };
+  }
+}
+async function removesocialicon(id) {
+  try {
+    await Base.findOneAndUpdate(
+      {},
+      {
+        $pull: {
+          socialicon: { _id: new mongoose.Types.ObjectId(id) },
+        },
+      }
+    );
+
+    return {
+      status: true,
+      msg: "Deleted successfully",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: false,
+      msg: "Please try again",
     };
   }
 }
 
 async function addbanner(banner) {
   try {
+    const newObjectId = new mongoose.Types.ObjectId();
+
     await Base.findOneAndUpdate(
       {},
       {
         $push: {
-          banners: banner,
-        },
-      }
-    );
-    return {
-      status: true,
-      msg: "Saved successfully",
-    };
-  } catch {
-    return {
-      status: false,
-      msg: "please try again",
-    };
-  }
-}
-
-async function removebanner(name,link) {
-  try {
-    await Base.findOneAndUpdate(
-      {},
-      {
-        $pull: {
-          banners: { name, link },
-        },
-      }
-    );
-    return {
-      status: true,
-      msg: "Deleted successfully",
-    };
-  } catch {
-    return {
-      status: false,
-      msg: "please try again",
-    };
-  }
-}
-
-async function addresbanner(banner) {
-  try {
-    await Base.findOneAndUpdate(
-      {},
-      {
-        $push: {
-          responsivebanners: banner,
+          banners: { _id: newObjectId, banner },
         },
       }
     );
@@ -143,13 +183,59 @@ async function addresbanner(banner) {
   }
 }
 
-async function removeresbanner(name,link) {
+async function removebanner(id) {
   try {
     await Base.findOneAndUpdate(
       {},
       {
         $pull: {
-          responsivebanners: { name, link },
+          banners: { _id: new mongoose.Types.ObjectId(id) },
+        },
+      }
+    );
+
+    return {
+      status: true,
+      msg: "Deleted successfully",
+    };
+  } catch (error) {
+    return {
+      status: false,
+      msg: "Please try again",
+    };
+  }
+}
+
+async function addresbanner(banner) {
+  const newObjectId = new mongoose.Types.ObjectId();
+  try {
+    await Base.findOneAndUpdate(
+      {},
+      {
+        $push: {
+          responsivebanners: { _id: newObjectId, banner },
+        },
+      }
+    );
+    return {
+      status: true,
+      msg: "Saved successfully",
+    };
+  } catch {
+    return {
+      status: false,
+      msg: "Please try again",
+    };
+  }
+}
+
+async function removeresbanner(id) {
+  try {
+    await Base.findOneAndUpdate(
+      {},
+      {
+        $pull: {
+          responsivebanners: { _id: new mongoose.Types.ObjectId(id) },
         },
       }
     );
@@ -157,7 +243,8 @@ async function removeresbanner(name,link) {
       status: true,
       msg: "Deleted successfully",
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
       status: false,
       msg: "Please try again",
@@ -171,5 +258,9 @@ module.exports = {
   addbanner,
   removebanner,
   addresbanner,
-  removeresbanner
+  removeresbanner,
+  addsocialicon,
+  getdata,
+  removegenre,
+  removesocialicon
 };

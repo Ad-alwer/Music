@@ -6,7 +6,7 @@ const multerS3 = require("multer-s3");
 require("dotenv").config();
 
 const usersDB = require("../Databases/users");
-const { addbanner, addresbanner } = require("../Databases/Base");
+const { addbanner, addresbanner, addsocialicon } = require("../Databases/Base");
 
 const ffmpeg = require("fluent-ffmpeg");
 const { json } = require("express");
@@ -236,9 +236,7 @@ Router.put(
       url: req.file.location,
       name: req.file.key,
     };
-    usersDB
-      .addsocialmedia(req.headers.jwt, file, req.body.name, req.body.link)
-      .then((data) => res.send(data));
+    addsocialicon(req.body.name, file).then((data) => res.send(data));
   }
 );
 
