@@ -33,7 +33,10 @@ Router.put("/changestatus/:albumid&&:newstatus", (req, res) => {
     .then((data) => res.send(data));
 });
 
-
-  
+Router.get("/:id", (req, res) => {
+  albumDB.findalbum(req.params.id).then((data) => {
+    res.send(data);
+  });
+});
 
 module.exports = Router;

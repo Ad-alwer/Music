@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 const schedule = require("node-schedule");
-const { notification, getuser } = require("./Users");
+
+const userDB = require("../Databases/Users")
 
 require("dotenv").config();
 
@@ -79,6 +80,7 @@ async function addtrack(
   status
 ) {
   try {
+    artist = new mongoose.Types.ObjectId(artist)
     const usertrack = new Track({
       name,
       type,
@@ -100,35 +102,34 @@ async function addtrack(
 }
 
 async function like(token, id, status) {
+  console.log(token);
   try {
-    if (status == "add") {
-      const updatedtrack = await Track.findByIdAndUpdate(
+    if (status === "add") {
+      const updatedTrack = await Track.findByIdAndUpdate(
         id,
         {
           $inc: {
-            likes: +1,
+            likes: 1,
           },
         },
         { new: true }
       );
 
-      const user = await getuser(token);
-      await notification(
-        { _id: user.id },
-        TODO,
-        `${user.username} like ${updatedtrack.name}`,
-        updatedtrack.cover
-      );
+      
+
       return true;
-    } else if (status == "remove") {
+    } else if (status === "remove") {
       await Track.findByIdAndUpdate(id, {
         $inc: {
           likes: -1,
         },
       });
       return true;
+    } else {
+      throw new Error('Invalid status provided');
     }
-  } catch {
+  } catch (error) {
+    console.error('Error in like function:', error);
     return false;
   }
 }
@@ -291,6 +292,8 @@ async function findtrackbyid(id) {
   return track;
 }
 
+
+
 module.exports = {
   addtrack,
   like,
@@ -303,4 +306,5 @@ module.exports = {
   deletedaccounttracks,
   loginback,
   findtrackbyid,
+  getall
 };

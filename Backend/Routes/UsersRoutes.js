@@ -148,6 +148,9 @@ Router.put("/lastplay", (req, res) => {
     .lastplay(req.headers.jwt, req.body.data)
     .then((data) => res.send(data));
 });
+Router.get("/lastplay", (req, res) => {
+  usersDB.getlastplay(req.headers.jwt).then((data) => res.send(data));
+});
 
 Router.put("/verifyalbum/:name", (req, res) => {
   usersDB
@@ -169,6 +172,12 @@ Router.get("/getuserbyidorusername/:data", async (req, res) => {
       .getuserbyusername(req.params.data)
       .then((data) => res.send(data));
   }
+});
+
+Router.get("/getusertracks/:type/:id", (req, res) => {
+  usersDB
+    .gettracks(req.params.type, req.params.id)
+    .then((data) => res.send(data));
 });
 
 module.exports = Router;

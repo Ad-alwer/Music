@@ -99,23 +99,28 @@
       </div>
     </section>
     <hr class="mx-5" />
-    <playerbox />
+    <playerbox :data="data" />
   </div>
 </template>
 
 <script>
 
 import playerbox from "./playerbox.vue"
+
+
 export default {
   name: "player",
   data() {
-    return {};
+    return {
+      
+    };
   },
   components:{
     playerbox
   },
   methods: {},
   mounted() {},
+  props:['data']
 };
 </script>
 

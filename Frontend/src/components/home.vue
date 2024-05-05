@@ -34,10 +34,11 @@
           :otheruser="finduser"
           :thisuser="user"
           @reload="findotheruser"
+          @changemusic="changemusic"
         />
       </section>
       <aside class="player">
-        <player />
+        <player :data="newmusic" />
       </aside>
     </main>
   </div>
@@ -109,6 +110,7 @@ export default {
       reloadheader: false,
       user: {},
       finduser: {},
+      newmusic:null
     };
   },
   watch: {
@@ -137,6 +139,10 @@ export default {
           console.error("Error fetching user data:", error);
         });
     },
+    changemusic:function(id){
+      console.log(id,'user');
+     this.newmusic = id
+    }
   },
   components: {
     hmheader,

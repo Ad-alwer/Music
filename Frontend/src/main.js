@@ -42,4 +42,6 @@ const router = createRouter({
   routes,
 });
 
+
+
 createApp(App).use(bootstrap).use(router).mount("#app");

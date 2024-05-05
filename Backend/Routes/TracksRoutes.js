@@ -46,4 +46,42 @@ Router.put("/changealbum/:trackid&&:albumid", (req, res) => {
     .then((data) => res.send(data));
 });
 
+Router.put("/like/:id", (req, res) => {
+  userDB.like(req.headers.jwt, req.params.id).then((data) => {
+    if (data) {
+      trackDB.like(req.headers.jwt, req.params.id, "add").then((data) => {
+        return res.send(data);
+      });
+    } else {
+      res.send(data);
+    }
+  });
+});
+
+Router.put("/unlike/:id", (req, res) => {
+  userDB.unlike(req.headers.jwt, req.params.id).then((data) => {
+    if (data) {
+      trackDB.like(req.headers.jwt, req.params.id, "remove").then((data) => {
+        return res.send(data);
+      });
+    } else {
+      res.send(data);
+    }
+  });
+});
+
+Router.put("/savetrack/:id", (req, res) => {
+  userDB
+    .savetrack(req.headers.jwt, req.params.id)
+    .then((data) => res.send(data));
+});
+
+Router.put("/removesavetrack/:id", (req, res) => {
+  userDB
+    .removesavetrack(req.headers.jwt, req.params.id)
+    .then((data) => res.send(data));
+});
+
+
+
 module.exports = Router;

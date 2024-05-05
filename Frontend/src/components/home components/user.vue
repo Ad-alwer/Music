@@ -11,7 +11,7 @@
               class="img-fluid rounded-circle"
               alt=""
             />
-            <div v-else class="d-flex justify-content-center w-100 bg-danger">
+            <div v-else class="d-flex justify-content-center w-100">
               <img
                 src="../../assets/img/icon.jpg"
                 class="img-fluid rounded-circle"
@@ -284,11 +284,12 @@
               class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3"
               v-for="x in data"
               :key="x"
+              @click="play(x._id)"
             >
               <div class="d-flex gap-5 align-items-center">
                 <img
                   class="monthly-img img-fluid rounded-3"
-                  src="../../assets/img/test/eminem.jpg"
+                  :src="x.cover.url"
                   alt=""
                 />
                 <div class="d-flex flex-column monthly-text">
@@ -300,10 +301,10 @@
                 </div>
               </div>
               <div class="d-flex gap-4 align-items-center">
-                <span class="me-3 text-capitalize"
+                <span class="me-3 text-capitalize monthly-time"
                   >{{ formattime(x.duration) }}
                 </span>
-                <span class="me-3 text-capitalize"
+                <span class="me-3 text-capitalize monthly-play"
                   >{{ formatview(x.plays) }} plays</span
                 >
                 <svg
@@ -383,32 +384,16 @@ import axios from "axios";
 import loader from "../loader.vue";
 import info from "../../../default";
 import Register from "../Register.vue";
+
 export default {
   name: "user",
   beforeMount() {
     if (this.otheruser) {
       setTimeout(() => {
-        this.popups.loader = false;
-
-        this.data = this.otheruser.tracks.filter((e) => {
-          return e.type === "music" && e.status === "public";
-        });
-        this.data.map((e) => {
-          e.duration = e.track.duration;
-        });
-
-        this.otheruser.albums.forEach((album) => {
-          album.tracks.forEach((track) => {
-            if (track.status === "public") {
-              track.createdAt = album.createdAt;
-              this.data.push(track);
-            }
-          });
-        });
-
-        this.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        this.checkcomponent();
         this.checkfollow();
-      }, 500);
+        this.popups.loader = false;
+      }, 800);
     }
   },
   data() {
@@ -420,6 +405,7 @@ export default {
         loader: true,
       },
       data: [],
+      playdata: null,
     };
   },
   methods: {
@@ -442,7 +428,7 @@ export default {
       } else if (number >= 1e3) {
         return (number / 1e3).toFixed(0) + "K";
       } else {
-        return number.toString();
+        return number;
       }
     },
     follow: function (id) {
@@ -505,15 +491,20 @@ export default {
             return e.type == "podcast" && e.status == "public";
           });
         } else if (this.component === "music") {
-          this.data = this.otheruser.tracks.filter((e) => {
-            return e.type === "music" && e.status === "public";
+          this.data = [];
+          this.otheruser.tracks.forEach((track) => {
+            if (track.status == "public") {
+              track.duration = track.track.duration;
+
+              this.data.push(track);
+            }
           });
+
           this.otheruser.albums.forEach((album) => {
             album.tracks.forEach((track) => {
-              if (track.status === "public") {
-                track.createdAt = album.createdAt;
-                this.data.push(track);
-              }
+              track.cover = album.cover;
+              track.createdAt = album.createdAt;
+              this.data.push(track);
             });
           });
 
@@ -521,14 +512,10 @@ export default {
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
           );
         } else if (this.component === "album") {
-          this.data = this.otheruser.albums.filter((album) => {
-            return album.status == "public";
-          });
-          this.data.forEach((album) => {
-            album.duration = 0;
-            album.tracks.forEach((track) => {
-              album.duration += track.duration;
-            });
+          this.data = [];
+          this.otheruser.albums.forEach((album) => {
+            album.duration = album.totalduaration;
+            this.data.push(album);
           });
         } else if (this.component === "playlist") {
           this.data = this.otheruser.playlists.filter((playlist) => {
@@ -597,6 +584,29 @@ export default {
         }
       }
     },
+    play: function (id) {
+      const data = {
+        id,
+        time: 0,
+      };
+      axios
+        .put(
+          `${this.apiaddress}users/lastplay`,
+          {
+            data,
+          },
+          {
+            headers: {
+              jwt: Register.methods.getcookies("jwt"),
+            },
+          }
+        )
+        .then((res) => {
+         if(res.data){
+          this.$emit("changemusic", id);
+         }
+        });
+    },
   },
   watch: {
     component: function () {
@@ -653,6 +663,12 @@ export default {
 .monthly-text {
   width: 220px;
   text-align: left !important;
+}
+.monthly-play {
+  width: 120px;
+}
+.monthly-time {
+  width: 50px;
 }
 
 .album-.monthly-text {

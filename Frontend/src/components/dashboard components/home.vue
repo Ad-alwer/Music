@@ -247,7 +247,6 @@ export default {
     getdata: function () {
       axios.get(`${this.apiaddress}base/`).then((res) => {
         this.data = res.data;
-        console.log(this.data);
       });
     },
     goto: function (e) {

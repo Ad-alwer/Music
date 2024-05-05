@@ -10,6 +10,7 @@ const { addbanner, addresbanner, addsocialicon } = require("../Databases/Base");
 
 const ffmpeg = require("fluent-ffmpeg");
 const { json } = require("express");
+const { default: mongoose } = require("mongoose");
 const ffprobePath = require("ffprobe-static").path;
 ffmpeg.setFfprobePath(ffprobePath);
 
@@ -110,16 +111,18 @@ Router.post(
             name: file.key.split("-&-")[1],
             duration: Math.floor(duration),
           };
+          console.log(track);
           const trackDetails = JSON.parse(req.body.trackdetail);
           const updatedTrack = trackDetails.find(
             (data) => data.trackname === track.name
           );
           if (updatedTrack) {
+            track._id = new mongoose.Types.ObjectId()
             track.name = updatedTrack.name;
             track.lyrics = updatedTrack.lyrics;
             track.feat = updatedTrack.feat;
             track.status = req.body.visibility;
-            track.play = 0;
+            track.plays = 0;
             track.like = 0;
             track.genre = req.body.genre;
             track.monthlyListener = [];
