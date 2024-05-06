@@ -129,10 +129,64 @@ async function findalbum(id) {
   return album;
 }
 
+async function play(albumid, trackid) {
+  try {
+    const album = await Album.findById(albumid);
+    let tracks = album.tracks;
+    const index = tracks.findIndex((track) => track._id == trackid);
+    tracks[index].plays += 1;
+
+    let albumplays = (album.plays += 1);
+
+    await Album.findByIdAndUpdate(albumid, {
+      $set: {
+        tracks,
+        plays: albumplays,
+      },
+    });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+async function monthlyListener(albumid, trackid) {
+  const album = await Album.findById(albumid);
+  let tracks = album.tracks;
+  const index = tracks.findIndex((track) => track._id == trackid);
+
+  let monthlylisteners = tracks[index].monthlyListener;
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth() + 1;
+  const today = `${currentYear} - ${currentMonth}`;
+
+  const search = monthlylisteners.find((e) => {
+    return e.date === today;
+  });
+  if (search) {
+    search.view++;
+  } else {
+    monthlylisteners.push({
+      date: today,
+      view: 1,
+    });
+  }
+
+  await Album.findByIdAndUpdate(albumid, {
+    $set: {
+      tracks,
+    },
+  });
+}
+
 module.exports = {
   addalbum,
   editalbum,
   deletealbum,
   changestatus,
   findalbum,
+  play,
+  monthlyListener,
 };

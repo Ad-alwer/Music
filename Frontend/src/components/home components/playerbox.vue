@@ -269,6 +269,16 @@ export default {
       setInterval(() => {
         this.changelastplay();
       }, 5000);
+      if (this.show.currentTime == 0) {
+        if (this.show.album) {
+          axios.put(
+            `${this.apiaddress}album/play/${this.show.album}/${this.show.id}`
+          );
+        } else {
+          console.log("else");
+          axios.put(`${this.apiaddress}track/play/${this.show.id}`);
+        }
+      }
     },
     pause: function () {
       this.$refs.audio.pause();
@@ -445,14 +455,14 @@ export default {
                   );
 
                   if (res.data.length == index + 1) {
-                    this.$refs.audio.pause()
+                    this.$refs.audio.pause();
                     this.music = res.data[0];
 
                     setTimeout(() => {
                       this.$refs.audio.play();
                     }, 1000);
                   } else {
-                    this.$refs.audio.pause()
+                    this.$refs.audio.pause();
                     this.music = res.data[index + 1];
 
                     setTimeout(() => {
@@ -463,7 +473,7 @@ export default {
               });
           }
         } else {
-          this.$refs.audio.pause()
+          this.$refs.audio.pause();
           this.music = this.show.last[index + 1];
 
           setTimeout(() => {
@@ -481,14 +491,14 @@ export default {
                 const index = res.data.findIndex((e) => e._id == this.show.id);
 
                 if (res.data.length == index + 1) {
-                  this.$refs.audio.pause()
+                  this.$refs.audio.pause();
                   this.music = res.data[0];
 
                   setTimeout(() => {
                     this.$refs.audio.play();
                   }, 2000);
                 } else {
-                  this.$refs.audio.pause()
+                  this.$refs.audio.pause();
                   this.music = res.data[index + 1];
 
                   setTimeout(() => {
@@ -501,9 +511,8 @@ export default {
       }
     },
     lasttrack: function () {
-     
       if (this.show.last.lenght > 0) {
-        this.$refs.audio.pause()
+        this.$refs.audio.pause();
         this.music = this.show.last[index - 1];
 
         setTimeout(() => {

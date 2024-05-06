@@ -39,4 +39,14 @@ Router.get("/:id", (req, res) => {
   });
 });
 
+Router.put("/play/:albumid/:trackid", (req, res) => {
+  albumDB.play(req.params.albumid, req.params.trackid).then((data) => {
+    data
+      ? albumDB.monthlyListener(req.params.albumid, req.params.trackid).then((data) =>
+          res.send(data)
+        )
+      : res.send(data);
+  });
+});
+
 module.exports = Router;

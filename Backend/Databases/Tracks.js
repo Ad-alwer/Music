@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 const schedule = require("node-schedule");
 
-const userDB = require("../Databases/Users")
+const userDB = require("../Databases/Users");
 
 require("dotenv").config();
 
@@ -80,7 +80,7 @@ async function addtrack(
   status
 ) {
   try {
-    artist = new mongoose.Types.ObjectId(artist)
+    artist = new mongoose.Types.ObjectId(artist);
     const usertrack = new Track({
       name,
       type,
@@ -115,8 +115,6 @@ async function like(token, id, status) {
         { new: true }
       );
 
-      
-
       return true;
     } else if (status === "remove") {
       await Track.findByIdAndUpdate(id, {
@@ -126,10 +124,10 @@ async function like(token, id, status) {
       });
       return true;
     } else {
-      throw new Error('Invalid status provided');
+      throw new Error("Invalid status provided");
     }
   } catch (error) {
-    console.error('Error in like function:', error);
+    console.error("Error in like function:", error);
     return false;
   }
 }
@@ -204,7 +202,7 @@ async function changestatus(id, newstatus) {
   }
 }
 
-async function playtrack() {
+async function playtrack(id) {
   try {
     await Track.findByIdAndUpdate(id, {
       $inc: {
@@ -218,26 +216,27 @@ async function playtrack() {
 }
 async function monthlyListener(id) {
   const track = await Track.findById(id);
-  let monthlylistners = track.monthlyListener;
+  let monthlylisteners = track.monthlyListener;
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth() + 1;
   const today = `${currentYear} - ${currentMonth}`;
-  const search = monthlylistners.find((e) => {
+  const search = monthlylisteners.find((e) => {
     return e.date === today;
   });
   if (search) {
     search.view++;
   } else {
-    monthlyListener.push({
+    monthlylisteners.push({
       date: today,
       view: 1,
     });
   }
+  
 
   await Track.findByIdAndUpdate(id, {
     $set: {
-      monthlyListener: monthlyListener,
+      monthlyListener: monthlylisteners,
     },
   });
 }
@@ -292,8 +291,6 @@ async function findtrackbyid(id) {
   return track;
 }
 
-
-
 module.exports = {
   addtrack,
   like,
@@ -306,5 +303,4 @@ module.exports = {
   deletedaccounttracks,
   loginback,
   findtrackbyid,
-  getall
 };
