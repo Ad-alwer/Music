@@ -117,7 +117,7 @@ Router.post(
             (data) => data.trackname === track.name
           );
           if (updatedTrack) {
-            track._id = new mongoose.Types.ObjectId()
+            track._id = new mongoose.Types.ObjectId();
             track.name = updatedTrack.name;
             track.lyrics = updatedTrack.lyrics;
             track.feat = updatedTrack.feat;
@@ -216,15 +216,11 @@ Router.post(
   "/profile",
   uploadprofile.single("objectKey"),
   async function (req, res) {
-    let file = {
-      url: req.file.location,
-      name: req.file.key,
-    };
-    usersDB.addprofile(req.body.id, file).then((data) => {
+    usersDB.addprofile(req.body.id, req.file.location).then((data) => {
       if (data) {
         return res.send({
           status: "success",
-          message: "file uploaded!",
+          msg: "Profile Changed",
         });
       }
     });

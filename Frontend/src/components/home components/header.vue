@@ -247,8 +247,10 @@ export default {
     profilepopup,
   },
   props: ["reload"],
-  mounted() {
-    this.reload ? this.getdata() : null;
+  watch: {
+    reload: function () {
+      this.getdata();
+    },
   },
 };
 </script>

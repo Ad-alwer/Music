@@ -6,9 +6,8 @@ const schedule = require("node-schedule");
 
 const trackDB = require("./Tracks");
 const albumDB = require("./Albums");
-const deleteaccountDB = require("./DeletedAccounts");
 const { deletaccountplaylists } = require("./Playlists");
-const { promises } = require("nodemailer/lib/xoauth2");
+const { findsocialmedia } = require("./Base");
 
 require("dotenv").config();
 
@@ -374,13 +373,29 @@ async function getuser(token) {
 
     if (user.tracks.length > 0) {
       await Promise.all(
-        user.albums.map(async (e) => {
+        user.tracks.map(async (e) => {
           const res = await trackDB.findtrackbyid(e.id);
+          
           tracks.push(res);
         })
       );
     }
 
+    if (user.socialmedia.length > 0) {
+      await Promise.all(
+        user.socialmedia.map(async (e) => {
+          e.iconlink = await findsocialmedia(e.icon);
+        })
+      );
+    }
+
+    if (user.recommendUser.length > 0) {
+      await Promise.all(
+        user.recommendUser.map(async (e, index) => {
+          user.recommendUser[index] = await User.findById(e);
+        })
+      );
+    }
     user.tracks = tracks;
     user.albums = album;
     return user;
@@ -838,21 +853,47 @@ async function changefavouritegenre(token, text) {
   }
 }
 
-async function addsocialmedia(token, file, name, link) {
+async function addsocialmedia(token, title, icon, link) {
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
     await User.findByIdAndUpdate(decode._id, {
       $push: {
         socialmedia: {
-          file,
-          name,
+          title,
+          icon,
           link,
         },
       },
     });
-    return true;
+    return {
+      status: true,
+      msg: "Saved successfully",
+    };
   } catch {
-    return false;
+    return {
+      status: false,
+      msg: "Please try again",
+    };
+  }
+}
+
+async function editsocialmedia(token, socialmedia) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    await User.findByIdAndUpdate(decode._id, {
+      $set: {
+        socialmedia,
+      },
+    });
+    return {
+      status: true,
+      msg: "Saved successfully",
+    };
+  } catch {
+    return {
+      status: false,
+      msg: "Please try again",
+    };
   }
 }
 
@@ -981,9 +1022,15 @@ async function addrecomendeuser(token, id) {
       },
       { new: true }
     );
-    return user;
+    return {
+      status: true,
+      msg: "Saved successfully",
+    };
   } catch {
-    return false;
+    return {
+      status: false,
+      msg: "Please try again",
+    };
   }
 }
 
@@ -999,9 +1046,15 @@ async function removerecommandeuser(token, id) {
       },
       { new: true }
     );
-    return user;
+    return {
+      status: true,
+      msg: "Removed successfully",
+    };
   } catch {
-    return false;
+    return {
+      status: false,
+      msg: "Please try again",
+    };
   }
 }
 
@@ -1144,7 +1197,7 @@ async function getlastplay(token) {
           return await albumDB.findalbum(album.id);
         })
       );
-      
+
       for (let album of albumResults) {
         for (let track of album.tracks) {
           if (track._id == user.lastplay.id) {
@@ -1156,7 +1209,7 @@ async function getlastplay(token) {
           }
         }
       }
-      
+
       // If the track is not found in any album, return null or handle the case accordingly
       return false;
     }
@@ -1421,17 +1474,17 @@ async function gettracks(type, id) {
     if (type === "track") {
       let library = [];
       const user = await User.findById(id);
-    
+
       await Promise.all(
         user.tracks.map(async (e) => {
           let track = await trackDB.findtrackbyid(e.id);
-          track.artist = await User.findById(track.artist)
+          track.artist = await User.findById(track.artist);
           if (track.status === "public") {
             library.push(track);
           }
         })
       );
-    
+
       await Promise.all(
         user.albums.map(async (album) => {
           let albumData = await albumDB.findalbum(album.id);
@@ -1446,7 +1499,7 @@ async function gettracks(type, id) {
           }
         })
       );
-    
+
       library.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       return library;
     }
@@ -1507,4 +1560,5 @@ module.exports = {
   unlike,
   removesavetrack,
   gettracks,
+  editsocialmedia,
 };

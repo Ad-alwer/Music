@@ -511,6 +511,7 @@ export default {
       }
     },
     lasttrack: function () {
+      const index = this.show.last.findIndex((e) => e._id == this.show.id);
       if (this.show.last.lenght > 0) {
         this.$refs.audio.pause();
         this.music = this.show.last[index - 1];

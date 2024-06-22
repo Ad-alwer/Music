@@ -10,13 +10,12 @@ import login from "../src/components/Login.vue";
 import register from "../src/components/Register.vue";
 import verifyaccount from "../src/components/Verifyaccount.vue";
 import home from "../src/components/home.vue";
-import profile from "../src/components/Profile.vue";
 import profileRequest from "../src/components/profile components/request.vue";
 import profileSocialmedia from "../src/components/profile components/socialmedia.vue";
-import profileMonthlylistener from "../src/components/profile components/monthlylistener.vue";
+import profileRecomenduser from "../src/components/profile components/recomenduser.vue";
 import notification from "../src/components/notification.vue";
 import dashboard from "../src/components/dashboard.vue";
-import verifypassword from "../src/components/profile components/verifynewpassword.vue";
+import verifypassword from "../src/components/verifynewpassword.vue";
 import notfound from "../src/components/404.vue";
 
 const routes = [
@@ -25,10 +24,9 @@ const routes = [
   { path: "/v/:token", component: verifyaccount },
   { path: "/login", component: login },
   { path: "/:component?/:part?", component: home },
-  { path: "/profile", component: profile },
   { path: "/profile/request", component: profileRequest },
   { path: "/profile/socialmedia", component: profileSocialmedia },
-  { path: "/profile/monthlylistener", component: profileMonthlylistener },
+  { path: "/profile/recomenduser", component: profileRecomenduser },
   { path: "/notification", component: notification },
   { path: "/dashboard/:component?", component: dashboard },
   { path: "/vp/:token", component: verifypassword },

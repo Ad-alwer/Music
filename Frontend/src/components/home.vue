@@ -36,6 +36,7 @@
           @reload="findotheruser"
           @changemusic="changemusic"
         />
+        <profile v-if="component == 'profile'"/>
       </section>
       <aside class="player">
         <player :data="newmusic" />
@@ -61,6 +62,7 @@ import publishTrack from "./home components/PublishTrack.vue";
 import PublishAlbum from "./home components/PublishAlbum.vue";
 import settings from "./home components/setting.vue";
 import user from "./home components/user.vue";
+import profile from "./home components/Profile.vue"
 
 import Register from "./Register.vue";
 import axios from "axios";
@@ -94,6 +96,7 @@ export default {
           "publishplaylist",
           "user",
           "settings",
+          "profile"
         ];
 
         urllocation
@@ -135,12 +138,10 @@ export default {
             location.href = "/notfound";
           }
         })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-        });
+      
     },
     changemusic:function(id){
-      console.log(id,'user');
+     
      this.newmusic = id
     }
   },
@@ -160,6 +161,7 @@ export default {
     PublishAlbum,
     settings,
     user,
+    profile
   },
 };
 </script>

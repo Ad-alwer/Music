@@ -51,8 +51,8 @@ async function change(field, val) {
       status: true,
       msg: "Saved successfully",
     };
-  } catch (error) {
-    console.error("Error updating field:", error);
+  } catch  {
+   
     return {
       status: false,
       msg: "Please try again",
@@ -159,6 +159,18 @@ async function removesocialicon(id) {
   }
 }
 
+async function findsocialmedia(name){
+  const base = await  Base.findOne({})
+  const socilamedia = base.socialicon
+
+  const search = socilamedia.find(e => e.name === name);
+  if(search){
+    return search.file.url
+  }else{
+    return false
+  }
+}
+
 async function addbanner(banner) {
   try {
     const newObjectId = new mongoose.Types.ObjectId();
@@ -252,6 +264,13 @@ async function removeresbanner(id) {
   }
 }
 
+async function getgenre(){
+  const base = await Base.find({})
+  const genre = base[0].genres
+  return genre
+
+}
+
 module.exports = {
   change,
   addgenre,
@@ -262,5 +281,7 @@ module.exports = {
   addsocialicon,
   getdata,
   removegenre,
-  removesocialicon
+  removesocialicon,
+  getgenre,
+  findsocialmedia
 };

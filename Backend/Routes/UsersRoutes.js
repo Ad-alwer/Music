@@ -99,13 +99,33 @@ Router.put("/favouritegenre/:genre", (req, res) => {
 
 Router.put("/bio", (req, res) => {
   usersDB
-    .changebio(req.headers.jwt, req.body.params)
+    .changebio(req.headers.jwt, req.body.text)
+    .then((data) => res.send(data));
+});
+
+Router.put("/addsocial", async (req, res) => {
+  usersDB
+    .addsocialmedia(
+      req.headers.jwt,
+      req.body.title,
+      req.body.icon,
+      req.body.link
+    )
     .then((data) => res.send(data));
 });
 
 Router.delete("/deletesocial/:name", async (req, res) => {
   usersDB
     .deletsocial(req.headers.jwt, req.params.name)
+    .then((data) => res.send(data));
+});
+
+Router.put("/editsocial", async (req, res) => {
+  usersDB
+    .editsocialmedia(
+      req.headers.jwt,
+      req.body.data,
+    )
     .then((data) => res.send(data));
 });
 
@@ -125,19 +145,19 @@ Router.get("/search/:username", (req, res) => {
   usersDB.searchbyusername(req.params.username).then((data) => res.send(data));
 });
 
-Router.put("/addrecommanduser/:id", (res, req) => {
+Router.put("/addrecommanduser/:id", (req, res) => {
   usersDB
     .addrecomendeuser(req.headers.jwt, req.params.id)
     .then((data) => res.send(data));
 });
 
-Router.put("/removerecommanduser/:id", (res, req) => {
+Router.put("/removerecommanduser/:id", (req, res) => {
   usersDB
     .removerecommandeuser(req.headers.jwt, req.params.id)
     .then((data) => res.send(data));
 });
 
-Router.put("/like/:tackid", (res, req) => {
+Router.put("/like/:tackid", (req, res) => {
   usersDB.favourite(req.headers.jwt, req.params.trackidid).then((data) => {
     trackDB.like(req.headers.jwt, trackid, data).then((data) => res.send(data));
   });

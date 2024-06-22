@@ -35,7 +35,6 @@ Router.put("/changestatus/:trackid&&:newstatus", (req, res) => {
 });
 
 Router.put("/play/:trackid", (req, res) => {
-  console.log('in');
   trackDB.playtrack(req.params.trackid).then((data) => {
     data ? trackDB.monthlyListener(req.params.trackid) : null;
   });

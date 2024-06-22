@@ -20,27 +20,21 @@ Router.put("/addgenre", (req, res) => {
 });
 
 Router.delete("/banner/:id", (req, res) => {
-  baseDB
-    .removebanner(req.params.id)
-    .then((data) => res.send(data));
+  baseDB.removebanner(req.params.id).then((data) => res.send(data));
 });
 
 Router.delete("/resbanner/:id", (req, res) => {
-  baseDB
-    .removeresbanner(req.params.id)
-    .then((data) => res.send(data));
+  baseDB.removeresbanner(req.params.id).then((data) => res.send(data));
 });
 
 Router.delete("/genre/:id", (req, res) => {
-  baseDB
-    .removegenre(req.params.id)
-    .then((data) => res.send(data));
+  baseDB.removegenre(req.params.id).then((data) => res.send(data));
 });
 
 Router.delete("/socialicon/:id", (req, res) => {
-  baseDB
-    .removesocialicon(req.params.id)
-    .then((data) => res.send(data));
+  baseDB.removesocialicon(req.params.id).then((data) => res.send(data));
 });
+
+
 
 module.exports = Router;
