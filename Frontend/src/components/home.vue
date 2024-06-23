@@ -1,15 +1,11 @@
 <template>
   <div id="parent ">
     <header class="d-flex align-items-center gap-1 mt-3">
-      <hmheader />
+      <hmheader :reload="reloadheader" />
     </header>
     <main class="d-flex">
       <aside class="menu">
-        <hmmenu
-          @change="changecomponent"
-          :component="component"
-          :reload="reloadheader"
-        />
+        <hmmenu @change="changecomponent" :component="component" />
       </aside>
       <section class="content">
         <discover v-if="component == 'discover'" class="active" />
@@ -28,7 +24,11 @@
           v-if="component == 'publishalbum' || component == 'publishplaylist'"
           :type="component == 'publishalbum' ? 'albums' : 'plylists'"
         />
-        <settings v-if="component == 'settings'" />
+        <settings
+          :username="user.username"
+          v-if="component == 'settings'"
+          @reload="changeusername"
+        />
         <user
           v-if="component == 'user'"
           :otheruser="finduser"
@@ -77,60 +77,16 @@ import info from "../../default";
 export default {
   name: "home",
   beforeMount() {
-    axios
-      .get(`${this.apiaddress}users/user`, {
-        headers: {
-          jwt: Register.methods.getcookies("jwt"),
-        },
-      })
-      .then((res) => {
-        this.user = res.data;
-
-        const firsturllocation = location.pathname.split("/")[1];
-        const secondurllocation = location.pathname.split("/")[2];
-
-        const componentsarr = [
-          "discover",
-          "explore",
-          "search",
-          "laibrarytrack",
-          "laibraryalbum",
-          "laibraryplaylist",
-          "laibraryartist",
-          "upload",
-          "publishmusic",
-          "publishpodcast",
-          "publishalbum",
-          "publishplaylist",
-          "user",
-          "settings",
-          "profile",
-        ];
-
-        let search = componentsarr.find((e) => {
-          return e == firsturllocation;
-        });
-        console.log(search);
-
-        firsturllocation && search
-          ? (this.component = search)
-          : (location.href = "/notfound");
-
-        if (firsturllocation == "profile" && secondurllocation) {
-          const profilearr = ["socialmedia", "request", "recomenduser"];
-          search = profilearr.find((e) => {
-            return e == secondurllocation;
-          });
-
-          search ? (this.component = search) : (location.href = "/notfound");
-        }
-      });
+   this.getdata()
+   if(this.user) {
+    this.routing()
+   }
   },
   data() {
     return {
       apiaddress: info.Api_ADDRESS,
       component: "discover",
-      reloadheader: false,
+      reloadheader: true,
       user: {},
       finduser: {},
       newmusic: null,
@@ -162,6 +118,62 @@ export default {
     changemusic: function (id) {
       this.newmusic = id;
     },
+    changeusername: function () {
+      this.reloadheader = !this.reloadheader;
+      this.getdata()
+    },
+    routing: function () {
+      
+
+      const firsturllocation = location.pathname.split("/")[1];
+      const secondurllocation = location.pathname.split("/")[2];
+
+      const componentsarr = [
+        "discover",
+        "explore",
+        "search",
+        "laibrarytrack",
+        "laibraryalbum",
+        "laibraryplaylist",
+        "laibraryartist",
+        "upload",
+        "publishmusic",
+        "publishpodcast",
+        "publishalbum",
+        "publishplaylist",
+        "user",
+        "settings",
+        "profile",
+      ];
+
+      let search = componentsarr.find((e) => {
+        return e == firsturllocation;
+      });
+
+      firsturllocation && search
+        ? (this.component = search)
+        : (location.href = "/notfound");
+
+      if (firsturllocation == "profile" && secondurllocation) {
+        const profilearr = ["socialmedia", "request", "recomenduser"];
+        search = profilearr.find((e) => {
+          return e == secondurllocation;
+        });
+
+        search ? (this.component = search) : (location.href = "/notfound");
+      }
+    },
+    getdata:function(){
+      axios
+      .get(`${this.apiaddress}users/user`, {
+        headers: {
+          jwt: Register.methods.getcookies("jwt"),
+        },
+      })
+      .then((res) => {
+        this.user = res.data
+      });
+    }
   },
   components: {
     hmheader,
