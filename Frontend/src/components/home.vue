@@ -39,7 +39,7 @@
         <profile v-if="component == 'profile'" />
         <socialmedia v-if="component == 'socialmedia'" />
         <request v-if="component == 'request'" />
-
+        <recomenduser v-if="component == 'recomenduser'" />
       </section>
       <aside class="player">
         <player :data="newmusic" />
@@ -67,7 +67,8 @@ import settings from "./home components/setting.vue";
 import user from "./home components/user.vue";
 import profile from "./home components/Profile.vue";
 import socialmedia from "./profile components/socialmedia.vue";
-import request from "./profile components/request.vue"
+import request from "./profile components/request.vue";
+import recomenduser from "./profile components/recomenduser.vue";
 
 import Register from "./Register.vue";
 import axios from "axios";
@@ -106,17 +107,22 @@ export default {
           "profile",
         ];
 
-        firsturllocation
-          ? (this.component = componentsarr.find((e) => {
-              return e == firsturllocation;
-            }))
-          : null;
+        let search = componentsarr.find((e) => {
+          return e == firsturllocation;
+        });
+        console.log(search);
+
+        firsturllocation && search
+          ? (this.component = search)
+          : (location.href = "/notfound");
 
         if (firsturllocation == "profile" && secondurllocation) {
           const profilearr = ["socialmedia", "request", "recomenduser"];
-          this.component = profilearr.find((e) => {
+          search = profilearr.find((e) => {
             return e == secondurllocation;
           });
+
+          search ? (this.component = search) : (location.href = "/notfound");
         }
       });
   },
@@ -175,7 +181,8 @@ export default {
     user,
     profile,
     socialmedia,
-    request
+    request,
+    recomenduser,
   },
 };
 </script>
