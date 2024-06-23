@@ -375,7 +375,7 @@ async function getuser(token) {
       await Promise.all(
         user.tracks.map(async (e) => {
           const res = await trackDB.findtrackbyid(e.id);
-          
+
           tracks.push(res);
         })
       );
@@ -897,17 +897,24 @@ async function editsocialmedia(token, socialmedia) {
   }
 }
 
-async function deletsocial(token, name) {
+async function deletsocial(token, title) {
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
-    const user = await User.findByIdAndRemove(decode._id);
-    await User.findByIdAndUpdate(decode._id, {
-      $pull: {
-        socialmedia: { "file.name": name },
-      },
-    });
-  } catch {
-    return false;
+    await User.findByIdAndUpdate(
+      decode._id,
+      { $pull: { socialmedia: { title: title } } },
+      { new: true }
+    );
+    return {
+      status: true,
+      msg: "Deleted successfully",
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      status: false,
+      msg: "Please try again",
+    };
   }
 }
 

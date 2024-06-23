@@ -10,9 +10,7 @@ import login from "../src/components/Login.vue";
 import register from "../src/components/Register.vue";
 import verifyaccount from "../src/components/Verifyaccount.vue";
 import home from "../src/components/home.vue";
-import profileRequest from "../src/components/profile components/request.vue";
-import profileSocialmedia from "../src/components/profile components/socialmedia.vue";
-import profileRecomenduser from "../src/components/profile components/recomenduser.vue";
+
 import notification from "../src/components/notification.vue";
 import dashboard from "../src/components/dashboard.vue";
 import verifypassword from "../src/components/verifynewpassword.vue";
@@ -24,9 +22,6 @@ const routes = [
   { path: "/v/:token", component: verifyaccount },
   { path: "/login", component: login },
   { path: "/:component?/:part?", component: home },
-  { path: "/profile/request", component: profileRequest },
-  { path: "/profile/socialmedia", component: profileSocialmedia },
-  { path: "/profile/recomenduser", component: profileRecomenduser },
   { path: "/notification", component: notification },
   { path: "/dashboard/:component?", component: dashboard },
   { path: "/vp/:token", component: verifypassword },

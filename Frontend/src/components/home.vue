@@ -36,7 +36,8 @@
           @reload="findotheruser"
           @changemusic="changemusic"
         />
-        <profile v-if="component == 'profile'"/>
+        <profile v-if="component == 'profile'" />
+        <socialmedia v-if="component == 'socialmedia'" />
       </section>
       <aside class="player">
         <player :data="newmusic" />
@@ -62,7 +63,8 @@ import publishTrack from "./home components/PublishTrack.vue";
 import PublishAlbum from "./home components/PublishAlbum.vue";
 import settings from "./home components/setting.vue";
 import user from "./home components/user.vue";
-import profile from "./home components/Profile.vue"
+import profile from "./home components/Profile.vue";
+import socialmedia from "./profile components/socialmedia.vue";
 
 import Register from "./Register.vue";
 import axios from "axios";
@@ -80,7 +82,9 @@ export default {
       .then((res) => {
         this.user = res.data;
 
-        const urllocation = location.pathname.split("/")[1];
+        const firsturllocation = location.pathname.split("/")[1];
+        const secondurllocation = location.pathname.split("/")[2];
+
         const componentsarr = [
           "discover",
           "explore",
@@ -96,14 +100,21 @@ export default {
           "publishplaylist",
           "user",
           "settings",
-          "profile"
+          "profile",
         ];
 
-        urllocation
+        firsturllocation
           ? (this.component = componentsarr.find((e) => {
-              return e == urllocation;
+              return e == firsturllocation;
             }))
           : null;
+
+        if (firsturllocation == "profile" && secondurllocation) {
+          const profilearr = ["socialmedia", "request", "recomenduser"];
+          this.component = profilearr.find((e) => {
+            return e == secondurllocation;
+          });
+        }
       });
   },
   data() {
@@ -113,7 +124,7 @@ export default {
       reloadheader: false,
       user: {},
       finduser: {},
-      newmusic:null
+      newmusic: null,
     };
   },
   watch: {
@@ -137,13 +148,11 @@ export default {
           } else {
             location.href = "/notfound";
           }
-        })
-      
+        });
     },
-    changemusic:function(id){
-     
-     this.newmusic = id
-    }
+    changemusic: function (id) {
+      this.newmusic = id;
+    },
   },
   components: {
     hmheader,
@@ -161,7 +170,8 @@ export default {
     PublishAlbum,
     settings,
     user,
-    profile
+    profile,
+    socialmedia,
   },
 };
 </script>
