@@ -1092,7 +1092,7 @@ hr {
 }
 
 .search-resault {
-  background-color: rgba(46, 46, 46, 0.28);
+  background-color: rgba(46, 46, 46, 0.20);
   margin-left: 15px;
   width: 600px;
   overflow: scroll;

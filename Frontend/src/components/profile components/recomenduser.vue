@@ -1,192 +1,250 @@
 <template>
-  <div id="parent ">
-    <header class="d-flex align-items-center gap-1 mt-3">
-      <hmheader />
-    </header>
-    <main class="d-flex">
-      <aside class="menu">
-        <hmmenu />
-      </aside>
-      <section class="content">
-        <div class="d-flex justify-content-between mt-4 mx-5">
-          <span class="text-uppercase color-blue fw-semibold fs-5"
-            >monthly listener</span
+   <loader v-if="popups.loader" />
+  <section v-else class="content w-100">
+    <div class="d-flex justify-content-between mt-4 mx-5">
+      <span class="text-uppercase color-blue fw-semibold fs-5"
+        >recomend user</span
+      >
+    </div>
+    <div
+      class="mt-4 d-flex justify-content-center align-items-center flex-column gap-1"
+    >
+      <div
+        class="search-parent d-flex rounded-3 px-2 py-1 justify-content-between mt-1 ms-3 align-items-center"
+      >
+        <input
+          type="text"
+          class="search-input"
+          maxlength="43"
+          placeholder="Search ..."
+          ref="searchinput"
+        />
+        <svg
+          class="search-icon pointer"
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          @click="searchuser(this.$refs.searchinput)"
+        >
+          <path
+            d="M19 19L13.8571 13.8571M8.71429 16.4286C4.4538 16.4286 1 12.9748 1 8.71429C1 4.4538 4.4538 1 8.71429 1C12.9748 1 16.4286 4.4538 16.4286 8.71429C16.4286 12.9748 12.9748 16.4286 8.71429 16.4286Z"
+            stroke="#B3B3BC"
+            stroke-width="2"
+          />
+        </svg>
+      </div>
+      <div
+        class="rounded-3 search-resault  p-2"
+        v-if="searchuserdata.length > 0"
+      >
+        <div
+          v-for="x in searchuserdata"
+          :key="x"
+          class="search-resault-child p-1 px-3 d-flex justify-content-between"
+        >
+          <div class="d-flex gap-4">
+            <img
+              :src="
+                x.profile ? x.profile : require('../../assets/img/icon.jpg')
+              "
+              class="img-fluid rounded-circle"
+              alt=""
+            />
+            <div class="d-flex flex-column align-items-center">
+              <span class="text-capitalize fw-semibold">{{ x.username }}</span>
+              <span class="text-capitalize color-gray"
+                >{{ formatview(x.subscribe.length) }} follower</span
+              >
+            </div>
+          </div>
+          <button
+            @click="addrecommenduser(x._id)"
+            class="px-3 py-2 text-white btn-add rounded-3"
           >
+            Add
+          </button>
         </div>
-        <div class="px-4 mt-5 d-flex flex-wrap gap-4">
-          <div class="monthly-child rounded-3">
-            <div
-              class="w-100 h-100 bg-success opacity-2 py-1 d-flex justify-content-center align-items-center flex-column gap-1 position-relative opacity-5"
-            >
-              <div
-                class="d-flex flex-column align-items-center monthly-content"
+      </div>
+      <div
+        class="mt-3 d-flex justify-content-center align-items-center recommend flex-column"
+      >
+        <div
+          v-for="x in user.recommendUser"
+          :key="x"
+          class="recommend-child w-100 p-1 px-3 d-flex justify-content-between"
+        >
+          <div class="d-flex gap-4">
+            <img
+              :src="
+                x.profile ? x.profile : require('../../assets/img/icon.jpg')
+              "
+              class="img-fluid rounded-circle"
+              alt=""
+            />
+            <div class="d-flex flex-column align-items-center">
+              <span class="text-capitalize fw-semibold">{{ x.username }}</span>
+              <span class="text-capitalize color-gray"
+                >{{ formatview(x.subscribe.length) }} follower</span
               >
-                <span
-                  class="text-white text-center text-capitalize fs-4 fw-semibold"
-                  >Jan</span
-                >
-                <span
-                  class="text-white text-center text-capitalize monthly-substring"
-                  >2032</span
-                >
-              </div>
-              <div class="d-flex justify-content-center gap-2">
-                <img src="../../assets/icons/listener.png" alt="" />
-                <span class="text-white text-center text-capitalize">2500</span>
-              </div>
-              <div
-                class="monthly-info d-flex justify-content-end align-items-sm-center rounded-4 gap-1"
-              >
-                <img src="../../assets/icons/info-light.png" alt="" />
-                <span class="text-capitalize text-white monthly-info-text"
-                  >more</span
-                >
-              </div>
             </div>
           </div>
-          <div class="monthly-child rounded-3">
-            <div
-              class="w-100 h-100 bg-success opacity-2 py-1 d-flex justify-content-center align-items-center flex-column gap-1 position-relative opacity-5"
-            >
-              <div
-                class="d-flex flex-column align-items-center monthly-content"
-              >
-                <span
-                  class="text-white text-center text-capitalize fs-4 fw-semibold"
-                  >Jan</span
-                >
-                <span
-                  class="text-white text-center text-capitalize monthly-substring"
-                  >2032</span
-                >
-              </div>
-              <div class="d-flex justify-content-center gap-2">
-                <img src="../../assets/icons/listener.png" alt="" />
-                <span class="text-white text-center text-capitalize">2500</span>
-              </div>
-              <div
-                class="monthly-info d-flex justify-content-end align-items-sm-center rounded-4 gap-1"
-              >
-                <img src="../../assets/icons/info-light.png" alt="" />
-                <span class="text-capitalize text-white monthly-info-text"
-                  >more</span
-                >
-              </div>
-            </div>
-          </div> <div class="monthly-child rounded-3">
-            <div
-              class="w-100 h-100 bg-success opacity-2 py-1 d-flex justify-content-center align-items-center flex-column gap-1 position-relative opacity-5"
-            >
-              <div
-                class="d-flex flex-column align-items-center monthly-content"
-              >
-                <span
-                  class="text-white text-center text-capitalize fs-4 fw-semibold"
-                  >Jan</span
-                >
-                <span
-                  class="text-white text-center text-capitalize monthly-substring"
-                  >2032</span
-                >
-              </div>
-              <div class="d-flex justify-content-center gap-2">
-                <img src="../../assets/icons/listener.png" alt="" />
-                <span class="text-white text-center text-capitalize">2500</span>
-              </div>
-              <div
-                class="monthly-info d-flex justify-content-end align-items-sm-center rounded-4 gap-1"
-              >
-                <img src="../../assets/icons/info-light.png" alt="" />
-                <span class="text-capitalize text-white monthly-info-text"
-                  >more</span
-                >
-              </div>
-            </div>
-          </div> <div class="monthly-child rounded-3">
-            <div
-              class="w-100 h-100 bg-success opacity-2 py-1 d-flex justify-content-center align-items-center flex-column gap-1 position-relative opacity-5"
-            >
-              <div
-                class="d-flex flex-column align-items-center monthly-content"
-              >
-                <span
-                  class="text-white text-center text-capitalize fs-4 fw-semibold"
-                  >Jan</span
-                >
-                <span
-                  class="text-white text-center text-capitalize monthly-substring"
-                  >2032</span
-                >
-              </div>
-              <div class="d-flex justify-content-center gap-2">
-                <img src="../../assets/icons/listener.png" alt="" />
-                <span class="text-white text-center text-capitalize">2500</span>
-              </div>
-              <div
-                class="monthly-info d-flex justify-content-end align-items-sm-center rounded-4 gap-1"
-              >
-                <img src="../../assets/icons/info-light.png" alt="" />
-                <span class="text-capitalize text-white monthly-info-text"
-                  >more</span
-                >
-              </div>
-            </div>
-          </div> <div class="monthly-child rounded-3">
-            <div
-              class="w-100 h-100 bg-success opacity-2 py-1 d-flex justify-content-center align-items-center flex-column gap-1 position-relative opacity-5"
-            >
-              <div
-                class="d-flex flex-column align-items-center monthly-content"
-              >
-                <span
-                  class="text-white text-center text-capitalize fs-4 fw-semibold"
-                  >Jan</span
-                >
-                <span
-                  class="text-white text-center text-capitalize monthly-substring"
-                  >2032</span
-                >
-              </div>
-              <div class="d-flex justify-content-center gap-2">
-                <img src="../../assets/icons/listener.png" alt="" />
-                <span class="text-white text-center text-capitalize">2500</span>
-              </div>
-              <div
-                class="monthly-info d-flex justify-content-end align-items-sm-center rounded-4 gap-1"
-              >
-                <img src="../../assets/icons/info-light.png" alt="" />
-                <span class="text-capitalize text-white monthly-info-text"
-                  >more</span
-                >
-              </div>
-            </div>
-          </div>
+          <button
+            @click="removerecommenduser(x._id)"
+            class="px-3 py-2 text-white btn-add rounded-3 text-capitalize"
+          >
+            remove
+          </button>
         </div>
-      </section>
-      <aside class="player">
-        <player />
-      </aside>
-    </main>
-  </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
-import hmheader from "../home components/header";
-import hmmenu from "../home components/menu";
-import player from "../home components/Player.vue";
+import Register from "../Register.vue";
+import axios from "axios";
+import info from "../../../default";
+import iziToast from "izitoast";
+
+
+import loader from "../loader.vue";
 
 export default {
-  name: "home",
+  name: "recomenduser",
+  beforeMount() {
+    this.getdata();
+  },
   data() {
     return {
-      component: "settings",
+      apiaddress: info.Api_ADDRESS,
+      user: [],
+      base: [],
+      searchuserdata: [],
+      popups: {
+        loader: true,
+      },
     };
   },
-  methods: {},
+  methods: {
+    getdata: function () {
+      axios
+        .get(`${this.apiaddress}users/user`, {
+          headers: {
+            jwt: Register.methods.getcookies("jwt"),
+          },
+        })
+        .then((res) => {
+          this.user = res.data;
+
+          axios.get(`${this.apiaddress}base/`).then((data) => {
+            this.base = data.data;
+            this.popups.loader = false;
+          });
+        });
+    },
+    searchuser: function (value) {
+      axios.get(`${this.apiaddress}users/search/${value}`).then((res) => {
+        if (res.data) {
+          this.searchuserdata = res.data;
+
+          const thisuserindex = this.searchuserdata.findIndex((e) => {
+            return e.username === this.user.username;
+          });
+
+          thisuserindex >= 0
+            ? this.searchuserdata.splice(thisuserindex, 1)
+            : null;
+
+          if (this.user.recommendUser.length > 0) {
+            this.user.recommendUser.forEach((recommendUser) => {
+              const recommendUserIndex = this.searchuserdata.findIndex(
+                (e) => e.username === recommendUser.username
+              );
+              if (recommendUserIndex >= 0) {
+                this.searchuserdata.splice(recommendUserIndex, 1);
+              }
+            });
+          }
+        }
+      });
+    },
+    addrecommenduser: function (id) {
+      if (this.user.recommendUser.length < 5) {
+        axios
+          .put(
+            `${this.apiaddress}users/addrecommanduser/${id}`,
+            {},
+            {
+              headers: {
+                jwt: Register.methods.getcookies("jwt"),
+              },
+            }
+          )
+          .then((res) => {
+            if (res.data) {
+              iziToast.success({
+                title: res.data.msg,
+                position: "topRight",
+              });
+              this.$refs.searchinput.value = null;
+              this.searchuserdata = [];
+              this.getdata();
+            } else {
+              iziToast.error({
+                title: res.data.msg,
+                position: "topRight",
+              });
+            }
+          });
+      } else {
+        iziToast.error({
+          title: "You Reached limit",
+          position: "topRight",
+        });
+      }
+    },
+    removerecommenduser: function (id) {
+      axios
+        .put(
+          `${this.apiaddress}users/removerecommanduser/${id}`,
+          {},
+          {
+            headers: {
+              jwt: Register.methods.getcookies("jwt"),
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data) {
+            iziToast.success({
+              title: res.data.msg,
+              position: "topRight",
+            });
+            this.$refs.searchinput.value = null;
+            this.searchuserdata = [];
+            this.getdata();
+          } else {
+            iziToast.error({
+              title: res.data.msg,
+              position: "topRight",
+            });
+          }
+        });
+    },
+    formatview: function (number) {
+      if (number >= 1e6) {
+        return (number / 1e6).toFixed(0) + "M";
+      } else if (number >= 1e3) {
+        return (number / 1e3).toFixed(0) + "K";
+      } else {
+        return number;
+      }
+    },
+  },
   components: {
-    hmheader,
-    hmmenu,
-    player,
+    loader
   },
 };
 </script>
@@ -195,117 +253,34 @@ export default {
 * {
   overflow: hidden;
 }
-.content {
-  width: 62%;
-  overflow-y: scroll !important;
-  max-height: 90vh;
-}
-aside.menu {
-  width: 240px;
-  height: 92vh;
-}
-aside.player {
-  width: 25%;
-  /* background-color: aqua; */
-}
-tr {
-  border-bottom: 2px solid #4343ef;
-}
-.socialmedia-icon {
-  width: 32px;
-  width: 32px;
-}
-.socialmedia-link {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 120px;
-}
-.socialmedia-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 80px;
+
+.btn-save,
+.btn-add {
+  background-color: var(--blue-main);
 }
 
-.form-control,
-.form-select {
-  border: none;
-}
-.form-control:focus,
-.form-select:focus {
-  outline: none;
-  box-shadow: none;
-}
-.form-control:focus,
-.form-select:focus {
-  outline: none;
-  box-shadow: none;
+.search-parent {
+  width: 60%;
+  height: 33px;
+  border: 1px solid var(--gray-main);
 }
 
-monthly-child {
-  width: 130px;
-  height: 130px;
-  background-color: var(--gray-main);
-  cursor: pointer;
+.search-resault {
+  background-color: rgba(46, 46, 46, 0.20);
+  margin-left: 15px;
+  width: 60%;
+  overflow: scroll;
+  height: 200px;
+  border-radius: 50px;
 }
-.opacity-1 {
-  opacity: 1;
+.search-resault-child img,
+.recommend img {
+  width: 50px;
 }
-.opacity-2 {
-  opacity: 0.75;
+.recommend {
+  width: 600px;
 }
-.opacity-3 {
-  opacity: 0.7;
-}
-.opacity-4 {
-  opacity: 0.6;
-}
-.opacity-5 {
-  opacity: 0.45;
-}
-.opacity-6 {
-  opacity: 0.35;
-}
-.opacity-7 {
-  opacity: 0.25;
-}
-.monthly-substring {
-  position: relative;
-  top: -5px;
-  font-size: 12px;
-}
-
-.monthly-info {
-  position: absolute;
-  padding: 2px;
-  bottom: 2%;
-  right: 2%;
-  background-color: rgba(0, 0, 0, 0.342);
-  cursor: pointer;
-}
-
-.monthly-info img {
-  width: 18px;
-}
-.monthly-info-text {
-  font-size: 12px;
-  display: none;
-}
-.monthly-info:hover {
-  padding: 2px 5px 2px 3px;
-}
-.monthly-content {
-  margin-top: -20px;
-}
-
-.monthly-info:hover .monthly-info-text {
-  display: block;
-}
-.monthly-child {
-  width: 130px;
-  height: 130px;
-  background-color: var(--gray-main);
-  cursor: pointer;
+.search-resault-child:not(:nth-last-child()) {
+  border-bottom: 2px solid var(--blue-main);
 }
 </style>
