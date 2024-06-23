@@ -1,5 +1,6 @@
 <template>
-  <div id="parent">
+  <loader v-if="popups.loader" />
+  <div v-else id="parent">
     <section class="content container px-5 mt-4">
       <section class="d-flex justify-content-between">
         <span class="text-uppercase color-blue fw-semibold fs-5">profile</span>
@@ -626,6 +627,7 @@ import iziToast from "izitoast";
 
 import messageshowpopup from "../profile components/messageshowpopup.vue";
 import editsocialmediapopup from "../profile components/editsocialmediapopup.vue";
+import loader from "../loader.vue";
 
 export default {
   name: "profile",
@@ -672,13 +674,16 @@ export default {
           },
         })
         .then((res) => {
-          this.$refs.bio.value = res.data.bio;
           this.user = res.data;
           this.user.requests = this.user.requests.slice(0, 3);
           this.user.socialmedia = this.user.socialmedia.slice(0, 3);
+          this.popups.loader = false;
+          
           axios.get(`${this.apiaddress}base/`).then((data) => {
             this.base = data.data;
           });
+
+          this.$refs.bio ? (this.$refs.bio.value = res.data.bio) : null;
         });
     },
     changeprofile: function () {
@@ -992,6 +997,7 @@ export default {
   components: {
     messageshowpopup,
     editsocialmediapopup,
+    loader,
   },
 };
 </script>
@@ -1092,7 +1098,7 @@ hr {
 }
 
 .search-resault {
-  background-color: rgba(46, 46, 46, 0.20);
+  background-color: rgba(46, 46, 46, 0.2);
   margin-left: 15px;
   width: 600px;
   overflow: scroll;
