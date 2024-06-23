@@ -1,5 +1,6 @@
 <template>
-     <section class="content w-100 mx-3">
+    <loader v-if="popups.loader" />
+     <section v-else class="content w-100 mx-3">
         <div class="d-flex justify-content-between mt-4 mx-5">
           <span class="text-uppercase color-blue fw-semibold fs-5"
             >requests</span
@@ -59,6 +60,7 @@ import axios from "axios";
 import info from "../../../default";
 
 import messageshowpopup from "../profile components/messageshowpopup.vue";
+import loader from "../loader.vue";
 
 
 export default {
@@ -72,7 +74,7 @@ export default {
       user: [],
       base: [],
       popups: {
-        loader: false,
+        loader: true,
         messageshow:false
       },
       rejectmessage:null
@@ -101,7 +103,8 @@ export default {
     },
   },
   components: {
-    messageshowpopup
+    messageshowpopup,
+    loader
   },
 };
 </script>
