@@ -1,13 +1,5 @@
 <template>
-  <div id="parent ">
-    <header class="d-flex align-items-center gap-1 mt-3">
-      <hmheader />
-    </header>
-    <main class="d-flex">
-      <aside class="menu">
-        <hmmenu />
-      </aside>
-      <section class="content">
+     <section class="content w-100 mx-3">
         <div class="d-flex justify-content-between mt-4 mx-5">
           <span class="text-uppercase color-blue fw-semibold fs-5"
             >requests</span
@@ -19,63 +11,97 @@
                 <th class="text-center text-capitalize fw-semibold">name</th>
                 <th class="text-center text-capitalize fw-semibold">status</th>
                 <th class="text-center text-capitalize fw-semibold">message</th>
-                <th class="text-center text-capitalize fw-semibold">more</th>
               </tr>
-              <tr>
+              <tr v-for="x in user.requests" :key="x">
                 <th class="text-center text-capitalize">track1</th>
                 <th class="text-center text-capitalize">
                   <div>
-                    <img src="../../assets/icons/check.png" alt="" />
-                    <!-- <img src="../assets/icons/uncheck.png" alt=""> -->
-                  </div>
+                  <img
+                    v-if="x.status == 'accept'"
+                    src="../../assets/icons/check.png"
+                    alt=""
+                  />
+                  <img
+                    v-else-if="x.status == 'reject'"
+                    src="../../assets/icons/uncheck.png"
+                    alt=""
+                  />
+                  <img v-else src="../../assets/icons/pending.png" alt="" />
+                </div>
                 </th>
                 <th class="text-center text-capitalize">
-                  <!-- <img src="../assets/icons/message.png" alt="" /> -->
-                  <img src="../../assets/icons/nomessage.png" alt="" />
+                  <img
+                  v-if="x.status == 'reject'"
+                  class="pointer"
+                  @click="messageshowopener(x.msg)"
+                  src="../../assets/icons/message.png"
+                  alt=""
+                />
+                <img v-else src="../../assets/icons/nomessage.png" alt="" />
                 </th>
-                <th class="text-center text-capitalize">
-                  <svg
-                    class="pointer ms-2"
-                    width="18"
-                    height="6"
-                    viewBox="0 0 18 6"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle cx="3" cy="3" r="3" fill="#B3B3BC" />
-                    <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
-                  </svg>
-                </th>
+               
               </tr>
              
             </table>
         </div>
-
+        <messageshowpopup
+              @close="popups.messageshow = false"
+              v-if="popups.messageshow"
+              :message="rejectmessage"
+            />
       </section>
-      <aside class="player">
-        <player />
-      </aside>
-    </main>
-  </div>
 </template>
 
 <script>
-import hmheader from "../home components/header";
-import hmmenu from "../home components/menu";
-import player from "../home components/Player.vue";
+
+import Register from "../Register.vue";
+import axios from "axios";
+import info from "../../../default";
+
+import messageshowpopup from "../profile components/messageshowpopup.vue";
+
 
 export default {
-  name: "home",
+  name: "request",
+  beforeMount(){
+    this.getdata()
+  },
   data() {
     return {
-      component: "settings",
+      apiaddress: info.Api_ADDRESS,
+      user: [],
+      base: [],
+      popups: {
+        loader: false,
+        messageshow:false
+      },
+      rejectmessage:null
     };
   },
-  methods: {},
+  methods: {
+    getdata: function () {
+      axios
+        .get(`${this.apiaddress}users/user`, {
+          headers: {
+            jwt: Register.methods.getcookies("jwt"),
+          },
+        })
+        .then((res) => {
+          this.user = res.data;
+
+          axios.get(`${this.apiaddress}base/`).then((data) => {
+            this.base = data.data;
+            this.popups.loader = false;
+          });
+        });
+    },
+    messageshowopener: function (e) {
+      this.rejectmessage = e;
+      this.popups.messageshow = true;
+    },
+  },
   components: {
-    hmheader,
-    hmmenu,
-    player,
+    messageshowpopup
   },
 };
 </script>

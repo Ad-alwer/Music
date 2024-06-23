@@ -38,6 +38,8 @@
         />
         <profile v-if="component == 'profile'" />
         <socialmedia v-if="component == 'socialmedia'" />
+        <request v-if="component == 'request'" />
+
       </section>
       <aside class="player">
         <player :data="newmusic" />
@@ -65,6 +67,7 @@ import settings from "./home components/setting.vue";
 import user from "./home components/user.vue";
 import profile from "./home components/Profile.vue";
 import socialmedia from "./profile components/socialmedia.vue";
+import request from "./profile components/request.vue"
 
 import Register from "./Register.vue";
 import axios from "axios";
@@ -172,6 +175,7 @@ export default {
     user,
     profile,
     socialmedia,
+    request
   },
 };
 </script>
