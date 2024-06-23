@@ -529,7 +529,7 @@
                 <span class="">{{ analyze.totalview }}</span>
               </th>
             </tr>
-          
+
             <tr>
               <th
                 class="text-uppercase text-center d-flex justify-content-start align-items-center gap-5"
@@ -547,7 +547,7 @@
                 <span>musics</span>
               </th>
               <th class="text-capitalize fw-semibold color-black text-center">
-                {{analyze.musiclenght}}
+                {{ analyze.musiclenght }}
               </th>
             </tr>
             <tr>
@@ -577,7 +577,7 @@
                 <span>best music</span>
               </th>
               <th class="text-capitalize fw-semibold color-black text-center">
-                {{analyze.bestmusic}}
+                {{ analyze.bestmusic }}
               </th>
             </tr>
             <tr>
@@ -587,7 +587,7 @@
                 <span>best album</span>
               </th>
               <th class="text-capitalize fw-semibold color-black text-center">
-              {{analyze.bestalbum}}
+                {{ analyze.bestalbum }}
               </th>
             </tr>
             <tr>
@@ -607,7 +607,7 @@
                 <span>best playlist</span>
               </th>
               <th class="text-capitalize fw-semibold color-black text-center">
-                 Fix it
+                Fix it
               </th>
             </tr>
           </table>
@@ -625,7 +625,6 @@ import info from "../../../default";
 import iziToast from "izitoast";
 
 import messageshowpopup from "../profile components/messageshowpopup.vue";
-
 import editsocialmediapopup from "../profile components/editsocialmediapopup.vue";
 
 export default {
@@ -745,40 +744,47 @@ export default {
       this.popups.messageshow = true;
     },
     savenewsocial: function () {
-      if (
-        this.$refs.socialmedialink.value &&
-        this.$refs.socialmediaicon.value &&
-        this.$refs.socialmediatitle.value
-      ) {
-        axios
-          .put(
-            `${this.apiaddress}users/addsocial`,
-            {
-              link: this.$refs.socialmedialink.value,
-              icon: this.$refs.socialmediaicon.value,
-              title: this.$refs.socialmediatitle.value,
-            },
-            {
-              headers: {
-                jwt: Register.methods.getcookies("jwt"),
+      if (this.user.socialmedia < 7) {
+        if (
+          this.$refs.socialmedialink.value &&
+          this.$refs.socialmediaicon.value &&
+          this.$refs.socialmediatitle.value
+        ) {
+          axios
+            .put(
+              `${this.apiaddress}users/addsocial`,
+              {
+                link: this.$refs.socialmedialink.value,
+                icon: this.$refs.socialmediaicon.value,
+                title: this.$refs.socialmediatitle.value,
               },
-            }
-          )
-          .then((res) => {
-            if (res.data) {
-              iziToast.success({
-                title: res.data.msg,
-                position: "topRight",
-              });
-              this.clearsocialinputs();
-              this.getdata();
-            } else {
-              iziToast.error({
-                title: res.data.msg,
-                position: "topRight",
-              });
-            }
-          });
+              {
+                headers: {
+                  jwt: Register.methods.getcookies("jwt"),
+                },
+              }
+            )
+            .then((res) => {
+              if (res.data) {
+                iziToast.success({
+                  title: res.data.msg,
+                  position: "topRight",
+                });
+                this.clearsocialinputs();
+                this.getdata();
+              } else {
+                iziToast.error({
+                  title: res.data.msg,
+                  position: "topRight",
+                });
+              }
+            });
+        }
+      } else {
+        iziToast.error({
+          title: "You Reached limit",
+          position: "topRight",
+        });
       }
     },
     clearsocialinputs: function () {
@@ -847,32 +853,39 @@ export default {
       });
     },
     addrecommenduser: function (id) {
-      axios
-        .put(
-          `${this.apiaddress}users/addrecommanduser/${id}`,
-          {},
-          {
-            headers: {
-              jwt: Register.methods.getcookies("jwt"),
-            },
-          }
-        )
-        .then((res) => {
-          if (res.data) {
-            iziToast.success({
-              title: res.data.msg,
-              position: "topRight",
-            });
-            this.$refs.searchinput.value = null;
-            this.searchuserdata = [];
-            this.getdata();
-          } else {
-            iziToast.error({
-              title: res.data.msg,
-              position: "topRight",
-            });
-          }
+      if (this.user.recommendUser.length < 5) {
+        axios
+          .put(
+            `${this.apiaddress}users/addrecommanduser/${id}`,
+            {},
+            {
+              headers: {
+                jwt: Register.methods.getcookies("jwt"),
+              },
+            }
+          )
+          .then((res) => {
+            if (res.data) {
+              iziToast.success({
+                title: res.data.msg,
+                position: "topRight",
+              });
+              this.$refs.searchinput.value = null;
+              this.searchuserdata = [];
+              this.getdata();
+            } else {
+              iziToast.error({
+                title: res.data.msg,
+                position: "topRight",
+              });
+            }
+          });
+      } else {
+        iziToast.error({
+          title: "You Reached limit",
+          position: "topRight",
         });
+      }
     },
     removerecommenduser: function (id) {
       axios
