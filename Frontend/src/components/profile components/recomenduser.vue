@@ -120,7 +120,7 @@ export default {
     return {
       apiaddress: info.Api_ADDRESS,
       user: [],
-      base: [],
+     
       searchuserdata: [],
       popups: {
         loader: true,
@@ -137,11 +137,8 @@ export default {
         })
         .then((res) => {
           this.user = res.data;
-
-          axios.get(`${this.apiaddress}base/`).then((data) => {
-            this.base = data.data;
-            this.popups.loader = false;
-          });
+          this.popups.loader = false;
+       
         });
     },
     searchuser: function (value) {

@@ -1,60 +1,55 @@
 <template>
-    <loader v-if="popups.loader" />
-     <section v-else class="content w-100 mx-3">
-        <div class="d-flex justify-content-between mt-4 mx-5">
-          <span class="text-uppercase color-blue fw-semibold fs-5"
-            >requests</span
-          >
-        </div>
-        <div class="px-4">
-            <table class="table table-borderless mt-4">
-              <tr>
-                <th class="text-center text-capitalize fw-semibold">name</th>
-                <th class="text-center text-capitalize fw-semibold">status</th>
-                <th class="text-center text-capitalize fw-semibold">message</th>
-              </tr>
-              <tr v-for="x in user.requests" :key="x">
-                <th class="text-center text-capitalize">track1</th>
-                <th class="text-center text-capitalize">
-                  <div>
-                  <img
-                    v-if="x.status == 'accept'"
-                    src="../../assets/icons/check.png"
-                    alt=""
-                  />
-                  <img
-                    v-else-if="x.status == 'reject'"
-                    src="../../assets/icons/uncheck.png"
-                    alt=""
-                  />
-                  <img v-else src="../../assets/icons/pending.png" alt="" />
-                </div>
-                </th>
-                <th class="text-center text-capitalize">
-                  <img
-                  v-if="x.status == 'reject'"
-                  class="pointer"
-                  @click="messageshowopener(x.msg)"
-                  src="../../assets/icons/message.png"
-                  alt=""
-                />
-                <img v-else src="../../assets/icons/nomessage.png" alt="" />
-                </th>
-               
-              </tr>
-             
-            </table>
-        </div>
-        <messageshowpopup
-              @close="popups.messageshow = false"
-              v-if="popups.messageshow"
-              :message="rejectmessage"
+  <loader v-if="popups.loader" />
+  <section v-else class="content w-100 mx-3">
+    <div class="d-flex justify-content-between mt-4 mx-5">
+      <span class="text-uppercase color-blue fw-semibold fs-5">requests</span>
+    </div>
+    <div class="px-4">
+      <table class="table table-borderless mt-4">
+        <tr>
+          <th class="text-center text-capitalize fw-semibold">name</th>
+          <th class="text-center text-capitalize fw-semibold">status</th>
+          <th class="text-center text-capitalize fw-semibold">message</th>
+        </tr>
+        <tr v-for="x in user.requests" :key="x">
+          <th class="text-center text-capitalize">track1</th>
+          <th class="text-center text-capitalize">
+            <div>
+              <img
+                v-if="x.status == 'accept'"
+                src="../../assets/icons/check.png"
+                alt=""
+              />
+              <img
+                v-else-if="x.status == 'reject'"
+                src="../../assets/icons/uncheck.png"
+                alt=""
+              />
+              <img v-else src="../../assets/icons/pending.png" alt="" />
+            </div>
+          </th>
+          <th class="text-center text-capitalize">
+            <img
+              v-if="x.status == 'reject'"
+              class="pointer"
+              @click="messageshowopener(x.msg)"
+              src="../../assets/icons/message.png"
+              alt=""
             />
-      </section>
+            <img v-else src="../../assets/icons/nomessage.png" alt="" />
+          </th>
+        </tr>
+      </table>
+    </div>
+    <messageshowpopup
+      @close="popups.messageshow = false"
+      v-if="popups.messageshow"
+      :message="rejectmessage"
+    />
+  </section>
 </template>
 
 <script>
-
 import Register from "../Register.vue";
 import axios from "axios";
 import info from "../../../default";
@@ -62,22 +57,21 @@ import info from "../../../default";
 import messageshowpopup from "../profile components/messageshowpopup.vue";
 import loader from "../loader.vue";
 
-
 export default {
   name: "request",
-  beforeMount(){
-    this.getdata()
+  beforeMount() {
+    this.getdata();
   },
   data() {
     return {
       apiaddress: info.Api_ADDRESS,
       user: [],
-      base: [],
+
       popups: {
         loader: true,
-        messageshow:false
+        messageshow: false,
       },
-      rejectmessage:null
+      rejectmessage: null,
     };
   },
   methods: {
@@ -90,11 +84,7 @@ export default {
         })
         .then((res) => {
           this.user = res.data;
-
-          axios.get(`${this.apiaddress}base/`).then((data) => {
-            this.base = data.data;
-            this.popups.loader = false;
-          });
+          this.popups.loader = false;
         });
     },
     messageshowopener: function (e) {
@@ -104,7 +94,7 @@ export default {
   },
   components: {
     messageshowpopup,
-    loader
+    loader,
   },
 };
 </script>
