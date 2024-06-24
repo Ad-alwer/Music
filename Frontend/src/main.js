@@ -24,7 +24,7 @@ const routes = [
   { path: "/:component?/:part?", component: home },
   { path: "/notification", component: notification },
   { path: "/dashboard/:component?", component: dashboard },
-  { path: "/vp/:token", component: verifypassword },
+  { path: "/f/:token", component: verifypassword },
   { path: "/:pathMatch(.*)", component: notfound },
   { path: "/notfound", component: notfound },
 

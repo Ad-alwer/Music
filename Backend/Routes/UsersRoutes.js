@@ -16,11 +16,12 @@ Router.post("/login", (req, res) => {
 });
 
 Router.get("/forgetpassword/:username", (req, res) => {
+  console.log('in');
   usersDB.forgetpassword(req.params.username).then((data) => res.send(data));
 });
 
 Router.get("/verifyforgetlink", (req, res) => {
-  usersDB.verify(req.headers.jwt).then((data) => res.send(data));
+  usersDB.verify(req.headers.token).then((data) => res.send(data));
 });
 
 Router.put("/changepasswordbylink", (req, res) => {

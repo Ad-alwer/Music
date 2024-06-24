@@ -64,7 +64,7 @@ async function adduser(username, email, password) {
   });
   await account.save();
   token = jwt.sign({ _id: account.id, code }, process.env.PENDING_JWT);
-  const link = `http://localhost:8080/v/${token}`;
+  const link = `${process.env.Site_Adress}v/${token}`;
   const html = `    <h1 style="text-align: center">Hello , ${username}</h1>
   <p style="font-size:1.5rem;text-align: center;font-weight:bold;  text-transform: capitalize;">You are create account in our site,Click on blow button to verify that or copy text in your browser</p>
   <div style="display: flex; justify-content: center">

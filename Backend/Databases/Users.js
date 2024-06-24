@@ -239,7 +239,7 @@ async function forgetpassword(user) {
     const foundUser = await User.findOne({ username: user });
     if (foundUser) {
       token = jwt.sign({ _id: foundUser.id }, process.env.PENDING_JWT);
-      const link = `http://localhost:${process.env.PORT}/f/${token}`;
+      const link = `${process.env.Site_Adress}f/${token}`;
       const html = `    <h1 style="text-align: center">Hello , ${foundUser.username}</h1>
       <p style="font-size:1.5rem;text-align: center;font-weight:bold;  text-transform: capitalize;">To restore your password please Click on blow button</p>
       <div style="display: flex; justify-content: center">
@@ -321,7 +321,7 @@ async function verify(token) {
   try {
     const decode = jwt.verify(token, process.env.PENDING_JWT);
     let user = await User.findById(decode._id);
-    return user ? user : false;
+    return user ? user._id : false;
   } catch (err) {
     return false;
   }
@@ -329,28 +329,16 @@ async function verify(token) {
 
 async function changepasswordbylink(id, password) {
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      { password: password },
-      { new: true }
-    );
+    await User.findByIdAndUpdate(id, { password });
 
-    if (updatedUser) {
-      return {
-        status: true,
-        msg: "Password successfully changed",
-      };
-    } else {
-      return {
-        status: false,
-        msg: "Please try again later",
-      };
-    }
+    return {
+      status: true,
+      msg: "Password have has changed successfully",
+    };
   } catch {
     return {
       status: false,
       msg: "Please try again later",
-      ap,
     };
   }
 }
@@ -399,8 +387,7 @@ async function getuser(token) {
     user.tracks = tracks;
     user.albums = album;
     return user;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -467,14 +454,20 @@ async function getuserbyusername(username) {
 async function changeusername(token, newusername) {
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
-    const updatedUser = await User.findByIdAndUpdate(
-      decode._id,
-      { usename: newusername },
-      { new: true }
-    );
-    return updatedUser ? true : false;
+    await User.findByIdAndUpdate(decode._id, {
+      $set: {
+        username: newusername,
+      },
+    });
+    return {
+      status: true,
+      msg: "Username successfully changed",
+    };
   } catch {
-    return false;
+    return {
+      status: false,
+      msg: "Please try again",
+    };
   }
 }
 
