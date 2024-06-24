@@ -77,10 +77,10 @@ import info from "../../default";
 export default {
   name: "home",
   beforeMount() {
-   this.getdata()
-   if(this.user) {
-    this.routing()
-   }
+    this.getdata();
+    if (this.user) {
+      this.routing();
+    }
   },
   data() {
     return {
@@ -120,60 +120,62 @@ export default {
     },
     changeusername: function () {
       this.reloadheader = !this.reloadheader;
-      this.getdata()
+      this.getdata();
     },
     routing: function () {
-      
-
       const firsturllocation = location.pathname.split("/")[1];
       const secondurllocation = location.pathname.split("/")[2];
 
-      const componentsarr = [
-        "discover",
-        "explore",
-        "search",
-        "laibrarytrack",
-        "laibraryalbum",
-        "laibraryplaylist",
-        "laibraryartist",
-        "upload",
-        "publishmusic",
-        "publishpodcast",
-        "publishalbum",
-        "publishplaylist",
-        "user",
-        "settings",
-        "profile",
-      ];
+      if (firsturllocation) {
+        const componentsarr = [
+          "discover",
+          "explore",
+          "search",
+          "laibrarytrack",
+          "laibraryalbum",
+          "laibraryplaylist",
+          "laibraryartist",
+          "upload",
+          "publishmusic",
+          "publishpodcast",
+          "publishalbum",
+          "publishplaylist",
+          "user",
+          "settings",
+          "profile",
+        ];
 
-      let search = componentsarr.find((e) => {
-        return e == firsturllocation;
-      });
-
-      firsturllocation && search
-        ? (this.component = search)
-        : (location.href = "/notfound");
-
-      if (firsturllocation == "profile" && secondurllocation) {
-        const profilearr = ["socialmedia", "request", "recomenduser"];
-        search = profilearr.find((e) => {
-          return e == secondurllocation;
+        let search = componentsarr.find((e) => {
+          return e == firsturllocation;
         });
 
-        search ? (this.component = search) : (location.href = "/notfound");
+        if (firsturllocation !== "home") {
+          firsturllocation && search
+            ? (this.component = search)
+            : (location.href = "/notfound");
+
+          if (firsturllocation == "profile" && secondurllocation) {
+            const profilearr = ["socialmedia", "request", "recomenduser"];
+            search = profilearr.find((e) => {
+              return e == secondurllocation;
+            });
+
+            search ? (this.component = search) : (location.href = "/notfound");
+          }
+        }
       }
     },
-    getdata:function(){
+    getdata: function () {
       axios
-      .get(`${this.apiaddress}users/user`, {
-        headers: {
-          jwt: Register.methods.getcookies("jwt"),
-        },
-      })
-      .then((res) => {
-        this.user = res.data
-      });
-    }
+        .get(`${this.apiaddress}users/user`, {
+          headers: {
+            jwt: Register.methods.getcookies("jwt"),
+          },
+        })
+        .then((res) => {
+          this.user = res.data;
+        });
+    },
   },
   components: {
     hmheader,

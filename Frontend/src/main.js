@@ -21,20 +21,19 @@ const routes = [
   { path: "/login", component: login },
   { path: "/v/:token", component: verifyaccount },
   { path: "/login", component: login },
+  { path: "/", component: home },
+  { path: "/home", component: home },
   { path: "/:component?/:part?", component: home },
   { path: "/notification", component: notification },
   { path: "/dashboard/:component?", component: dashboard },
   { path: "/f/:token", component: verifypassword },
   { path: "/:pathMatch(.*)", component: notfound },
   { path: "/notfound", component: notfound },
-
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
 });
-
-
 
 createApp(App).use(bootstrap).use(router).mount("#app");
