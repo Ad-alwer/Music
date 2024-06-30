@@ -22,7 +22,9 @@
         />
         <PublishAlbum
           v-if="component == 'publishalbum' || component == 'publishplaylist'"
-          :type="component == 'publishalbum' ? 'albums' : 'plylists'"
+          :type="component == 'publishalbum' ? 'albums' : 'playlists'"
+          @changemusic="changemusic"
+
         />
         <settings
           :username="user.username"

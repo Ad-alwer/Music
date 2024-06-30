@@ -82,6 +82,10 @@ Router.put("/removesavetrack/:id", (req, res) => {
     .then((data) => res.send(data));
 });
 
-
+Router.get("/search/:name", (req, res) => {
+  trackDB.search(req.params.name).then((data) => {
+    res.send(data);
+  });
+});
 
 module.exports = Router;

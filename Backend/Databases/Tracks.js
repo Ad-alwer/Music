@@ -3,6 +3,7 @@ const timestamp = require("mongoose-timestamp");
 const schedule = require("node-schedule");
 
 const userDB = require("../Databases/Users");
+const { getallalbums } = require("./Albums");
 
 require("dotenv").config();
 
@@ -232,7 +233,6 @@ async function monthlyListener(id) {
       view: 1,
     });
   }
-  
 
   await Track.findByIdAndUpdate(id, {
     $set: {
@@ -291,6 +291,40 @@ async function findtrackbyid(id) {
   return track;
 }
 
+async function search(name) {
+  try {
+    let library = [];
+    const tracks = await Track.find();
+    tracks.forEach(async (track) => {
+      if (track.status == "public") {
+        library.push(track);
+      }
+    });
+
+    const albums = await getallalbums();
+    albums.forEach((album) => {
+      album.tracks.forEach(async (e) => {
+        if (e.status == "Public") {
+          e.cover = album.cover;
+          library.push(e);
+        }
+      });
+    });
+
+    const searchResults = library.filter((item) =>
+      item.name.toLowerCase().includes(name)
+    );
+
+    return searchResults;
+  } catch {
+    return false;
+  }
+}
+async function getalltracks() {
+  const tracks = await Track.find({});
+  return tracks;
+}
+
 module.exports = {
   addtrack,
   like,
@@ -303,4 +337,6 @@ module.exports = {
   deletedaccounttracks,
   loginback,
   findtrackbyid,
+  search,
+  getalltracks,
 };

@@ -2,17 +2,16 @@ const express = require("express");
 const Router = express.Router();
 
 const playlistDB = require("../Databases/Playlists");
-const { getuser } = require("../Databases/Users");
+const userDB = require("../Databases/Users");
 
 require("dotenv").config();
 
-Router.get("/chackname/:name", async (req, res) => {
-  const user = await getuser(req.headers.jwt);
-  playlistDB.checkplaylistname(user._id).then((data) => res.send(data));
+Router.get("/checkname/:name", async (req, res) => {
+  playlistDB.checkplaylistname(req.params.name).then((data) => res.send(data));
 });
 
 Router.post("/add", async (req, res) => {
-  const user = await getuser(req.headers.jwt);
+  const user = await userDB.getuser(req.headers.jwt);
 
   const date = new Date();
   date;
@@ -26,30 +25,43 @@ Router.post("/add", async (req, res) => {
     .then((data) => res.send(data));
 });
 
+Router.put("/edit", async (req, res) => {
+  const user = await userDB.getuser(req.headers.jwt);
+  playlistDB
+    .editplaylist(user._id, ...Object.keys(req.params))
+    .then((data) => res.send(data));
+});
 
-Router.put("/edit", async(req,res)=>{
-    const user = await getuser(req.headers.jwt);
-    playlistDB.editplaylist(user._id,...Object.keys(req.params)).then(data=>res.send(data))
-})
+Router.put("/changeplayliststatus/:id&&:status", async (req, res) => {
+  playlistDB
+    .changeplayliststatus(req.params.id, req.params.status)
+    .then((data) => res.send(data));
+});
 
-Router.put("/changeplayliststatus/:playlistname&&:status", async(req,res)=>{
-    const user = await getuser(req.headers.jwt);
-    playlistDB.changeplayliststatus(user._id,req.paramsplaylistname,req.params.status).then(data=>res.send(data))
-})
+Router.put("/addtrack/:name&&:track", async (req, res) => {
+  const user = await userDB.getuser(req.headers.jwt);
+  playlistDB
+    .addtracktoplaylist(user._id, req.params.name, req.params.track)
+    .then((data) => res.send(data));
+});
 
+Router.delete("/delete/:playlistid", (req, res) => {
+  userDB.deleteplaylist(req.headers.jwt, req.params.playlistid).then((data) => {
+    if (data) {
+      playlistDB
+        .deletplaylist(req.params.playlistid)
+        .then((data) => res.send(data));
+    } else {
+      return {
+        msg: "Please try again",
+        status: false,
+      };
+    }
+  });
+});
 
-Router.put("/addtrack/:name&&:track", async (req,res)=>{
-    const user = await getuser(req.headers.jwt);
-    playlistDB.addtracktoplaylist(user._id,req.params.name,req.params.track).then(data=>res.send(data))
-})
-
-Router.delete("/delete/:trackid",(req,res)=>{
-playlistDB.deletplaylist(req.params.trackid).then(data =>
-  res.send(data))
-})
-
-
-
-
+Router.get("/getplaylists", (req, res) => {
+  playlistDB.getuserplaylist(req.headers.jwt).then((data) => res.send(data));
+});
 
 module.exports = Router;

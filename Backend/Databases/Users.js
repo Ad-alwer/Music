@@ -6,7 +6,11 @@ const schedule = require("node-schedule");
 
 const trackDB = require("./Tracks");
 const albumDB = require("./Albums");
-const { deletaccountplaylists } = require("./Playlists");
+const {
+  deletaccountplaylists,
+  getallplaylists,
+  findplaylistbyid,
+} = require("./Playlists");
 const { findsocialmedia } = require("./Base");
 
 require("dotenv").config();
@@ -1141,80 +1145,49 @@ async function lastplay(token, value) {
     return false;
   }
 }
-// async function getlastplay(token) {
-//   try {
-//     const decode = jwt.verify(token, process.env.REGISTER_JWT);
-//     const user = await User.findById(decode._id);
-//     const track = await trackDB.findtrackbyid(user.lastplay.id);
-//     if (track) {
-//       track.artist = await User.findById(track.artist);
-//       return track;
-//     } else {
-//       let albums = user.albums;
-//       const albumResults = await Promise.all(
-//         albums.map(async (album) => {
-//           return await albumDB.findalbum(album.id);
-//         })
-//       );
-
-//       const resault = await Promise.all(
-//         albumResults.flatMap(async (album) => {
-//           return await Promise.all(
-//             album.tracks.map(async (track) => {
-//               if (track._id == user.lastplay.id) {
-
-//                 track.artist = await User.findById(track.artistid);
-//                 track.cover = album.cover;
-//                 track.album = album._id;
-//                 track.type = "music";
-//                 return track;
-//               }
-//             })
-//           );
-//         })
-//       );
-// console.log(resault);
-//       return resault[0][0];
-//     }
-//   } catch (err) {
-//     console.log(err);
-//     return false;
-//   }
-// }
 
 async function getlastplay(token) {
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
     const user = await User.findById(decode._id);
-    const track = await trackDB.findtrackbyid(user.lastplay.id);
-    if (track) {
+
+    if (user.lastplay.type == "track") {
+      let track = trackDB.findtrackbyid(user.lastplay.id);
       track.artist = await User.findById(track.artist);
       return track;
-    } else {
-      let albums = user.albums;
-      const albumResults = await Promise.all(
-        albums.map(async (album) => {
-          return await albumDB.findalbum(album.id);
-        })
-      );
-
-      for (let album of albumResults) {
-        for (let track of album.tracks) {
-          if (track._id == user.lastplay.id) {
-            track.artist = await User.findById(track.artistid);
-            track.cover = album.cover;
-            track.album = album._id;
-            track.type = "music";
+    } else if (user.lastplay.type == "album") {
+      const albums = await albumDB.getallalbums();
+      albums.forEach((album) => {
+        album.tracks.forEach((track) => {
+          if (track._id == user.lastplay._id) {
             return track;
           }
-        }
-      }
+        });
+      });
+    } else if (user.lastplay.type == "playlist") {
+      const playlist = await findplaylistbyid(user.lastplay.playlist);
 
-      // If the track is not found in any album, return null or handle the case accordingly
-      return false;
+      let library = await trackDB.getalltracks();
+      const albums = await albumDB.getallalbums();
+      albums.forEach((album) => {
+        album.tracks.forEach((track) => {
+          library.push(track);
+        });
+      });
+
+      if (user.lastplay.id) {
+        let track = library.find((item) => {
+          return item._id.toString() == user.lastplay.id;
+        });
+      } else {
+        let track = library.find((item) => {
+          return item._id.toString() == playlist.tracks[0]._id;
+        });
+      }
+      track.playlist = playlist;
+      return track;
     }
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -1508,6 +1481,44 @@ async function gettracks(type, id) {
     return false;
   }
 }
+
+async function getusernamebyid(id) {
+  const user = await User.findById(id);
+  return user.username;
+}
+
+async function addplaylist(id, playlistid) {
+  try {
+    await User.findByIdAndUpdate(id, {
+      $push: {
+        playlists: playlistid,
+      },
+    });
+    return {
+      status: true,
+      msg: "Saved successfully",
+    };
+  } catch {
+    return {
+      status: false,
+      msg: "Please try again",
+    };
+  }
+}
+async function deleteplaylist(token, id) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    await User.findByIdAndUpdate(decode._id, {
+      $pull: {
+        playlists: new mongoose.Types.ObjectId(id),
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 module.exports = {
   checkusername,
   checkemail,
@@ -1561,4 +1572,7 @@ module.exports = {
   removesavetrack,
   gettracks,
   editsocialmedia,
+  getusernamebyid,
+  addplaylist,
+  deleteplaylist,
 };

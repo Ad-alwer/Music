@@ -181,6 +181,10 @@ async function monthlyListener(albumid, trackid) {
   });
 }
 
+
+async function getallalbums (){
+  return await Album.find()
+}
 module.exports = {
   addalbum,
   editalbum,
@@ -189,4 +193,5 @@ module.exports = {
   findalbum,
   play,
   monthlyListener,
+  getallalbums
 };

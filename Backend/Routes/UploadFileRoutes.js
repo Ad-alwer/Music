@@ -6,6 +6,7 @@ const multerS3 = require("multer-s3");
 require("dotenv").config();
 
 const usersDB = require("../Databases/users");
+const playlistDB = require("../Databases/Playlists");
 const { addbanner, addresbanner, addsocialicon } = require("../Databases/Base");
 
 const ffmpeg = require("fluent-ffmpeg");
@@ -111,7 +112,6 @@ Router.post(
             name: file.key.split("-&-")[1],
             duration: Math.floor(duration),
           };
-          console.log(track);
           const trackDetails = JSON.parse(req.body.trackdetail);
           const updatedTrack = trackDetails.find(
             (data) => data.trackname === track.name
@@ -227,6 +227,31 @@ Router.post(
   }
 );
 
+Router.post(
+  "/playlist",
+  uploadbanner.single("objectKey"),
+  async function (req, res) {
+    cover = { url: req.file.location, name: req.file.key };
+    playlistDB
+      .createdplaylist(
+        req.body.name,
+        req.body.status,
+        cover,
+        JSON.parse(req.body.tracks),
+        req.body.creator
+      )
+      .then((data) => {
+        if (data) {
+          usersDB
+            .addplaylist(req.body.creator, data)
+            .then((data) => res.send(data));
+        } else {
+          return res.send({ status: false, msg: "Please try again" });
+        }
+      });
+  }
+);
+
 Router.put(
   "/addsocial",
   uploadsociamedia.single("objectKey"),
@@ -253,7 +278,7 @@ Router.put(
 
 Router.put(
   "/addbanner",
-  uploadtracks.single("objectKey"),
+  uploadbanner.single("objectKey"),
   async function (req, res) {
     let file = {
       url: req.file.location,
@@ -274,6 +299,26 @@ Router.put(
       link: req.body.link,
     };
     addresbanner(file).then((data) => res.send(data));
+  }
+);
+
+Router.put(
+  "/playlist",
+  uploadbanner.single("objectKey"),
+  async function (req, res) {
+    cover = req.file
+      ? (cover = { url: req.file.location, name: req.file.key })
+      : null;
+
+    playlistDB
+      .editplaylist(
+        req.body.id,
+        req.body.name,
+        req.body.status,
+        cover,
+        JSON.parse(req.body.tracks)
+      )
+      .then((data) => res.send(data));
   }
 );
 
