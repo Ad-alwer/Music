@@ -41,11 +41,15 @@
             ref="genreselect"
             id=""
           >
-            <option value="hiphop" class="text-capitalize" selected>
-              hiphop
+            <option
+              v-for="(x, i) in base.genres"
+              :key="x"
+              :value="x.name.toLowerCase()"
+              class="text-capitalize"
+              :selected="i === 0 ? true : false"
+            >
+              {{ x.name }}
             </option>
-            <option value="rock" class="text-capitalize">rock</option>
-            <option value="pop" class="text-capitalize">pop</option>
           </select>
         </div>
         <div class="mt-1 alert-div" v-show="verifyname.show">
@@ -407,13 +411,16 @@ import Register from "../Register.vue";
 
 export default {
   name: "uplaod",
+  beforeMount() {
+    this.getbase();
+  },
   data() {
     return {
       apiaddress: info.Api_ADDRESS,
       typeselect: "album",
       tracks: [],
       popups: {
-        loader: false,
+        loader: true,
         albumpopup: false,
       },
       detailshower: {
@@ -428,6 +435,7 @@ export default {
         value: false,
         show: false,
       },
+      base: {},
     };
   },
   components: {
@@ -536,13 +544,18 @@ export default {
       this.$refs.searchinput ? (this.$refs.searchinput.value = null) : null;
     },
     checkname: function (e) {
-      if (e.length > 1 ) {
+      if (e.length > 2) {
         axios
-          .get(`${this.apiaddress}users/checktrackandalbumname/${e}`, {
-            headers: {
-              jwt: Register.methods.getcookies("jwt"),
-            },
-          })
+          .get(
+            `${
+              this.apiaddress
+            }users/checktrackandalbumname/${e.toLowerCase()}&&null`,
+            {
+              headers: {
+                jwt: Register.methods.getcookies("jwt"),
+              },
+            }
+          )
           .then((res) => {
             if (res.data) {
               this.verifyname.value = true;
@@ -552,9 +565,9 @@ export default {
               this.verifyname.show = true;
             }
           });
-      }else{
+      } else {
         this.verifyname.value = false;
-              this.verifyname.show = true;
+        this.verifyname.show = true;
       }
     },
     addtrack: function (e) {
@@ -611,6 +624,12 @@ export default {
           position: "topRight",
         });
       }
+    },
+    getbase: function () {
+      axios.get(`${this.apiaddress}base/`).then((data) => {
+        this.base = data.data;
+        this.popups.loader = false;
+      });
     },
   },
   props: ["user"],

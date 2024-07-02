@@ -559,6 +559,7 @@ async function checktrackandalbumname(name, edit) {
     const search = library.findIndex((e) => {
       return e.toLowerCase() === name.toLowerCase();
     });
+    console.log(search);
     return search >= 0 ? false : true;
   } catch (error) {
     console.error(error);
