@@ -25,7 +25,6 @@
           :type="component == 'publishalbum' ? 'albums' : 'playlists'"
           :user="user"
           @changemusic="changemusic"
-
         />
         <settings
           :username="user.username"
@@ -43,6 +42,7 @@
         <socialmedia v-if="component == 'socialmedia'" />
         <request v-if="component == 'request'" />
         <recomenduser v-if="component == 'recomenduser'" />
+        <loader v-if="popups.loader" />
       </section>
       <aside class="player">
         <player :data="newmusic" />
@@ -54,6 +54,8 @@
 <script>
 import hmheader from "./home components/header";
 import hmmenu from "./home components/menu";
+
+import loader from "./loader.vue";
 
 import discover from "./home components/discover.vue";
 import player from "./home components/Player.vue";
@@ -83,6 +85,7 @@ export default {
     this.getdata();
     if (this.user) {
       this.routing();
+      this.popups.loader = false;
     }
   },
   data() {
@@ -93,6 +96,9 @@ export default {
       user: {},
       finduser: {},
       newmusic: null,
+      popups: {
+        loader: true,
+      },
     };
   },
   watch: {
@@ -153,9 +159,12 @@ export default {
         });
 
         if (firsturllocation !== "home") {
-          firsturllocation && search
-            ? (this.component = search)
-            : (location.href = "/notfound");
+          if (firsturllocation && search) {
+            this.popups.loader = false;
+            this.component = search;
+          } else {
+            location.href = "/notfound";
+          }
 
           if (firsturllocation == "profile" && secondurllocation) {
             const profilearr = ["socialmedia", "request", "recomenduser"];
@@ -163,7 +172,12 @@ export default {
               return e == secondurllocation;
             });
 
-            search ? (this.component = search) : (location.href = "/notfound");
+            if (search) {
+              this.compnent = search;
+              this.popups.loader = false;
+            } else {
+              location.href = "/notfound";
+            }
           }
         }
       }
@@ -200,6 +214,7 @@ export default {
     socialmedia,
     request,
     recomenduser,
+    loader,
   },
 };
 </script>
