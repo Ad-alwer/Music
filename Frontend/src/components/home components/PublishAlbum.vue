@@ -1,6 +1,6 @@
 <template>
   <div id="parent" class="container mt-5 px-3 position-relative">
-    <section v-if="type == 'playlists'">
+    <section>
       <div>
         <div class="d-flex justify-content-between p">
           <span class="text-uppercase color-blue fw-semibold fs-5">{{
@@ -8,7 +8,10 @@
           }}</span>
         </div>
         <div class="d-flex justify-content-start mt-4 gap-3 flex-wrap">
-          <div class="track-body position-relative pointer">
+          <div
+            v-if="type == 'playlists'"
+            class="track-body position-relative pointer"
+          >
             <img
               src="../../assets/icons/addplaylist.png"
               class="img-fluid rounded-4 border border-2 border-secondary"
@@ -53,30 +56,50 @@
               <ul v-if="x.showmore" class="more-list rounded-3 bg-white">
                 <li
                   class="fw-semibold text-capitalize px-2 py-1 li-child"
-                  @click="listenPlaylist(x._id)"
+                  @click="
+                    type == 'playlists'
+                      ? listenPlaylist(x._id)
+                      : listenalbum(x._id)
+                  "
                 >
                   listen
                 </li>
                 <li
                   class="fw-semibold text-capitalize px-2 py-1 li-child"
-                  @click="editplaylist(x)"
+                  @click="type == 'playlists' ? editplaylist(x) : editalbum(x)"
                 >
                   Edit
                 </li>
                 <li
-                  @click="changestatus(x._id, x.visibility)"
+                  v-if="type == 'albums'"
+                  @click="changealbumstatus(x._id, x.status)"
+                  class="fw-semibold text-capitalize px-2 py-1 li-child"
+                >
+                  set to {{ x.status == "public" ? "private" : "public" }}
+                </li>
+                <li
+                  v-else
+                  @click="changeplalyliststatus(x._id, x.visibility)"
                   class="fw-semibold text-capitalize px-2 py-1 li-child"
                 >
                   set to {{ x.visibility == "public" ? "private" : "public" }}
                 </li>
                 <li
-                  @click="deleteplaylist(x._id)"
+                  @click="
+                    type == 'playlists'
+                      ? deleteplaylist(x._id)
+                      : deletealbum(x._id)
+                  "
                   class="fw-semibold text-capitalize px-2 py-1 li-child"
                 >
                   delete
                 </li>
                 <li
-                  @click="tracklist(x.name)"
+                  @click="
+                    type == 'playlists'
+                      ? playlisttracklist(x.name)
+                      : albumtracklist(x.name)
+                  "
                   class="fw-semibold text-capitalize px-2 py-1 li-child border-bottom-0"
                 >
                   tracklist
@@ -91,13 +114,22 @@
       v-if="popups.addpopups"
       @close="closeaddpopup"
       :data="editdata"
+      @update="getplaylists"
+    />
+    <editalbum
+      v-if="popups.editalbum"
+      @close="closeeditalbum"
+      :data="editdata"
       @update="getalbums"
     />
+    <loader v-if="popups.loader" />
   </div>
 </template>
 
 <script>
 import addopups from "./addplaylistpopup.vue";
+import editalbum from "./editalbumpopup.vue";
+import loader from "../loader.vue";
 
 import Register from "../Register.vue";
 import axios from "axios";
@@ -108,6 +140,8 @@ export default {
   name: "libraryAlbum",
   beforeMount() {
     if (this.type === "playlists") {
+      this.getplaylists();
+    } else {
       this.getalbums();
     }
   },
@@ -124,19 +158,20 @@ export default {
       apiaddress: info.Api_ADDRESS,
       popups: {
         addpopups: false,
+        editalbum: false,
+        loader: true,
       },
       data: [],
       editdata: null,
-      user: {},
     };
   },
-  components: { addopups },
+  components: { addopups, editalbum, loader },
   methods: {
     closeaddpopup: function () {
       this.popups.addpopups = false;
       this.editdata = null;
     },
-    getalbums: function () {
+    getplaylists: function () {
       axios
         .get(`${this.apiaddress}playlist/getplaylists`, {
           headers: {
@@ -148,6 +183,7 @@ export default {
           this.data.forEach((e) => {
             e.showmore = false;
           });
+          this.popups.loader = false;
         });
     },
     openmore: function (i) {
@@ -166,17 +202,17 @@ export default {
       this.closeallmore();
       this.popups.addpopups = true;
     },
-    changestatus: function (id, visibility) {
+    changeplalyliststatus: function (id, visibility) {
       const status = visibility == "public" ? "private" : "public";
       axios
         .put(`${this.apiaddress}playlist/changeplayliststatus/${id}&&${status}`)
         .then((res) => {
           if (res.data.status) {
             iziToast.success({
-              title: " res.data.msg",
+              title: res.data.msg,
               position: "topRight",
             });
-            this.getalbums();
+            this.getplaylists();
           } else {
             iziToast.error({
               title: res.data.msg,
@@ -198,7 +234,7 @@ export default {
               title: res.data.msg,
               position: "topRight",
             });
-            this.getalbums();
+            this.getplaylists();
           } else {
             iziToast.error({
               title: res.data.msg,
@@ -207,20 +243,10 @@ export default {
           }
         });
     },
-    tracklist: function (playlistname) {
-      location.href = `user${this.user.username}/playlist/${playlistname}`;
+    playlisttracklist: function (playlistname) {
+      location.href = `user/${this.user.username}/playlist/${playlistname}`;
     },
-    getuser: function () {
-      axios
-        .get(`${this.apiaddress}users/user`, {
-          headers: {
-            jwt: Register.methods.getcookies("jwt"),
-          },
-        })
-        .then((res) => {
-          this.user = res.data;
-        });
-    },
+
     listenPlaylist: function (playlistid) {
       const data = {
         playlistid,
@@ -245,8 +271,110 @@ export default {
           }
         });
     },
+    getalbums: function () {
+      axios
+        .get(`${this.apiaddress}album/finduseralbum`, {
+          headers: {
+            jwt: Register.methods.getcookies("jwt"),
+          },
+        })
+        .then((res) => {
+          this.data = res.data;
+          this.data.forEach((e) => {
+            e.showmore = false;
+          });
+          this.popups.loader = false;
+        });
+    },
+    changealbumstatus: function (id, visibility) {
+      const status = visibility == "public" ? "private" : "public";
+
+      axios
+        .put(`${this.apiaddress}album/changestatus/${id}&&${status}`)
+        .then((res) => {
+          if (res.data.status) {
+            iziToast.success({
+              title: res.data.msg,
+              position: "topRight",
+            });
+            this.getalbums();
+          } else {
+            iziToast.error({
+              title: res.data.msg,
+              position: "topRight",
+            });
+          }
+        });
+    },
+    editalbum: function (x) {
+      this.editdata = x;
+      this.popups.editalbum = true;
+    },
+    closeeditalbum: function () {
+      this.editdata = null;
+      this.popups.editalbum = false;
+    },
+    listenalbum: function (albumid) {
+      const data = {
+        albumid,
+        type: "album",
+        time: 0,
+      };
+      axios
+        .put(
+          `${this.apiaddress}users/lastplay`,
+          {
+            data,
+          },
+          {
+            headers: {
+              jwt: Register.methods.getcookies("jwt"),
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data) {
+            this.$emit("changemusic", albumid);
+          }
+        });
+    },
+    albumtracklist: function (albumname) {
+      location.href = `user/${this.user.username}/playlist/${albumname}`;
+    },
+    deletealbum: function (id) {
+      axios
+        .delete(`${this.apiaddress}album/delete/${id}`, {
+          headers: {
+            jwt: Register.methods.getcookies("jwt"),
+          },
+        })
+        .then((res) => {
+          if (res.data) {
+            iziToast.success({
+              title: res.data.msg,
+              position: "topRight",
+            });
+            this.getalbums();
+          } else {
+            iziToast.error({
+              title: res.data.msg,
+              position: "topRight",
+            });
+          }
+        });
+    },
   },
-  props: ["type"],
+  props: ["type", "user"],
+  watch: {
+    type: function () {
+      this.popups.loader = true;
+      if (this.type === "playlists") {
+        this.getplaylists();
+      } else {
+        this.getalbums();
+      }
+    },
+  },
 };
 </script>
 

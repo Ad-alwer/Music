@@ -23,6 +23,7 @@
         <PublishAlbum
           v-if="component == 'publishalbum' || component == 'publishplaylist'"
           :type="component == 'publishalbum' ? 'albums' : 'playlists'"
+          :user="user"
           @changemusic="changemusic"
 
         />

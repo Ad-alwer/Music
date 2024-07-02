@@ -12,6 +12,7 @@ const { addbanner, addresbanner, addsocialicon } = require("../Databases/Base");
 const ffmpeg = require("fluent-ffmpeg");
 const { json } = require("express");
 const { default: mongoose } = require("mongoose");
+const { editalbum } = require("../Databases/Albums");
 const ffprobePath = require("ffprobe-static").path;
 ffmpeg.setFfprobePath(ffprobePath);
 
@@ -322,4 +323,77 @@ Router.put(
   }
 );
 
+Router.put(
+  "/updatealbum",
+  uploadtracks.array("objectKey"),
+  async function (req, res) {
+    let files = [];
+    let thumbnail;
+
+    let totalduration = 0;
+    let duration;
+
+    await Promise.all(
+      req.files.map(async (file) => {
+        if (file.mimetype === "audio/mpeg") {
+          const metadata = await new Promise((resolve, reject) => {
+            ffmpeg.ffprobe(file.location, (err, metadata) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(metadata);
+              }
+            });
+          });
+          duration = metadata.format.duration;
+
+          const track = {
+            url: file.location,
+            name: file.key.split("-&-")[1],
+            duration: Math.floor(duration),
+          };
+          const trackDetails = JSON.parse(req.body.trackdetail);
+          const updatedTrack = trackDetails.find(
+            (data) => data.trackname === track.name
+          );
+          if (updatedTrack) {
+            track._id = new mongoose.Types.ObjectId();
+            track.name = updatedTrack.name;
+            track.lyrics = updatedTrack.lyrics;
+            track.feat = updatedTrack.feat;
+            track.status = req.body.visibility;
+            track.plays = 0;
+            track.like = 0;
+            track.genre = req.body.genre;
+            track.monthlyListener = [];
+          }
+          files.push(track);
+        } else {
+          thumbnail = { url: file.location, name: file.key };
+        }
+      })
+    );
+    let lasttrack = JSON.parse(req.body.lasttracks);
+    let finaltracks = lasttrack.concat(files);
+
+    finaltracks.forEach((e) => {
+      totalduration = totalduration + e.duration;
+    });
+
+    thumbnail ? thumbnail : null;
+
+    editalbum(
+      req.body.id,
+      req.body.name,
+      req.body.genre,
+      req.body.visibility,
+      req.body.description,
+      thumbnail,
+      finaltracks,
+      totalduration
+    ).then((data) => {
+      res.send(data);
+    });
+  }
+);
 module.exports = Router;

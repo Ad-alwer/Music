@@ -528,51 +528,54 @@ async function changebanupload(userid) {
   }
 }
 
-async function checktrackandalbumname(token, name) {
+async function checktrackandalbumname(name, edit) {
   try {
-    const decode = jwt.verify(token, process.env.REGISTER_JWT);
-    const user = await User.findById(decode._id);
+    let albumtrack = [];
     let library = [];
 
-    if (user.tracks.lenght > 0) {
-      await Promise.all(
-        user.tracks.map(async (e) => {
-          library.push(e.name.toLowerCase());
-        })
-      );
-    }
-
-    if (user.albums.lenght > 0) {
-      let albums = user.albums;
-
-      await Promise.all(
-        albums.map(async (album) => {
-          const albumDetail = await albumDB.findalbum(album.id);
-          albumDetail.tracks.forEach((element) => {
-            library.push(element.name.toLowerCase());
-          });
-        })
-      );
-    }
-
-    if (user.requests.lenght > 0) {
-      let requests = user.requests.filter((e) => e.status === "pending");
-
-      requests.forEach((e) => {
-        if (e.type !== "music") {
-          e.tracks.forEach((data) => {
-            library.push(data.name.toLowerCase());
-          });
-        } else {
-          library.push(e.name.toLowerCase());
-        }
+    const tracks = await trackDB.getalltracks();
+    const albums = await albumDB.getallalbums();
+    albums.forEach((album) => {
+      album.tracks.forEach((track) => {
+        albumtrack.push(track);
       });
+    });
+    const requests = await getallrequest();
+
+    tracks.forEach((track) => library.push(track.name.toLowerCase()));
+    albums.forEach((album) => library.push(album.name.toLowerCase()));
+    albumtrack.forEach((track) => library.push(track.name.toLowerCase()));
+    requests.forEach((request) => {
+      library.push(request.name.toLowerCase());
+    });
+    if (edit) {
+      const index = library.findIndex((e) => {
+        return e.toLowerCase() === edit.toLowerCase();
+      });
+
+      library.splice(index, 1);
     }
 
-    return library.includes(name.toLowerCase()) ? false : true;
+    const search = library.findIndex((e) => {
+      return e.toLowerCase() === name.toLowerCase();
+    });
+    return search >= 0 ? false : true;
   } catch (error) {
     console.error(error);
   }
+}
+
+async function getallrequest() {
+  const users = await getallusers();
+
+  let pendingRequests = [];
+  users.forEach((user) => {
+    const userPendingRequests = user.requests.filter(
+      (request) => request.status === "pending"
+    );
+    pendingRequests.push(...userPendingRequests);
+  });
+  return pendingRequests;
 }
 
 async function addrequesttrack(
@@ -1156,16 +1159,32 @@ async function getlastplay(token) {
       track.artist = await User.findById(track.artist);
       return track;
     } else if (user.lastplay.type == "album") {
+      let track;
       const albums = await albumDB.getallalbums();
-      albums.forEach((album) => {
-        album.tracks.forEach((track) => {
-          if (track._id == user.lastplay._id) {
-            return track;
-          }
-        });
+      const album = albums.find((e) => {
+        return e._id == user.lastplay.albumid;
       });
+      if (user.lastplay.id) {
+        track = album.tracks.find((track) => {
+          return track._id == user.lastplay.id;
+        });
+      } else {
+        track = album.tracks[0];
+      }
+      let artist = await User.findById(track.artistid);
+
+      const resaultTrack = {
+        ...track,
+        artist,
+        cover: album.cover,
+        album,
+      };
+      return resaultTrack;
+
+      return track;
     } else if (user.lastplay.type == "playlist") {
       const playlist = await findplaylistbyid(user.lastplay.playlist);
+      let track;
 
       let library = await trackDB.getalltracks();
       const albums = await albumDB.getallalbums();
@@ -1176,11 +1195,11 @@ async function getlastplay(token) {
       });
 
       if (user.lastplay.id) {
-        let track = library.find((item) => {
+        track = library.find((item) => {
           return item._id.toString() == user.lastplay.id;
         });
       } else {
-        let track = library.find((item) => {
+        track = library.find((item) => {
           return item._id.toString() == playlist.tracks[0]._id;
         });
       }
@@ -1336,11 +1355,12 @@ async function deletealbum(token, id) {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
     await User.findByIdAndUpdate(decode._id, {
       $pull: {
-        albums: id,
+        albums: { id: new mongoose.Types.ObjectId(id) },
       },
     });
     return true;
-  } catch {
+  } catch (err) {
+    console.log(err);
     return false;
   }
 }

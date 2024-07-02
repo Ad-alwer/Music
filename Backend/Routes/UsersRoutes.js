@@ -74,9 +74,9 @@ Router.get("/unsubscribe/:id", (req, res) => {
     .then((data) => res.send(data));
 });
 
-Router.get("/checktrackandalbumname/:name", (req, res) => {
+Router.get("/checktrackandalbumname/:name&&:edit", (req, res) => {
   usersDB
-    .checktrackandalbumname(req.headers.jwt, req.params.name)
+    .checktrackandalbumname( req.params.name,req.params.edit)
     .then((data) => res.send(data));
 });
 

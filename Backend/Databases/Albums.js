@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
+const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
@@ -47,6 +48,7 @@ async function addalbum(
     tracks.forEach((track) => {
       track._id = artist;
     });
+    status = status.toLowerCase();
     artist = new mongoose.Types.ObjectId(artist);
     const useralbum = new Album({
       name,
@@ -69,34 +71,54 @@ async function addalbum(
 async function editalbum(
   id,
   name,
-  type,
   genre,
   status,
   description,
   cover,
-  tracks
+  tracks,
+  totalduaration
 ) {
   try {
-    await Album.findByIdAndUpdate(id, {
-      $set: {
-        name,
-        type,
-        genre,
-        status,
-        description,
-        cover,
-        tracks,
-      },
-    });
-    return true;
-  } catch {
-    return false;
+    if (cover) {
+      await Album.findByIdAndUpdate(id, {
+        $set: {
+          name,
+          genre,
+          status,
+          description,
+          cover,
+          tracks,
+          totalduaration,
+        },
+      });
+    } else {
+      await Album.findByIdAndUpdate(id, {
+        $set: {
+          name,
+          genre,
+          status,
+          description,
+          tracks,
+          totalduaration,
+        },
+      });
+    }
+    return {
+      status: true,
+      msg: "Album edited successfully",
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      status: false,
+      msg: "Please try again",
+    };
   }
 }
 
 async function deletealbum(id) {
   try {
-    await Track.findByIdAndRemove(id);
+    await Album.findByIdAndRemove(id);
     return {
       msg: "Deleted successfully",
       status: true,
@@ -121,7 +143,10 @@ async function changestatus(id, newstatus) {
       status: true,
     };
   } catch {
-    return false;
+    return {
+      msg: "Please try again",
+      status: false,
+    };
   }
 }
 async function findalbum(id) {
@@ -145,8 +170,7 @@ async function play(albumid, trackid) {
       },
     });
     return true;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -181,9 +205,17 @@ async function monthlyListener(albumid, trackid) {
   });
 }
 
+async function getallalbums() {
+  return await Album.find({});
+}
 
-async function getallalbums (){
-  return await Album.find()
+async function getuseralbum(token) {
+  const decode = jwt.verify(token, process.env.REGISTER_JWT);
+  const albums = await Album.find({});
+  const search = albums.filter(
+    (album) => album.tracks[0].artistid === decode._id
+  );
+  return search;
 }
 module.exports = {
   addalbum,
@@ -193,5 +225,6 @@ module.exports = {
   findalbum,
   play,
   monthlyListener,
-  getallalbums
+  getallalbums,
+  getuseralbum,
 };
