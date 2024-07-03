@@ -353,6 +353,7 @@ async function getuser(token) {
     let user = await User.findById(decode._id);
     let tracks = [];
     let album = [];
+    let playlists = [];
 
     if (user.albums.length > 0) {
       await Promise.all(
@@ -388,8 +389,17 @@ async function getuser(token) {
         })
       );
     }
+    if (user.playlists.length > 0) {
+      await Promise.all(
+        user.playlists.map(async (playlistid) => {
+          const playlist = await findplaylistbyid(playlistid);
+          playlists.push(playlist);
+        })
+      );
+    }
     user.tracks = tracks;
     user.albums = album;
+    user.playlists = playlists;
     return user;
   } catch {
     return false;

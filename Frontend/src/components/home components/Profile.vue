@@ -31,10 +31,14 @@
           /></label>
         </div>
         <div class="mt-2 d-flex align-center follow-parent">
-          <span class="color-gray text-capitalize fw-bold pointer"
+          <span
+            class="color-gray text-capitalize fw-bold pointer"
+            @click="goto(`/user/${user.username}/followers`)"
             >{{ user.subscribe ? user.subscribe.length : 0 }} followers</span
           >
-          <span class="color-gray text-capitalize fw-bold pointer"
+          <span
+            class="color-gray text-capitalize fw-bold pointer"
+            @click="goto(`/user/${user.username}/following`)"
             >{{ user.artists ? user.artists.length : 0 }} following</span
           >
         </div>
@@ -44,13 +48,14 @@
       >
         <textarea
           class="form-control text-capitalize text-secondary"
-          name=""
+          name="textarea"
           id=""
           cols="10"
           rows="10"
           maxlength="500"
           placeholder="bio"
           ref="bio"
+         :value="bio"
         ></textarea>
         <div class="d-flex justify-content-center">
           <button
@@ -568,7 +573,7 @@
                 <span>playlist</span>
               </th>
               <th class="text-capitalize fw-semibold color-black text-center">
-                Fix it
+                {{ analyze.playlistlenght }}
               </th>
             </tr>
             <tr>
@@ -608,7 +613,7 @@
                 <span>best playlist</span>
               </th>
               <th class="text-capitalize fw-semibold color-black text-center">
-                Fix it
+                {{ analyze.bestplaylist }}
               </th>
             </tr>
           </table>
@@ -631,7 +636,7 @@ import loader from "../loader.vue";
 
 export default {
   name: "profile",
-  beforeMount() {
+  mounted() {
     this.getdata();
   },
   data() {
@@ -651,6 +656,7 @@ export default {
       editsociladata: null,
       editsocialcount: null,
       analyze: [],
+      bio: null,
     };
   },
   watch: {
@@ -678,12 +684,12 @@ export default {
           this.user.requests = this.user.requests.slice(0, 3);
           this.user.socialmedia = this.user.socialmedia.slice(0, 3);
           this.popups.loader = false;
-          
+
           axios.get(`${this.apiaddress}base/`).then((data) => {
             this.base = data.data;
           });
 
-          this.$refs.bio ? (this.$refs.bio.value = res.data.bio) : null;
+          this.bio = this.user.bio;
         });
     },
     changeprofile: function () {
@@ -701,7 +707,6 @@ export default {
           this.popups.reloadheader = !this.popups.reloadheader;
 
           this.getdata();
-          // this.popups.reloadheader = false;
         }
       });
     },
@@ -933,7 +938,9 @@ export default {
       let library = [];
       let musiclibrary = [];
       let podcastlibrary = [];
+      let albumtracklibrary = [];
       let albumlibrary = [];
+      let playlistlibrary = [];
 
       if (this.user.tracks.length > 0) {
         this.user.tracks.forEach((e) => {
@@ -948,50 +955,55 @@ export default {
 
       if (this.user.albums.length > 0) {
         this.user.albums.forEach((album) => {
+          albumlibrary.push(album);
+          library.push(album);
           album.tracks.forEach((track) => {
-            albumlibrary.push(track);
+            albumtracklibrary.push(track);
             library.push(track);
           });
         });
       }
-      //TODO after playlist
+
+      if (this.user.playlists.length > 0) {
+        playlistlibrary = this.user.playlists;
+        playlistlibrary.forEach((playlist) => {
+          library.push(playlist);
+        });
+      }
 
       this.analyze.totalview = library.reduce(
         (newvalue, currentvalue) => newvalue + currentvalue.plays,
         0
       );
 
-      this.analyze.albumlenght = this.user.albums.length;
+      this.analyze.albumlenght = albumlibrary.length;
       this.analyze.musiclenght = musiclibrary.length;
       this.analyze.podcastlenght = podcastlibrary.length;
-      //TODO after best playlist and playlist count
+      this.analyze.playlistlenght = playlistlibrary.length;
 
-      // musiclibrary.length > 0
-      //   ? (this.analyze.bestmusic = musiclibrary.reduce((prev, current) =>
-      //       prev.plays > current.plays ? prev.name : current.name
-      //     ))
-      //   : (this.analyze.bestmusic = "---");
-
-      musiclibrary.length > 0
+      musiclibrary.length > 1
         ? (this.analyze.bestmusic = musiclibrary.reduce((prev, current) => {
             return prev.plays > current.plays ? prev : current;
           }).name)
         : (this.analyze.bestmusic = "---");
 
-      console.log(musiclibrary);
-      podcastlibrary.length > 0
+      podcastlibrary.length > 1
         ? (this.analyze.bestpodcast = podcastlibrary.reduce((prev, current) =>
             prev.plays > current.plays ? prev.name : current.name
           ))
         : (this.analyze.bestpodcast = "---");
 
-      albumlibrary.length > 0
+      albumlibrary.length > 1
         ? (this.analyze.bestalbum = albumlibrary.reduce((prev, current) =>
             prev.plays > current.plays ? prev.name : current.name
           ))
         : (this.analyze.bestalbum = "---");
 
-      console.log(this.analyze);
+      playlistlibrary.length > 1
+        ? (this.analyze.bestplaylist = playlistlibrary.reduce((prev, current) =>
+            prev.plays > current.plays ? prev.name : current.name
+          ))
+        : (this.analyze.bestplaylist = "---");
     },
   },
   components: {
