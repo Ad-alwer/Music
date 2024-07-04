@@ -33,7 +33,7 @@
         <div class="mt-2 d-flex align-center follow-parent">
           <span
             class="color-gray text-capitalize fw-bold pointer"
-            @click="goto(`/user/${user.username}/followers`)"
+            @click="goto(`/user/${user.username}/follower`)"
             >{{ user.subscribe ? user.subscribe.length : 0 }} followers</span
           >
           <span
