@@ -23,7 +23,7 @@ const routes = [
   { path: "/login", component: login },
   { path: "/", component: home },
   { path: "/home", component: home },
-  { path: "/:component?/:part?", component: home },
+  { path: "/:component?/:part?/:usercomponent?/:which?/:track?", component: home },
   { path: "/notification", component: notification },
   { path: "/dashboard/:component?", component: dashboard },
   { path: "/f/:token", component: verifypassword },

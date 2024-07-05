@@ -31,13 +31,7 @@
           v-if="component == 'settings'"
           @reload="changeusername"
         />
-        <user
-          v-if="component == 'user'"
-          :otheruser="finduser"
-          :thisuser="user"
-          @reload="findotheruser"
-          @changemusic="changemusic"
-        />
+        <user v-if="component == 'user'" @changemusic="changemusic" />
         <profile v-if="component == 'profile'" />
         <socialmedia v-if="component == 'socialmedia'" />
         <request v-if="component == 'request'" />
@@ -101,13 +95,7 @@ export default {
       },
     };
   },
-  watch: {
-    component: function () {
-      if (this.component === "user") {
-        this.findotheruser();
-      }
-    },
-  },
+
   methods: {
     changecomponent: function (e) {
       this.component = e;

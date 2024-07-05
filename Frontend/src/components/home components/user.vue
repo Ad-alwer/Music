@@ -117,109 +117,156 @@
             >followers</span
           >
         </div>
-        <div v-if="!detail" class="px-4">
-          <div
-            class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3"
-          >
-            <div class="d-flex gap-5 align-items-center">
-              <img
-                class="monthly-img img-fluid rounded-3"
-                src="../../assets/img/test/eminem.jpg"
-                alt=""
-              />
+        <div v-if="detail" class="px-4">
+          <section>
+            <div
+              class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3"
+            >
+              <i
+                class="fa fa-arrow-left text-danger fs-5 pointer"
+                @click="closetracklist"
+              ></i>
               <div
-                :class="
-                  detail
-                    ? 'd-flex flex-column album-monthly-text'
-                    : 'd-flex flex-column monthly-text'
-                "
+                class="d-flex gap-5 align-items-center"
+                @click="play(selecteddata._id)"
               >
-                <p
-                  class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer"
+                <img
+                  class="monthly-img img-fluid rounded-3"
+                  :src="selecteddata.cover.url"
+                  alt=""
+                />
+                <div class="d-flex flex-column monthly-text">
+                  <p
+                    class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer"
+                  >
+                    {{ selecteddata.name }}
+                  </p>
+                </div>
+              </div>
+              <div class="d-flex gap-4 align-items-center position-relative">
+                <span class="me-3 text-capitalize monthly-time"
+                  >{{ formattime(selecteddata.duration) }}
+                </span>
+                <span class="me-3 text-capitalize monthly-play"
+                  >{{ formatview(selecteddata.plays) }} plays</span
                 >
-                  track4
-                </p>
+                <svg
+                  class="pointer svg-more"
+                  width="18"
+                  height="6"
+                  viewBox="0 0 18 6"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  @click.prevent="selecteddata.showmore = true"
+                >
+                  <circle cx="3" cy="3" r="3" fill="#B3B3BC" />
+                  <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
+                </svg>
+                <ul
+                  v-if="selecteddata.showmore"
+                  class="more-list rounded-3 bg-white"
+                >
+                  <li
+                    @click="play(selecteddata._id)"
+                    class="fw-semibold text-capitalize px-2 py-2 li-child"
+                  >
+                    play
+                  </li>
+
+                  <li
+                    v-if="otheruser._id !== thisuser._id"
+                    @click="save(selecteddata.checksave, selecteddata._id)"
+                    class="fw-semibold text-capitalize px-2 py-1 li-child"
+                  >
+                    {{ selecteddata.checksave ? "Unsave" : "save" }}
+                  </li>
+
+                  <li
+                    v-if="otheruser._id !== thisuser._id"
+                    class="fw-semibold text-capitalize px-2 py-1 li-child"
+                    @click="like(selecteddata.checklike, selecteddata._id)"
+                  >
+                    {{ selecteddata.checklike ? "Unlike" : "like" }}
+                  </li>
+                </ul>
               </div>
             </div>
-            <div class="d-flex gap-3 align-items-center">
-              <span class="me-3 text-capitalize">3:15 </span>
-              <span class="me-3 text-capitalize">25k plays</span>
-              <span class="me-3 text-capitalize">2k likes</span>
-
-              <img
-                v-if="detail"
-                src="../../assets/icons/greater-than.png"
-                class="img-fluid img-greater-than pointer"
-                alt=""
-              />
-              <svg
-                class="pointer svg-more"
-                width="18"
-                height="6"
-                viewBox="0 0 18 6"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="3" cy="3" r="3" fill="#B3B3BC" />
-                <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
-              </svg>
-            </div>
-          </div>
-          <div
-            class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3"
-          >
-            <div class="d-flex gap-5 align-items-center">
-              <img
-                class="monthly-img img-fluid rounded-3"
-                src="../../assets/img/test/eminem.jpg"
-                alt=""
-              />
-              <div
-                :class="
-                  detail
-                    ? 'd-flex flex-column album-monthly-text'
-                    : 'd-flex flex-column monthly-text'
-                "
-              >
-                <p
-                  class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer"
+          </section>
+          <hr class="bar" />
+          <section class="data-parent">
+            <div
+              class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3"
+              v-for="(x, i) in selecteddata.tracks"
+              :key="x"
+            >
+              <div class="d-flex gap-5 align-items-center" @click="play(x._id)">
+                <img
+                  class="monthly-img img-fluid rounded-3"
+                  :src="x.cover.url"
+                  alt=""
+                />
+                <div class="d-flex flex-column monthly-text">
+                  <p
+                    class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer"
+                  >
+                    {{ x.name }}
+                  </p>
+                </div>
+              </div>
+              <div class="d-flex gap-4 align-items-center position-relative">
+                <span class="me-3 text-capitalize monthly-time"
+                  >{{ formattime(x.duration) }}
+                </span>
+                <span class="me-3 text-capitalize monthly-play"
+                  >{{ formatview(x.plays) }} plays</span
                 >
-                  track
-                </p>
+                <svg
+                  class="pointer svg-more-detail svg-more"
+                  width="18"
+                  height="6"
+                  viewBox="0 0 18 6"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  @click.prevent="openmore(i)"
+                >
+                  <circle cx="3" cy="3" r="3" fill="#B3B3BC" />
+                  <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
+                </svg>
+                <ul v-if="x.showmore" class="more-list rounded-3 bg-white">
+                  <li
+                    @click="playdetail(x._id, selecteddata._id)"
+                    class="fw-semibold text-capitalize px-2 py-2 li-child"
+                  >
+                    play
+                  </li>
+
+                  <li
+                    v-if="otheruser._id !== thisuser._id"
+                    @click="save(x.checksave, x._id)"
+                    class="fw-semibold text-capitalize px-2 py-1 li-child"
+                  >
+                    {{ x.checksave ? "Unsave" : "save" }}
+                  </li>
+
+                  <li
+                    v-if="otheruser._id !== thisuser._id"
+                    class="fw-semibold text-capitalize px-2 py-1 li-child"
+                    @click="like(x.checklike, x._id)"
+                  >
+                    {{ x.checklike ? "Unlike" : "like" }}
+                  </li>
+                </ul>
               </div>
             </div>
-            <div class="d-flex gap-3 align-items-center">
-              <span class="me-3 text-capitalize">3:15 </span>
-              <span class="me-3 text-capitalize">25k plays</span>
-              <span class="me-3 text-capitalize">2k likes</span>
-
-              <img
-                v-if="detail"
-                src="../../assets/icons/greater-than.png"
-                class="img-fluid img-greater-than pointer"
-                alt=""
-              />
-              <svg
-                class="pointer svg-more"
-                width="18"
-                height="6"
-                viewBox="0 0 18 6"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="3" cy="3" r="3" fill="#B3B3BC" />
-                <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
-              </svg>
-            </div>
-          </div>
+          </section>
         </div>
         <div
           v-else-if="
-            detail && (component == 'following' || component == 'follower')
+            !detail && (component == 'following' || component == 'follower')
           "
-          class="d-flex flex-column gap-2"
+          class="d-flex flex-column gap-2 data-parent"
         >
-          <div v-if="data.length > 0">
+          <div v-if="data.length > 0" class="">
             <div
               v-for="x in data"
               :key="x"
@@ -278,15 +325,14 @@
             />
           </div>
         </div>
-        <div v-else>
+        <div v-else class="data-parent">
           <div v-if="data.length > 0">
             <div
               class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3"
-              v-for="x in data"
+              v-for="(x, i) in data"
               :key="x"
-              @click="play(x._id)"
             >
-              <div class="d-flex gap-5 align-items-center">
+              <div class="d-flex gap-5 align-items-center" @click="play(x._id)">
                 <img
                   class="monthly-img img-fluid rounded-3"
                   :src="x.cover.url"
@@ -300,7 +346,7 @@
                   </p>
                 </div>
               </div>
-              <div class="d-flex gap-4 align-items-center">
+              <div class="d-flex gap-4 align-items-center position-relative">
                 <span class="me-3 text-capitalize monthly-time"
                   >{{ formattime(x.duration) }}
                 </span>
@@ -314,10 +360,45 @@
                   viewBox="0 0 18 6"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  @click.prevent="openmore(i)"
                 >
                   <circle cx="3" cy="3" r="3" fill="#B3B3BC" />
                   <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
                 </svg>
+                <ul v-if="x.showmore" class="more-list rounded-3 bg-white">
+                  <li
+                    @click="play(x._id)"
+                    class="fw-semibold text-capitalize px-2 py-2 li-child"
+                  >
+                    play
+                  </li>
+
+                  <li
+                    v-if="otheruser._id !== thisuser._id"
+                    @click="save(x.checksave, x._id)"
+                    class="fw-semibold text-capitalize px-2 py-1 li-child"
+                  >
+                    {{ x.checksave ? "Unsave" : "save" }}
+                  </li>
+
+                  <li
+                    v-if="
+                      (component == 'music' || component == 'podcast') &&
+                      otheruser._id !== thisuser._id
+                    "
+                    class="fw-semibold text-capitalize px-2 py-1 li-child"
+                    @click="like(x.checklike, x._id)"
+                  >
+                    {{ x.checklike ? "Unlike" : "like" }}
+                  </li>
+                  <li
+                    v-if="component == 'album' || component == 'playlist'"
+                    @click="opentracklist(x)"
+                    class="fw-semibold text-capitalize px-2 py-1 li-child"
+                  >
+                    tracklist
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -327,20 +408,21 @@
         </div>
       </div>
     </div>
-    <div class="w-25 px-2 aside">
+    <div class="w-25 px-1 aside">
       <section>
-        <p class="fw-bold fs-5 text-capitalize mt-4 mb-0">Social media</p>
-        <ul
-          class="d-flex flex-column gap-1 mt-2"
-          v-if="otheruser.socialmedia.length > 0"
-        >
-          <li class="d-flex gap-3 align-items-center">
-            <img src="../../assets/icons/github.png" alt="" />
-            <span class="text-capitalize pointer socilamedia-title"
-              >My github</span
-            >
+        <p class="fw-bold fs-5 text-capitalize mt-4 mb- pe-3">Social media</p>
+        <ul class="" v-if="otheruser.socialmedia.length > 0">
+          <li
+            v-for="x in otheruser.socialmedia"
+            @click="goto(x.link)"
+            :key="x"
+            class="d-flex gap-3 align-items-center justify-content-start socialmedia-li mt-2"
+          >
+            <img :src="x.iconlink" class="img-fluid img-socialmedia" alt="" />
+            <span class="text-capitalize pointer socilamedia-title">{{
+              x.title
+            }}</span>
           </li>
-          //TODO AFTER Finish dashbord home
         </ul>
         <div v-else class="d-flex justify-content-center">
           <img
@@ -351,23 +433,28 @@
         </div>
       </section>
       <section>
-        <p class="fw-bold fs-5 text-capitalize mt-4 mb-0">recomended</p>
+        <p class="fw-bold fs-5 text-capitalize mt-4 mb-0 pe-3">recomended</p>
         <ul
           class="d-flex flex-column gap-3 mt-2"
           v-if="otheruser.recommendUser.length > 0"
         >
-          <li class="d-flex gap-3 align-items-center">
+          <li
+            v-for="x in otheruser.recommendUser"
+            @click="gotouser(x.username)"
+            :key="x"
+            class="d-flex gap-3 align-items-center"
+          >
             <img
-              src="../../assets/img/test/eminem.jpg"
+              src="../../assets/img/icon.jpg"
               class="img-fluid recomended-img rounded-circle"
               alt=""
             />
-            <span class="text-capitalize pointer recomeded-title fs-5"
-              >eminem</span
-            >
+            <span class="text-capitalize pointer recomeded-title fs-5">{{
+              x.username
+            }}</span>
           </li>
         </ul>
-        <div v-else class="d-flex justify-content-center">
+        <div v-else class="d-flex justify-content-center align-items-center">
           <img
             src="../../assets/img/empty.png"
             class="img-fluid img-aside"
@@ -384,33 +471,66 @@ import axios from "axios";
 import loader from "../loader.vue";
 import info from "../../../default";
 import Register from "../Register.vue";
+import iziToast from "izitoast";
 
 export default {
   name: "user",
   beforeMount() {
-    if (this.otheruser) {
-      setTimeout(() => {
-        this.checkcomponent();
-        this.checkfollow();
-        this.popups.loader = false;
-      }, 800);
-    }
+    this.getuser();
+  },
+  mounted() {
+    document.addEventListener("click", (e) => {
+      e.target.classList.contains("li-child") ||
+      e.target.classList.contains("svg-more")
+        ? null
+        : this.closeallmore();
+    });
   },
   data() {
     return {
       component: "music",
       apiaddress: info.Api_ADDRESS,
-      detail: true,
+      detail: false,
       popups: {
         loader: true,
       },
       data: [],
       playdata: null,
+      otheruser: {},
+      thisuser: {},
+      selecteddata: null,
+      selectindex: null,
     };
   },
   methods: {
+    getuser: function () {
+      axios
+        .get(`${this.apiaddress}users/user`, {
+          headers: {
+            jwt: Register.methods.getcookies("jwt"),
+          },
+        })
+        .then((res) => {
+          this.thisuser = res.data;
+          const id = location.pathname.split("/")[2];
+          axios
+            .get(`${this.apiaddress}users/getuserbyidorusername/${id}`)
+            .then((res) => {
+              if (res.data) {
+                this.otheruser = res.data;
+                this.checkcomponent();
+                this.checkfollow();
+                this.routing();
+                this.popups.loader = false;
+              } else {
+                location.href = "/notfound";
+              }
+            });
+        });
+    },
     changecomponent: function (e) {
       this.component = e;
+      this.closetracklist();
     },
     formattime: function (seconds) {
       let minutes = Math.floor(seconds / 60);
@@ -441,7 +561,7 @@ export default {
           })
           .then((res) => {
             if (res.data) {
-              this.$emit("reload", "reload");
+              this.getuser();
             }
           });
       } else {
@@ -453,7 +573,7 @@ export default {
           })
           .then((res) => {
             if (res.data) {
-              this.$emit("reload", "reload");
+              this.getuser();
             }
           });
       }
@@ -476,7 +596,7 @@ export default {
         })
         .then((res) => {
           if (res.data) {
-            this.$emit("reload", "reload");
+            this.getuser();
           }
         });
     },
@@ -490,15 +610,19 @@ export default {
           this.data = this.otheruser.tracks.filter((e) => {
             return e.type == "podcast" && e.status == "public";
           });
+          this.checksave();
+          this.checklike();
         } else if (this.component === "music") {
           this.data = [];
-          this.otheruser.tracks.forEach((track) => {
-            if (track.status == "public") {
-              track.duration = track.track.duration;
+          this.otheruser.tracks.length > 0
+            ? this.otheruser.tracks.forEach((track) => {
+                if (track.status == "public") {
+                  track.duration = track.track.duration;
 
-              this.data.push(track);
-            }
-          });
+                  this.data.push(track);
+                }
+              })
+            : null;
 
           this.otheruser.albums.forEach((album) => {
             album.tracks.forEach((track) => {
@@ -511,22 +635,33 @@ export default {
           this.data.sort(
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
           );
+
+          this.checksave();
+          this.checklike();
+          this.data.forEach((e) => (e.shoemore = false));
         } else if (this.component === "album") {
           this.data = [];
           this.otheruser.albums.forEach((album) => {
+            album.showmore = false;
             album.duration = album.totalduaration;
             this.data.push(album);
           });
+          this.checksave();
+          this.detail ? this.checklike() : null;
         } else if (this.component === "playlist") {
           this.data = this.otheruser.playlists.filter((playlist) => {
-            return playlist.status == "public";
+            return playlist.visibility.toLowerCase() == "public";
           });
           this.data.forEach((playlist) => {
             playlist.duration = 0;
             playlist.tracks.forEach((track) => {
-              playlist.duration += track.duration;
+              playlist.showmore = false;
+              playlist.duration =
+                playlist.duration + Number(track.track.duration);
             });
           });
+          this.checksave();
+          this.detail ? this.checklike() : null;
         } else if (this.component === "follower") {
           this.data = this.otheruser.subscribe;
           this.data.map((e) => {
@@ -585,10 +720,28 @@ export default {
       }
     },
     play: function (id) {
-      const data = {
-        id,
-        time: 0,
-      };
+      this.closeallmore();
+      let data;
+      if (this.component === "music" || this.component === "podcast") {
+        data = {
+          type: "track",
+          id,
+          time: 0,
+        };
+      } else if (this.component === "album") {
+        data = {
+          type: "album",
+          albumid: id,
+          time: 0,
+        };
+      } else {
+        data = {
+          type: "playlist",
+          playlistid: id,
+          time: 0,
+        };
+      }
+
       axios
         .put(
           `${this.apiaddress}users/lastplay`,
@@ -602,10 +755,443 @@ export default {
           }
         )
         .then((res) => {
-         if(res.data){
-          this.$emit("changemusic", id);
-         }
+          if (res.data) {
+            this.$emit("changemusic", id);
+          }
         });
+    },
+    openmore: function (i) {
+      this.data.forEach((e) => {
+        e.showmore = false;
+      });
+      !this.selecteddata
+        ? (this.data[i].showmore = true)
+        : (this.selecteddata.tracks[i].showmore = true);
+    },
+    closeallmore: function () {
+      this.data.forEach((e) => {
+        e.showmore = false;
+      });
+
+      this.detail
+        ? this.selecteddata.tracks.forEach((e) => (e.showmore = false))
+        : null;
+    },
+    checksave: function () {
+      let search;
+      if (this.detail) {
+        this.selecteddata.tracks.forEach((e) => {
+          search = this.thisuser.saveTracks.find((track) => {
+            return e._id == track;
+          });
+          e.checksave = search ? true : false;
+        });
+      } else {
+        if (this.component === "music" || this.component === "podcast") {
+          this.data.forEach((e) => {
+            search = this.thisuser.saveTracks.find((track) => {
+              return e._id == track;
+            });
+            e.checksave = search ? true : false;
+          });
+        } else if (this.component === "album") {
+          this.data.forEach((e) => {
+            search = this.thisuser.saveAlbums.find((track) => {
+              return e._id == track;
+            });
+            e.checksave = search ? true : false;
+          });
+        } else {
+          this.data.forEach((e) => {
+            search = this.thisuser.savePlaylists.find((track) => {
+              return e._id == track;
+            });
+            e.checksave = search ? true : false;
+          });
+        }
+      }
+    },
+    checklike: function () {
+      let search;
+      if (this.detail) {
+        this.selecteddata.tracks.forEach((e) => {
+          search = this.thisuser.likes.find((track) => {
+            return e._id == track;
+          });
+          e.checklike = search ? true : false;
+        });
+      } else {
+        this.data.forEach((e) => {
+          search = this.thisuser.likes.find((track) => {
+            return e._id == track;
+          });
+          e.checklike = search ? true : false;
+        });
+      }
+    },
+    save: function (check, id) {
+      this.closeallmore();
+
+      if (this.detail) {
+        if (check) {
+          axios
+            .put(
+              `${this.apiaddress}track/removesavetrack/${id}`,
+              {},
+              {
+                headers: {
+                  jwt: Register.methods.getcookies("jwt"),
+                },
+              }
+            )
+            .then((res) => {
+              this.getuser();
+              if (res.data) {
+                iziToast.success({
+                  title: "Unsave Successfully",
+                  position: "topRight",
+                });
+              }
+            });
+        } else {
+          axios
+            .put(
+              `${this.apiaddress}track/savetrack/${id}`,
+              {},
+              {
+                headers: {
+                  jwt: Register.methods.getcookies("jwt"),
+                },
+              }
+            )
+            .then((res) => {
+              if (res.data) {
+                iziToast.success({
+                  title: "Save Successfully",
+                  position: "topRight",
+                });
+              }
+              this.getuser();
+            });
+        }
+      } else {
+        if (this.component === "music" || this.component === "podcast") {
+          if (check) {
+            axios
+              .put(
+                `${this.apiaddress}track/removesavetrack/${id}`,
+                {},
+                {
+                  headers: {
+                    jwt: Register.methods.getcookies("jwt"),
+                  },
+                }
+              )
+              .then((res) => {
+                this.getuser();
+                if (res.data) {
+                  iziToast.success({
+                    title: "Unsave Successfully",
+                    position: "topRight",
+                  });
+                }
+              });
+          } else {
+            axios
+              .put(
+                `${this.apiaddress}track/savetrack/${id}`,
+                {},
+                {
+                  headers: {
+                    jwt: Register.methods.getcookies("jwt"),
+                  },
+                }
+              )
+              .then((res) => {
+                if (res.data) {
+                  iziToast.success({
+                    title: "Save Successfully",
+                    position: "topRight",
+                  });
+                }
+                this.getuser();
+              });
+          }
+        } else if (this.component === "album") {
+          if (check) {
+            axios
+              .put(
+                `${this.apiaddress}users/removesavealbum/${id}`,
+                {},
+                {
+                  headers: {
+                    jwt: Register.methods.getcookies("jwt"),
+                  },
+                }
+              )
+              .then((res) => {
+                this.getuser();
+                if (res.data) {
+                  iziToast.success({
+                    title: "Unsave Successfully",
+                    position: "topRight",
+                  });
+                }
+              });
+          } else {
+            axios
+              .put(
+                `${this.apiaddress}users/savealbum/${id}`,
+                {},
+                {
+                  headers: {
+                    jwt: Register.methods.getcookies("jwt"),
+                  },
+                }
+              )
+              .then((res) => {
+                this.getuser();
+                if (res.data) {
+                  iziToast.success({
+                    title: "Save Successfully",
+                    position: "topRight",
+                  });
+                }
+              });
+          }
+        } else {
+          if (check) {
+            axios
+              .put(
+                `${this.apiaddress}users/removesaveplaylist/${id}`,
+                {},
+                {
+                  headers: {
+                    jwt: Register.methods.getcookies("jwt"),
+                  },
+                }
+              )
+              .then((res) => {
+                this.getuser();
+                if (res.data) {
+                  iziToast.success({
+                    title: "Unsave Successfully",
+                    position: "topRight",
+                  });
+                }
+              });
+          } else {
+            axios
+              .put(
+                `${this.apiaddress}users/saveplaylist/${id}`,
+                {},
+                {
+                  headers: {
+                    jwt: Register.methods.getcookies("jwt"),
+                  },
+                }
+              )
+              .then((res) => {
+                if (res.data) {
+                  iziToast.success({
+                    title: "Save Successfully",
+                    position: "topRight",
+                  });
+                }
+                this.getuser();
+              });
+          }
+        }
+      }
+    },
+    like: function (check, id) {
+      this.closeallmore();
+      if (check) {
+        axios
+          .put(
+            `${this.apiaddress}track/unlike/${id}`,
+            {},
+            {
+              headers: {
+                jwt: Register.methods.getcookies("jwt"),
+              },
+            }
+          )
+          .then((res) => {
+            this.getuser();
+            if (res.data) {
+              iziToast.success({
+                title: "Unlike Successfully",
+                position: "topRight",
+              });
+            }
+          });
+      } else {
+        axios
+          .put(
+            `${this.apiaddress}track/like/${id}`,
+            {},
+            {
+              headers: {
+                jwt: Register.methods.getcookies("jwt"),
+              },
+            }
+          )
+          .then((res) => {
+            this.getuser();
+            if (res.data) {
+              iziToast.success({
+                title: "Like Successfully",
+                position: "topRight",
+              });
+            }
+          });
+      }
+    },
+    opentracklist: function (x, i) {
+      this.closeallmore();
+
+      this.selecteddata = x;
+      this.selectindex = i;
+
+      if (this.component == "playlist") {
+        this.selecteddata.tracks.forEach((e) => {
+          e.duration = e.track.duration;
+          e.showmore = false;
+        });
+      }
+
+      this.detail = true;
+
+      this.checksave();
+      this.checklike();
+    },
+    closetracklist: function () {
+      this.closeallmore();
+
+      this.detail = false;
+      this.selecteddata = null;
+      this.selectindex = null;
+    },
+    playdetail: function (id, colectionid) {
+      this.closeallmore();
+      let data;
+      if (this.component === "album") {
+        data = {
+          type: "album",
+          albumid: colectionid,
+          id,
+          time: 0,
+        };
+      } else {
+        data = {
+          type: "playlist",
+          playlistid: colectionid,
+          id,
+          time: 0,
+        };
+      }
+
+      axios
+        .put(
+          `${this.apiaddress}users/lastplay`,
+          {
+            data,
+          },
+          {
+            headers: {
+              jwt: Register.methods.getcookies("jwt"),
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data) {
+            this.$emit("changemusic", id);
+          }
+        });
+    },
+    goto: function (x) {
+      location.href = `https://${x}`;
+    },
+    gotouser: function (username) {
+      location.href = `${info.Url}user/${username}`;
+    },
+    routing: function () {
+      const component = location.pathname.split("/")[3];
+
+      if (component) {
+        let components = [
+          "music",
+          "album",
+          "playlist",
+          "podcast",
+          "follower",
+          "following",
+        ];
+        let search = components.find((e) => {
+          return component == e;
+        });
+
+        if (search) {
+          this.component = search;
+          this.checkcomponent();
+        } else {
+          location.href = "/notfound";
+        }
+
+
+        const selectdata = location.pathname.split("/")[4];
+        if (selectdata) {
+          if (component === "album" || component === "playlist") {
+            let index;
+            if (selectdata.length == 24) {
+              index = this.data.findIndex((e) => {
+                return e._id == selectdata;
+              });
+            } else {
+              index = this.data.findIndex((e) => {
+                return e.name == selectdata.toLowerCase();
+              });
+            }
+            index >= 0
+              ? this.opentracklist(this.data[index], index)
+              : (location.href = "/notfound");
+          } else if (component === "music" || component === "podcast") {
+            let index;
+            if (selectdata.length == 24) {
+              index = this.data.findIndex((e) => {
+                return e._id == selectdata.toLowerCase();
+              });
+            } else {
+              index = this.data.findIndex((e) => {
+                return e.name == selectdata.toLowerCase();
+              });
+              
+            }
+              index >= 0
+              ? this.play(this.data[index]._id)
+              : (location.href = "/notfound");
+          }
+        }
+
+        const selectsecondata =location.pathname.split("/")[5];
+        if(selectsecondata){
+          let index;
+      
+          
+          if (selectsecondata.length == 24) {
+              index = this.selecteddata.tracks.findIndex((e) => {
+                console.log(e._id);
+                return e._id == selectsecondata;
+              });
+            } else {
+              index = this.selecteddata.tracks.findIndex((e) => {
+                return e.name == selectsecondata.toLowerCase();
+              });
+            }
+            this.playdetail(this.selecteddata.tracks[index]._id,this.selecteddata._id)
+        }
+      }
     },
   },
   watch: {
@@ -613,7 +1199,6 @@ export default {
       this.checkcomponent();
     },
   },
-  props: ["otheruser", "thisuser"],
   components: {
     loader,
   },
@@ -647,7 +1232,6 @@ export default {
   width: 50px;
 }
 .main {
-  overflow: auto;
   height: 650px;
 }
 .aside {
@@ -678,6 +1262,10 @@ export default {
 
 .svg-more {
   transform: rotate(90deg);
+  width: 50px;
+}
+.svg-more-detail {
+  margin-left: 43px !important;
 }
 .img-greater-than {
   width: 20px;
@@ -702,9 +1290,47 @@ export default {
 }
 
 .img-empty {
-  width: 350px;
+  margin-top: 10% !important;
+  width: 100px;
 }
 .img-aside {
-  width: 250px;
+  margin-top: 10% !important;
+  width: 40px;
+}
+.more-list {
+  position: absolute;
+  right: 45px;
+  top: -12px;
+  z-index: 500;
+  border: 2px solid var(--blue-main);
+}
+
+.li-child {
+  border-bottom: 2px solid var(--blue-main);
+  margin-left: -30px;
+  cursor: pointer;
+}
+.li-child:last-child {
+  border-bottom: none !important;
+}
+
+.bar {
+  border: 2px solid var(--blue-main);
+  border-radius: 5%;
+}
+
+.data-parent {
+  height: 460px;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.img-socialmedia {
+  width: 25px;
+  height: 25px;
+}
+
+.socialmedia-li {
+  margin-left: -25px;
 }
 </style>

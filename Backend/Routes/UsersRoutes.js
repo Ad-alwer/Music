@@ -16,7 +16,7 @@ Router.post("/login", (req, res) => {
 });
 
 Router.get("/forgetpassword/:username", (req, res) => {
-  console.log('in');
+  console.log("in");
   usersDB.forgetpassword(req.params.username).then((data) => res.send(data));
 });
 
@@ -76,13 +76,28 @@ Router.get("/unsubscribe/:id", (req, res) => {
 
 Router.get("/checktrackandalbumname/:name&&:edit", (req, res) => {
   usersDB
-    .checktrackandalbumname( req.params.name,req.params.edit)
+    .checktrackandalbumname(req.params.name, req.params.edit)
+    .then((data) => res.send(data));
+});
+Router.put("/saveplaylist/:id", (req, res) => {
+  usersDB
+    .saveplaylist(req.headers.jwt, req.params.id)
+    .then((data) => res.send(data));
+});
+Router.put("/removesaveplaylist/:id", (req, res) => {
+  usersDB
+    .removesaveplaylist(req.headers.jwt, req.params.id)
     .then((data) => res.send(data));
 });
 
-Router.put("/savealbum/:albumid", (req, res) => {
+Router.put("/savealbum/:id", (req, res) => {
   usersDB
-    .savealbum(req.headers.jwt, req.params.albumidid)
+    .savealbum(req.headers.jwt, req.params.id)
+    .then((data) => res.send(data));
+});
+Router.put("/removesavealbum/:id", (req, res) => {
+  usersDB
+    .removesavealbum(req.headers.jwt, req.params.id)
     .then((data) => res.send(data));
 });
 
@@ -123,10 +138,7 @@ Router.delete("/deletesocial/:name", async (req, res) => {
 
 Router.put("/editsocial", async (req, res) => {
   usersDB
-    .editsocialmedia(
-      req.headers.jwt,
-      req.body.data,
-    )
+    .editsocialmedia(req.headers.jwt, req.body.data)
     .then((data) => res.send(data));
 });
 
@@ -158,9 +170,9 @@ Router.put("/removerecommanduser/:id", (req, res) => {
     .then((data) => res.send(data));
 });
 
-Router.put("/like/:tackid", (req, res) => {
-  usersDB.favourite(req.headers.jwt, req.params.trackidid).then((data) => {
-    trackDB.like(req.headers.jwt, trackid, data).then((data) => res.send(data));
+Router.put("/like/:id", (req, res) => {
+  usersDB.favourite(req.headers.jwt, req.params.id).then((data) => {
+    trackDB.like(req.headers.jwt, id, data).then((data) => res.send(data));
   });
 });
 

@@ -12,6 +12,7 @@ const {
   findplaylistbyid,
 } = require("./Playlists");
 const { findsocialmedia } = require("./Base");
+const { use } = require("../Routes/UsersRoutes");
 
 require("dotenv").config();
 
@@ -67,6 +68,7 @@ const musicschema = new mongoose.Schema({
   artists: [],
   saveAlbums: [],
   saveTracks: [],
+  savePlaylists: [],
   lastplay: {},
   notification: [],
   profile: { type: String, default: null },
@@ -409,6 +411,11 @@ async function getuser(token) {
 async function getuserbyid(id) {
   try {
     const user = await User.findOne({ _id: id });
+    user.playlists = await Promise.all(
+      user.playlists.map(async (e) => {
+        return await findplaylistbyid(e);
+      })
+    );
     user.albums = await Promise.all(
       user.albums.map(async (e) => {
         return await albumDB.findalbum(e.id);
@@ -426,6 +433,11 @@ async function getuserbyid(id) {
     );
     user.artists = await Promise.all(
       user.artists.map(async (e) => {
+        return await User.findById(e);
+      })
+    );
+    user.recommendUser = await Promise.all(
+      user.recommendUser.map(async (e) => {
         return await User.findById(e);
       })
     );
@@ -438,11 +450,31 @@ async function getuserbyid(id) {
 async function getuserbyusername(username) {
   try {
     const user = await User.findOne({ username });
+
+    user.playlists = await Promise.all(
+      user.playlists.map(async (e) => {
+        return await findplaylistbyid(e);
+      })
+    );
+
+    user.playlists = await Promise.all(
+      user.playlists.map(async (playlist) => {
+        const tracks = await Promise.all(
+          playlist.tracks.map(async (track) => {
+            return await trackDB.findtrackbyid(track);
+          })
+        );
+        playlist.tracks = tracks;
+        return playlist;
+      })
+    );
+
     user.albums = await Promise.all(
       user.albums.map(async (e) => {
         return await albumDB.findalbum(e.id);
       })
     );
+
     user.tracks = await Promise.all(
       user.tracks.map(async (e) => {
         return await trackDB.findtrackbyid(e.id);
@@ -455,6 +487,12 @@ async function getuserbyusername(username) {
     );
     user.artists = await Promise.all(
       user.artists.map(async (e) => {
+        return await User.findById(e);
+      })
+    );
+
+    user.recommendUser = await Promise.all(
+      user.recommendUser.map(async (e) => {
         return await User.findById(e);
       })
     );
@@ -809,11 +847,52 @@ async function changebio(token, text) {
   }
 }
 
+async function saveplaylist(token, playlistid) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    await User.findByIdAndUpdate(decode._id, {
+      $push: {
+        savePlaylists: playlistid,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+async function removesaveplaylist(token, playlistid) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    await User.findByIdAndUpdate(decode._id, {
+      $pull: {
+        savePlaylists: playlistid,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
 async function savealbum(token, albumid) {
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
     await User.findByIdAndUpdate(decode._id, {
       $push: {
+        saveAlbums: albumid,
+      },
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function removesavealbum(token, albumid) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    console.log(albumid);
+    await User.findByIdAndUpdate(decode._id, {
+      $pull: {
         saveAlbums: albumid,
       },
     });
@@ -1444,6 +1523,7 @@ async function getrequests() {
 }
 
 async function like(token, id) {
+  console.log(id);
   const decode = jwt.verify(token, process.env.REGISTER_JWT);
 
   try {
@@ -1606,4 +1686,7 @@ module.exports = {
   getusernamebyid,
   addplaylist,
   deleteplaylist,
+  removesavealbum,
+  saveplaylist,
+  removesaveplaylist,
 };
