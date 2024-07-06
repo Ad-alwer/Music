@@ -100,18 +100,7 @@ export default {
     changecomponent: function (e) {
       this.component = e;
     },
-    findotheruser: function () {
-      const id = location.pathname.split("/user/")[1];
-      axios
-        .get(`${this.apiaddress}users/getuserbyidorusername/${id}`)
-        .then((res) => {
-          if (res.data) {
-            this.finduser = res.data;
-          } else {
-            location.href = "/notfound";
-          }
-        });
-    },
+   
     changemusic: function (id) {
       this.newmusic = id;
     },
@@ -155,16 +144,19 @@ export default {
           }
 
           if (firsturllocation == "profile" && secondurllocation) {
+          
             const profilearr = ["socialmedia", "request", "recomenduser"];
             search = profilearr.find((e) => {
               return e == secondurllocation;
             });
+        
 
             if (search) {
-              this.compnent = search;
+              this.component = search;
+        
               this.popups.loader = false;
             } else {
-              location.href = "/notfound";
+              // location.href = "/notfound";
             }
           }
         }
