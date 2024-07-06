@@ -156,7 +156,7 @@ export default {
         
               this.popups.loader = false;
             } else {
-              // location.href = "/notfound";
+              location.href = "/notfound";
             }
           }
         }
