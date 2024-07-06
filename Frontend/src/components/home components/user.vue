@@ -199,7 +199,7 @@
               v-for="(x, i) in selecteddata.tracks"
               :key="x"
             >
-              <div class="d-flex gap-5 align-items-center" @click="play(x._id)">
+              <div class="d-flex gap-5 align-items-center" @click="playdetail(x._id,selecteddata._id)">
                 <img
                   class="monthly-img img-fluid rounded-3"
                   :src="x.cover.url"
