@@ -20,7 +20,13 @@
             >{{ show.artist }}</span
           >
           <div class="w-100 timeline">
-            <audio :src="show.audio" ref="audio" @play="play" @pause="pause" @ended="lasttrack">
+            <audio
+              :src="show.audio"
+              ref="audio"
+              @play="play"
+              @pause="pause"
+              @ended="lasttrack"
+            >
               <source />
             </audio>
             <input
@@ -184,7 +190,7 @@
 <script>
 import info from "../../../default";
 import axios from "axios";
-// import iziToast from "izitoast";
+
 
 import Register from "../Register.vue";
 
@@ -342,10 +348,9 @@ export default {
         this.show.type = music.type;
 
         if (this.music.artist.lastplay.id == this.show.id) {
-          console.log(music.artist.lastplay);
-          // this.$refs.audio.currentTime = music.artist.lastplay.time;
+          this.$refs.audio.currentTime = music.artist.lastplay.time;
 
-          // this.show.currentTime = music.artist.lastplay.time;
+          this.show.currentTime = music.artist.lastplay.time;
         } else {
           this.$refs.audio.currentTime = 0;
           this.show.currentTime = 0;
@@ -499,7 +504,7 @@ export default {
         })
         .then((res) => (res.data ? (this.library = res.data) : null));
     },
-    //TODO
+    
   },
   props: ["data"],
 };

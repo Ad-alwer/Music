@@ -199,7 +199,10 @@
               v-for="(x, i) in selecteddata.tracks"
               :key="x"
             >
-              <div class="d-flex gap-5 align-items-center" @click="playdetail(x._id,selecteddata._id)">
+              <div
+                class="d-flex gap-5 align-items-center"
+                @click="playdetail(x._id, selecteddata._id)"
+              >
                 <img
                   class="monthly-img img-fluid rounded-3"
                   :src="x.cover.url"
@@ -642,9 +645,14 @@ export default {
         } else if (this.component === "album") {
           this.data = [];
           this.otheruser.albums.forEach((album) => {
-            album.showmore = false;
-            album.duration = album.totalduaration;
-            this.data.push(album);
+            if (album.status.toLowerCase() === "public") {
+              album.showmore = false;
+              album.duration = album.totalduaration;
+              album.tracks = album.tracks.filter(
+                (e) => e.status.toLowerCase() === "public"
+              );
+              this.data.push(album);
+            }
           });
           this.checksave();
           this.detail ? this.checklike() : null;
@@ -652,12 +660,21 @@ export default {
           this.data = this.otheruser.playlists.filter((playlist) => {
             return playlist.visibility.toLowerCase() == "public";
           });
+
           this.data.forEach((playlist) => {
             playlist.duration = 0;
+            playlist.tracks = playlist.tracks.filter(
+              (e) => e.status.toLowerCase() === "public"
+            );
             playlist.tracks.forEach((track) => {
               playlist.showmore = false;
-              playlist.duration =
-                playlist.duration + Number(track.track.duration);
+
+              if (track.duration) {
+                playlist.duration = playlist.duration + Number(track.duration);
+              } else {
+                playlist.duration =
+                  playlist.duration + Number(track.track.duration);
+              }
             });
           });
           this.checksave();
@@ -1056,7 +1073,10 @@ export default {
 
       if (this.component == "playlist") {
         this.selecteddata.tracks.forEach((e) => {
-          e.duration = e.track.duration;
+          if (!e.duration) {
+            e.duration = e.track.duration;
+          }
+
           e.showmore = false;
         });
       }
@@ -1139,7 +1159,6 @@ export default {
           location.href = "/notfound";
         }
 
-
         const selectdata = location.pathname.split("/")[4];
         if (selectdata) {
           if (component === "album" || component === "playlist") {
@@ -1166,30 +1185,31 @@ export default {
               index = this.data.findIndex((e) => {
                 return e.name == selectdata.toLowerCase();
               });
-              
             }
-              index >= 0
+            index >= 0
               ? this.play(this.data[index]._id)
               : (location.href = "/notfound");
           }
         }
 
-        const selectsecondata =location.pathname.split("/")[5];
-        if(selectsecondata){
+        const selectsecondata = location.pathname.split("/")[5];
+        if (selectsecondata) {
           let index;
-      
-          
+
           if (selectsecondata.length == 24) {
-              index = this.selecteddata.tracks.findIndex((e) => {
-                console.log(e._id);
-                return e._id == selectsecondata;
-              });
-            } else {
-              index = this.selecteddata.tracks.findIndex((e) => {
-                return e.name == selectsecondata.toLowerCase();
-              });
-            }
-            this.playdetail(this.selecteddata.tracks[index]._id,this.selecteddata._id)
+            index = this.selecteddata.tracks.findIndex((e) => {
+              console.log(e._id);
+              return e._id == selectsecondata;
+            });
+          } else {
+            index = this.selecteddata.tracks.findIndex((e) => {
+              return e.name == selectsecondata.toLowerCase();
+            });
+          }
+          this.playdetail(
+            this.selecteddata.tracks[index]._id,
+            this.selecteddata._id
+          );
         }
       }
     },
