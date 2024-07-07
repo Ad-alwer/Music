@@ -3,7 +3,7 @@ const timestamp = require("mongoose-timestamp");
 const schedule = require("node-schedule");
 
 const userDB = require("../Databases/Users");
-const { getallalbums } = require("./Albums");
+const albumDB = require("../Databases/Albums");
 
 require("dotenv").config();
 
@@ -217,28 +217,45 @@ async function playtrack(id) {
 }
 async function monthlyListener(id) {
   const track = await Track.findById(id);
-  let monthlylisteners = track.monthlyListener;
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth() + 1;
-  const today = `${currentYear} - ${currentMonth}`;
-  const search = monthlylisteners.find((e) => {
-    return e.date === today;
-  });
-  if (search) {
-    search.view++;
-  } else {
-    monthlylisteners.push({
-      date: today,
-      view: 1,
+  if (track) {
+    let monthlylisteners = track.monthlyListener;
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+    const today = `${currentYear} - ${currentMonth}`;
+    const search = monthlylisteners.find((e) => {
+      return e.date === today;
     });
-  }
+    if (search) {
+      search.view++;
+    } else {
+      monthlylisteners.push({
+        date: today,
+        view: 1,
+      });
+    }
 
-  await Track.findByIdAndUpdate(id, {
-    $set: {
-      monthlyListener: monthlylisteners,
-    },
-  });
+    await Track.findByIdAndUpdate(id, {
+      $set: {
+        monthlyListener: monthlylisteners,
+      },
+    });
+  } else {
+    let library = [];
+    let albums = await albumDB.getallalbums();
+    albums.forEach((album) => {
+      album.tracks.forEach((track) => {
+        track.albumid = album._id;
+        library.push(track);
+      });
+    });
+
+    let search = library.findIndex((e) => {
+      return e._id === id;
+    });
+    await albumDB.play(library[search].albumid, library[search]._id)
+    albumDB.monthlyListener(library[search].albumid, library[search]._id);
+  }
 }
 
 async function changealbum(trackid, albumid) {
@@ -301,7 +318,7 @@ async function search(name) {
       }
     });
 
-    const albums = await getallalbums();
+    const albums = await albumDB.getallalbums();
     albums.forEach((album) => {
       album.tracks.forEach(async (e) => {
         if (e.status == "Public") {

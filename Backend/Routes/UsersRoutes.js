@@ -185,6 +185,10 @@ Router.get("/lastplay", (req, res) => {
   usersDB.getlastplay(req.headers.jwt).then((data) => res.send(data));
 });
 
+Router.get("/getlibrary", (req, res) => {
+  usersDB.getLibrary(req.headers.jwt).then((data) => res.send(data));
+});
+
 Router.put("/verifyalbum/:name", (req, res) => {
   usersDB
     .verifyalbum(req.headers.jwt, req.params.name)

@@ -157,6 +157,7 @@ async function findalbum(id) {
 async function play(albumid, trackid) {
   try {
     const album = await Album.findById(albumid);
+
     let tracks = album.tracks;
     const index = tracks.findIndex((track) => track._id == trackid);
     tracks[index].plays += 1;
@@ -170,7 +171,8 @@ async function play(albumid, trackid) {
       },
     });
     return true;
-  } catch {
+  } catch (err) {
+    console.log(err);
     return false;
   }
 }

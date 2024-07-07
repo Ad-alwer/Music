@@ -12,7 +12,8 @@ const {
   findplaylistbyid,
 } = require("./Playlists");
 const { findsocialmedia } = require("./Base");
-const { use } = require("../Routes/UsersRoutes");
+const { use, search } = require("../Routes/UsersRoutes");
+const { promises } = require("nodemailer/lib/xoauth2");
 
 require("dotenv").config();
 
@@ -421,6 +422,37 @@ async function getuserbyid(id) {
         return await albumDB.findalbum(e.id);
       })
     );
+
+    user.playlists = await Promise.all(
+      user.playlists.map(async (e) => {
+        return await findplaylistbyid(e);
+      })
+    );
+
+    let library = await trackDB.getalltracks();
+    const albums = await albumDB.getallalbums();
+    albums.forEach((album) => {
+      album.tracks.forEach((track) => {
+        track.cover = album.cover;
+        library.push(track);
+      });
+    });
+
+    user.playlists = await Promise.all(
+      user.playlists.map(async (playlist) => {
+        const tracks = await Promise.all(
+          playlist.tracks.map(async (track) => {
+            return library.find((e) => {
+              return e._id.toString() === track.toString();
+            });
+          })
+        );
+
+        playlist.tracks = tracks;
+        return playlist;
+      })
+    );
+
     user.tracks = await Promise.all(
       user.tracks.map(async (e) => {
         return await trackDB.findtrackbyid(e.id);
@@ -457,13 +489,25 @@ async function getuserbyusername(username) {
       })
     );
 
+    let library = await trackDB.getalltracks();
+    const albums = await albumDB.getallalbums();
+    albums.forEach((album) => {
+      album.tracks.forEach((track) => {
+        track.cover = album.cover;
+        library.push(track);
+      });
+    });
+
     user.playlists = await Promise.all(
       user.playlists.map(async (playlist) => {
         const tracks = await Promise.all(
           playlist.tracks.map(async (track) => {
-            return await trackDB.findtrackbyid(track);
+            return library.find((e) => {
+              return e._id.toString() === track.toString();
+            });
           })
         );
+
         playlist.tracks = tracks;
         return playlist;
       })
@@ -1245,19 +1289,56 @@ async function getlastplay(token) {
     const user = await User.findById(decode._id);
 
     if (user.lastplay.type == "track") {
-      let track = trackDB.findtrackbyid(user.lastplay.id);
-      track.artist = await User.findById(track.artist);
-      return track;
+      let library = [];
+
+      let albums = await albumDB.getallalbums();
+      albums.forEach((album) => {
+        album.tracks.forEach((track) => {
+          if (track.status.toLowerCase() == "public") {
+            track.cover = album.cover;
+            library.push(track);
+          }
+        });
+      });
+
+      let tracks = await trackDB.getalltracks();
+      tracks.forEach((e) => {
+        if (e.status.toLowerCase() === "public") {
+          library.push(e);
+        }
+      });
+
+      let search = library.find((e) => {
+        return e._id.toString() === user.lastplay.id;
+      });
+
+      if (search) {
+        if (search.artist) {
+          search.artist = await User.findById(search.artist);
+        } else {
+          search.artist = await User.findById(search.artistid);
+        }
+      }
+
+      return search;
     } else if (user.lastplay.type == "album") {
       let track;
       const albums = await albumDB.getallalbums();
       const album = albums.find((e) => {
         return e._id == user.lastplay.albumid;
       });
+
+      if (album.status.toLowerCase() === "private") {
+        return false;
+      }
+
       if (user.lastplay.id) {
         track = album.tracks.find((track) => {
           return track._id == user.lastplay.id;
         });
+        if (track.status.toLowerCase() === "private") {
+          return false;
+        }
       } else {
         track = album.tracks[0];
       }
@@ -1270,33 +1351,158 @@ async function getlastplay(token) {
         album,
       };
       return resaultTrack;
-
-      return track;
     } else if (user.lastplay.type == "playlist") {
-      const playlist = await findplaylistbyid(user.lastplay.playlist);
-      let track;
+      const playlist = await findplaylistbyid(user.lastplay.playlistid);
+      if (playlist.visibility.toLowerCase() === "public") {
+        let track;
+        let library = [];
+        let tracks = await trackDB.getalltracks();
+        tracks.forEach(async (e) => {
+          if (e.status.toLowerCase() === "public") {
+            library.push(e);
+          }
+        });
+        const albums = await albumDB.getallalbums();
 
-      let library = await trackDB.getalltracks();
-      const albums = await albumDB.getallalbums();
+        albums.forEach((album) => {
+          album.tracks.forEach(async (track) => {
+            track.cover = album.cover;
+            library.push(track);
+          });
+        });
+
+        if (user.lastplay.id) {
+          track = library.find((item) => {
+            return item._id.toString() == user.lastplay.id;
+          });
+        } else {
+          track = library.find(async (item) => {
+            return item._id.toString() == playlist.tracks[0]._id;
+          });
+        }
+
+        track.artist = await User.findById(playlist.creator);
+        return track;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+async function getLibrary(token) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findById(decode._id);
+    if (user.lastplay.type == "track") {
+      let library = [];
+      let albums = await Promise.all(
+        user.albums.map(async (e) => {
+          const album = await albumDB.findalbum(e.id);
+          return album;
+        })
+      );
+
       albums.forEach((album) => {
-        album.tracks.forEach((track) => {
-          library.push(track);
+        album.tracks.forEach(async (track) => {
+          if (track.status.toLowerCase() === "public") {
+            track.artist = await User.findById(track.artistid);
+            track.cover = album.cover;
+            library.push(track);
+          }
         });
       });
 
-      if (user.lastplay.id) {
-        track = library.find((item) => {
-          return item._id.toString() == user.lastplay.id;
-        });
-      } else {
-        track = library.find((item) => {
-          return item._id.toString() == playlist.tracks[0]._id;
-        });
+      let tracks = await Promise.all(
+        user.tracks.map(async (e) => {
+          const track = await trackDB.findtrackbyid(e.id);
+          return track;
+        })
+      );
+
+      for (const track of tracks) {
+        if (track.status.toLowerCase() === "public") {
+          track.artist = await User.findById(track.artist);
+          library.push(track);
+        }
       }
-      track.playlist = playlist;
-      return track;
+      return library;
+    } else if (user.lastplay.type == "album") {
+      const albums = await albumDB.getallalbums();
+      let library = albums.filter((e) => e.status.toLowerCase() === "public");
+      const search = library.find(
+        (e) => e._id.toString() === user.lastplay.albumid
+      );
+
+      if (search) {
+        await Promise.all(
+          search.tracks.map(async (e) => {
+            e.artist = await User.findById(e.artistid);
+          })
+        );
+      }
+
+      search.tracks.forEach(async (e) => {
+        e.cover = search.cover;
+        e.artist = await User.findById(e.artistid);
+      });
+
+      resault = search.tracks.filter(
+        (e) => e.status.toLowerCase() === "public"
+      );
+      return resault;
+    } else {
+      const playlists = await getallplaylists();
+      let publicplaylists = playlists.filter(
+        (e) => e.visibility.toLowerCase() === "public"
+      );
+      const playlist = publicplaylists.find(
+        (e) => e._id.toString() === user.lastplay.playlistid
+      );
+      let library = [];
+      let tracks = await trackDB.getalltracks();
+
+      await Promise.all(
+        tracks.map(async (e) => {
+          if (e.status.toLowerCase() === "public") {
+            e.artist = await User.findById(e.artist);
+            library.push(e);
+          }
+        })
+      );
+      const albums = await albumDB.getallalbums();
+
+      await Promise.all(
+        albums.map(async (album) => {
+          await Promise.all(
+            album.tracks.map(async (track) => {
+              if (track.status.toLowerCase() === "public") {
+                track.artist = await User.findById(track.artistid);
+                track.cover = album.cover;
+                library.push(track);
+              }
+            })
+          );
+        })
+      );
+
+      playlist.tracks = await Promise.all(
+        playlist.tracks.map(async (track) => {
+          return library.find((e) => {
+            return track.toString() === e._id.toString();
+          });
+        })
+      );
+
+      return playlist.tracks;
     }
-  } catch {
+  } catch (error) {
+    console.error(error);
     return false;
   }
 }
@@ -1689,4 +1895,5 @@ module.exports = {
   removesavealbum,
   saveplaylist,
   removesaveplaylist,
+  getLibrary,
 };

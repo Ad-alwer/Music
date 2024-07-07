@@ -20,7 +20,7 @@
             >{{ show.artist }}</span
           >
           <div class="w-100 timeline">
-            <audio :src="show.audio" ref="audio" @play="play" @pause="pause">
+            <audio :src="show.audio" ref="audio" @play="play" @pause="pause" @ended="lasttrack">
               <source />
             </audio>
             <input
@@ -73,7 +73,7 @@
                 class="playandpause rounded-circle d-flex justify-content-center align-items-center"
               >
                 <img
-                  v-if="!show.isplay"
+                  v-if="!show.isPlay"
                   src="../../assets/icons/play.png"
                   class="play-icon img-fluid"
                   alt=""
@@ -191,17 +191,7 @@ import Register from "../Register.vue";
 export default {
   name: "playerbox",
   async beforeMount() {
-    await this.getuser();
-    axios
-      .get(`${this.apiaddress}users/lastplay`, {
-        headers: {
-          jwt: Register.methods.getcookies("jwt"),
-        },
-      })
-      .then((res) => {
-        this.music = res.data;
-        this.getmusic(this.music);
-      });
+    this.getuser();
   },
 
   data() {
@@ -225,66 +215,58 @@ export default {
         album: null,
         last: [],
         type: null,
+        finishgetmusic: false,
+      },
+      timeouts: {
+        nowchckinterval: null,
+        changelastplayinterval: null,
       },
       user: [],
       music: [],
+      library: [],
     };
   },
   watch: {
-    data: function (id) {
-      axios
-        .get(
-          `${this.apiaddress}users/getusertracks/track/${this.show.artistid}`
-        )
-        .then((res) => {
-          const index = res.data.findIndex((e) => e._id == id);
-
-          this.$refs.audio.pause();
-          this.show.last.push(this.music);
-          this.music = res.data[index];
-          this.getmusic(res.data[index]);
-          setTimeout(() => {
-            this.$refs.audio.play();
-          }, 1000);
-        });
+    data: function () {
+      this.getlastplay();
     },
   },
   methods: {
-    play: function () {
-      this.getmusic(this.music);
-      this.show.isplay = true;
-      setInterval(() => {
-        this.nowcheck();
-        if (this.show.currentTime == this.show.duration) {
-          this.$refs.audio.play();
-        }
-      }, 500);
-      setInterval(() => {
-        this.nowcheck();
-        if (this.show.currentTime == this.show.duration) {
-          this.nexttrack;
-        }
-      }, 500);
+    play: async function () {
+      const check = this.getmusic(this.music);
+      if (check) {
+        this.show.isPlay = true;
 
-      setInterval(() => {
-        this.changelastplay();
-      }, 5000);
-      if (this.show.currentTime == 0) {
-        if (this.show.album) {
-          axios.put(
-            `${this.apiaddress}album/play/${this.show.album}/${this.show.id}`
-          );
-        } else {
-          console.log("else");
-          axios.put(`${this.apiaddress}track/play/${this.show.id}`);
+        this.timeouts.nowchckinterval = setInterval(() => {
+          this.nowcheck();
+          if (this.show.currentTime == this.show.duration) {
+            this.nexttrack();
+          }
+        }, 500);
+
+        this.timeouts.changelastplayinterval = setInterval(() => {
+          this.changelastplay();
+        }, 5000);
+        if (this.show.currentTime == 0) {
+          if (this.show.album) {
+            axios.put(
+              `${this.apiaddress}album/play/${this.show.album._id}/${this.show.id}`
+            );
+          } else {
+            axios.put(`${this.apiaddress}track/play/${this.show.id}`);
+          }
         }
       }
     },
     pause: function () {
+      let duaration = this.show.currentTime;
       this.$refs.audio.pause();
-      this.show.isplay = false;
+      this.show.isPlay = false;
       this.$refs.range.value = this.$refs.audio.currentTime;
+      clearInterval(this.timeouts.nowchckinterval);
+      clearInterval(this.timeouts.changelastplayinterval);
       this.changelastplay();
+      this.music.artist.lastplay.time = Number(duaration) + 1;
     },
     timechange: function () {
       this.$refs.audio.pause();
@@ -297,10 +279,29 @@ export default {
       this.$refs.range.value = this.$refs.audio.currentTime;
     },
     changelastplay: function () {
-      const data = {
-        id: this.show.id,
-        time: Number(this.$refs.range.value),
-      };
+      let data;
+      if (this.user.lastplay.type == "track") {
+        data = {
+          id: this.show.id,
+          type: "track",
+          time: Number(this.$refs.range.value),
+        };
+      } else if (this.user.lastplay.type == "album") {
+        data = {
+          id: this.show.id,
+          type: "album",
+          time: Number(this.$refs.range.value),
+          albumid: this.show.album._id,
+        };
+      } else {
+        data = {
+          id: this.show.id,
+          type: "playlist",
+          time: Number(this.$refs.range.value),
+          playlistid: this.user.lastplay.playlistid,
+        };
+      }
+
       axios.put(
         `${this.apiaddress}users/lastplay`,
         {
@@ -316,29 +317,35 @@ export default {
     getmusic: function (music) {
       if (!music) {
         this.show.name = "Please select a track to listen";
+        this.$refs.audio.src = null;
+        this.$refs.audio.currentTime = 0;
         this.show.artist = null;
         this.show.img = require("../../assets/img/dontknow.png");
       } else {
         this.show.audio = music.url ? music.url : music.track.url;
         this.show.name = music.name;
-        this.show.artist = music.artist.username;
-        this.show.artistid = music.artist._id;
+
+        if (music.artist) {
+          this.show.artist = music.artist.username;
+          this.show.artistid = music.artist._id;
+        }
 
         this.show.img = music.cover.url;
         this.show.duration = music.duration
           ? music.duration
           : music.track.duration;
 
-        this.$refs.range.value = this.show.currentTime;
-
         this.show.lyric = music.lyric;
         this.show.id = music._id;
-        this.show.album = music.album;
+
+        music.album ? (this.show.album = music.album) : null;
         this.show.type = music.type;
 
         if (this.music.artist.lastplay.id == this.show.id) {
-          this.$refs.audio.currentTime = music.artist.lastplay.time;
-          this.show.currentTime = music.artist.lastplay.time;
+          console.log(music.artist.lastplay);
+          // this.$refs.audio.currentTime = music.artist.lastplay.time;
+
+          // this.show.currentTime = music.artist.lastplay.time;
         } else {
           this.$refs.audio.currentTime = 0;
           this.show.currentTime = 0;
@@ -347,6 +354,8 @@ export default {
           this.$refs.range.value = this.show.currentTime;
         });
 
+        this.$refs.range.value = this.show.currentTime;
+
         setTimeout(() => {
           this.user.likes.forEach((e) => {
             if (e == music._id) {
@@ -354,12 +363,15 @@ export default {
             }
           });
 
+          this.firstplay = true;
+
           this.user.saveTracks.forEach((e) => {
             if (e == music._id) {
               this.show.booked = true;
             }
           });
         }, 1000);
+        return true;
       }
     },
     getuser: function () {
@@ -371,6 +383,8 @@ export default {
         })
         .then((res) => {
           this.user = res.data;
+          this.getlastplay();
+          this.getlibrary();
         });
     },
     like: function () {
@@ -440,88 +454,50 @@ export default {
       return time;
     },
     nexttrack: function () {
-      if (this.show.last.lenght > 0) {
-        const index = this.show.last.findIndex((e) => e._id == this.show.id);
-        if (this.show.last.lenght == index + 1) {
-          if (this.show.type == "music") {
-            axios
-              .get(
-                `${this.apiaddress}users/getusertracks/track/${this.show.artistid}`
-              )
-              .then((res) => {
-                if (res.data) {
-                  const index = res.data.findIndex(
-                    (e) => e._id == this.show.id
-                  );
-
-                  if (res.data.length == index + 1) {
-                    this.$refs.audio.pause();
-                    this.music = res.data[0];
-
-                    setTimeout(() => {
-                      this.$refs.audio.play();
-                    }, 1000);
-                  } else {
-                    this.$refs.audio.pause();
-                    this.music = res.data[index + 1];
-
-                    setTimeout(() => {
-                      this.$refs.audio.play();
-                    }, 1000);
-                  }
-                }
-              });
-          }
-        } else {
-          this.$refs.audio.pause();
-          this.music = this.show.last[index + 1];
-
-          setTimeout(() => {
-            this.$refs.audio.play();
-          }, 1000);
-        }
+      this.$refs.audio.pause();
+      let index;
+      index = this.library.findIndex((e) => {
+        return e._id.toString() === this.music._id.toString();
+      });
+      this.show.last.push(this.music);
+      if (this.library.length === index + 1) {
+        this.music = this.library[0];
       } else {
-        if (this.show.type == "music") {
-          axios
-            .get(
-              `${this.apiaddress}users/getusertracks/track/${this.show.artistid}`
-            )
-            .then((res) => {
-              if (res.data) {
-                const index = res.data.findIndex((e) => e._id == this.show.id);
-
-                if (res.data.length == index + 1) {
-                  this.$refs.audio.pause();
-                  this.music = res.data[0];
-
-                  setTimeout(() => {
-                    this.$refs.audio.play();
-                  }, 2000);
-                } else {
-                  this.$refs.audio.pause();
-                  this.music = res.data[index + 1];
-
-                  setTimeout(() => {
-                    this.$refs.audio.play();
-                  }, 2000);
-                }
-              }
-            });
-        }
+        this.music = this.library[index + 1];
       }
+
+      this.$refs.audio.play();
     },
     lasttrack: function () {
       const index = this.show.last.findIndex((e) => e._id == this.show.id);
       if (this.show.last.lenght > 0) {
         this.$refs.audio.pause();
         this.music = this.show.last[index - 1];
-
-        setTimeout(() => {
-          this.$refs.audio.play();
-        }, 2000);
+        this.$refs.audio.play();
       } else {
         this.nexttrack();
       }
+    },
+    getlastplay: function () {
+      axios
+        .get(`${this.apiaddress}users/lastplay`, {
+          headers: {
+            jwt: Register.methods.getcookies("jwt"),
+          },
+        })
+        .then((res) => {
+          this.music = res.data;
+          this.getmusic(this.music);
+        });
+    },
+    getlibrary: function () {
+      axios
+        .get(`${this.apiaddress}users/getlibrary`, {
+          headers: {
+            jwt: Register.methods.getcookies("jwt"),
+          },
+        })
+        .then((res) => (res.data ? (this.library = res.data) : null));
     },
     //TODO
   },
