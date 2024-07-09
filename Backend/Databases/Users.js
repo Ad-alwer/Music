@@ -1836,6 +1836,20 @@ async function deleteplaylist(token, id) {
   }
 }
 
+async function changeidtouser(arr) {
+  await Promise.all(
+    arr.map(async (e) => {
+      if (e.artistid) {
+        e.artist = await User.findById(e.artistid);
+      } else {
+        e.artist = await User.findById(e.artist);
+      }
+      return e;
+    })
+  );
+  return arr;
+}
+
 module.exports = {
   checkusername,
   checkemail,
@@ -1896,4 +1910,5 @@ module.exports = {
   saveplaylist,
   removesaveplaylist,
   getLibrary,
+  changeidtouser,
 };

@@ -5,6 +5,7 @@ const schedule = require("node-schedule");
 const userDB = require("../Databases/Users");
 const albumDB = require("../Databases/Albums");
 
+const { getusernamebyid } = require("../Databases/Users");
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
@@ -253,7 +254,7 @@ async function monthlyListener(id) {
     let search = library.findIndex((e) => {
       return e._id === id;
     });
-    await albumDB.play(library[search].albumid, library[search]._id)
+    await albumDB.play(library[search].albumid, library[search]._id);
     albumDB.monthlyListener(library[search].albumid, library[search]._id);
   }
 }
@@ -342,6 +343,35 @@ async function getalltracks() {
   return tracks;
 }
 
+async function toptrack(type) {
+  let tracks = await Track.find({});
+  let resault;
+  if (type === "podcast") {
+    let podcast = tracks.filter((e) => {
+      e.type.toLowerCase() === "podcast";
+    });
+    podcast.sort((a, b) => b.plays - a.plays);
+
+    resault = podcast.slice(0, 20);
+  } else {
+    let library = tracks.filter((e) => {
+      return e.type.toLowerCase() === "music";
+    });
+
+    let albums = await albumDB.getallalbums();
+    for (let album of albums) {
+      for (let track of album.tracks) {
+        track.cover = album.cover;
+        library.push(track);
+      }
+    }
+    library.sort((a, b) => b.plays - a.plays);
+
+    resault = library.slice(0, 20);
+  }
+  return resault;
+}
+
 module.exports = {
   addtrack,
   like,
@@ -356,4 +386,5 @@ module.exports = {
   findtrackbyid,
   search,
   getalltracks,
+  toptrack,
 };
