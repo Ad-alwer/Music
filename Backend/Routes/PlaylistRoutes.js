@@ -64,4 +64,8 @@ Router.get("/getplaylists", (req, res) => {
   playlistDB.getuserplaylist(req.headers.jwt).then((data) => res.send(data));
 });
 
+Router.get("/topplaylist", (req, res) => {
+  playlistDB.topplaylist(req.headers.jwt).then(async (data) => res.send(data));
+});
+
 module.exports = Router;

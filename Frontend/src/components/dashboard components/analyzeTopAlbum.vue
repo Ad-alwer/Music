@@ -1,98 +1,190 @@
 <template>
   <div id="parent" class="container mt-4 px-4">
-    <section class="d-flex justify-content-between">
+    <section v-if="!loader" class="d-flex justify-content-between">
       <span class="text-uppercase color-blue fw-semibold fs-5"
         >Top {{ type }}</span
       >
     </section>
-    <section class="mt-4 d-flex flex-column gap-3">
-      <div
-        class="monthly-box d-flex gap-4 align-items-center justify-content-between"
-      >
-        <div class="d-flex gap-5 align-items-center">
-          <div
-            class="monthly-num d-flex justify-content-center align-items-center"
-          >
-            <span class="color-gray fs-1">01</span>
+    <section v-if="!loader" class="mt-4 d-flex flex-column gap-3">
+      <div v-if="data.length > 0" class="d-flex flex-column gap-3">
+        <div
+          class="monthly-box d-flex gap-4 align-items-center justify-content-between"
+          v-for="(x, i) in data"
+          :key="x"
+        >
+          <div class="d-flex gap-5 align-items-center">
+            <div
+              class="monthly-num d-flex justify-content-center align-items-center"
+            >
+              <span class="color-gray fs-1">{{ formatNumber(i + 1) }}</span>
+            </div>
+            <img
+              class="monthly-img img-fluid rounded-3"
+              :src="x.cover.url"
+              alt=""
+            />
+            <div class="d-flex flex-column monthly-text">
+              <p
+                @click="
+                  gotottrack(
+                    x.artist ? x.artist : x.tracks[0].artist.username,
+                    x.name
+                  )
+                "
+                class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="
+                  gotouser(x.artist ? x.artist : x.tracks[0].artist.username)
+                "
+                class="text-capitalize color-gray pointer"
+                >{{ x.artist ? x.artist : x.tracks[0].artist.username }}</span
+              >
+            </div>
           </div>
-          <img
-            class="monthly-img img-fluid rounded-3"
-            src="../../assets/img/test/eminem.jpg"
-            alt=""
-          />
-          <div class="d-flex flex-column monthly-text">
-            <p class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer">
-              track
-            </p>
-            <span class="text-capitalize color-gray pointer">eminem</span>
-          </div>
-        </div>
-        <div class="d-flex gap-4 align-items-center">
-          <span class="text-capitalize">11 Tracks</span>
-          <span class="text-capitalize">2500 plays in january</span>
+          <div class="d-flex gap-4 align-items-center">
+            <span class="text-capitalize trackshow-span"
+              >{{ x.tracks.length }} Tracks</span
+            >
+            <span v-if="type === 'album'" class="text-capitalize monthplay-span"
+              >{{ formatview(x.lastmonth.view) }} plays in
+              {{ x.lastmonth.name }}</span
+            >
 
-          <span class="text-capitalize">25k plays</span>
-          <svg
-            class="pointer"
-            width="18"
-            height="6"
-            viewBox="0 0 18 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="3" cy="3" r="3" fill="#B3B3BC" />
-            <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
-          </svg>
+            <span class="text-capitalize plays-span"
+              >{{ formatview(x.plays) }} plays</span
+            >
+          </div>
         </div>
       </div>
       <div
-        class="monthly-box d-flex gap-4 align-items-center justify-content-between"
+        v-else
+        class="d-flex justify-content-center align-items-center mt-5 pt-5"
       >
-        <div class="d-flex gap-5 align-items-center">
-          <div
-            class="monthly-num d-flex justify-content-center align-items-center"
-          >
-            <span class="color-gray fs-1">02</span>
-          </div>
-          <img
-            class="monthly-img img-fluid rounded-3"
-            src="../../assets/img/test/eminem.jpg"
-            alt=""
-          />
-          <div class="d-flex flex-column monthly-text">
-            <p class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer">
-              track
-            </p>
-            <span class="text-capitalize color-gray pointer">eminem</span>
-          </div>
-        </div>
-        <div class="d-flex gap-4 align-items-center">
-          <span class="text-capitalize">3 Tracks</span>
-
-          <span class="text-capitalize">2500 plays in january</span>
-
-          <span class="text-capitalize">25k plays</span>
-          <svg
-            class="pointer"
-            width="18"
-            height="6"
-            viewBox="0 0 18 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="3" cy="3" r="3" fill="#B3B3BC" />
-            <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
-          </svg>
-        </div>
+        <img src="../../assets/img/empty.png" alt="" />
       </div>
     </section>
+    <loader v-else />
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import info from "../../../default";
+
+import loader from "../loader.vue";
 export default {
-  name: "analyzeTopMusic",
+  name: "analyzeTopAlbum",
+  beforeMount() {
+    this.getdata();
+  },
+  data() {
+    return {
+      apiaddress: info.Api_ADDRESS,
+      data: [],
+      loader: true,
+    };
+  },
+  methods: {
+    formatNumber: function (num) {
+      return num < 10 ? "0" + num : num.toString();
+    },
+    formatview: function (number) {
+      if (number >= 1e6) {
+        return (number / 1e6).toFixed(0) + "M";
+      } else if (number >= 1e3) {
+        return (number / 1e3).toFixed(0) + "K";
+      } else {
+        return number;
+      }
+    },
+    gotouser: function (username) {
+      location.href = `/user/${username}`;
+    },
+    gotottrack: function (username, trackname) {
+      location.href = `/user/${username}/${this.type}/${trackname}`;
+    },
+    getdata: function () {
+      this.loader = true;
+      if (this.type === "album") {
+        axios.get(`${this.apiaddress}album/topalbum`).then((res) => {
+          if (res.data) {
+            this.data = res.data;
+
+            const monthNames = [
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December",
+            ];
+            const date = new Date();
+            let lastMonthNumber = date.getMonth();
+
+            this.data.forEach((album) => {
+              let view = 0;
+              album.tracks.forEach((track) => {
+                const lastmonth =
+                  track.monthlyListener[track.monthlyListener.length - 1];
+
+                if (!lastmonth) {
+                  return (album.lastmonth = {
+                    name: monthNames[lastMonthNumber],
+                    view: 0,
+                  });
+                }
+                const monthnum = lastmonth.date.split(" - ")[1];
+                if (lastMonthNumber === Number(monthnum)) {
+                  view = view + lastmonth.view;
+                }
+              });
+              album.lastmonth = {
+                name: monthNames[lastMonthNumber],
+                view,
+              };
+              this.loader = false;
+            });
+          }
+        });
+      } else {
+        axios.get(`${this.apiaddress}playlist/topplaylist`).then((res) => {
+          if (res.data) {
+            this.data = res.data;
+
+            this.data.forEach((e) => {
+              axios
+                .get(`${this.apiaddress}users/getusername/${e.creator}`)
+                .then((res) => {
+                  if (res.data) {
+                    e.artist = res.data;
+                  }
+                });
+            });
+            this.loader = false;
+          }
+        });
+      }
+    },
+  },
   props: ["type"],
+  watch: {
+    type: function () {
+      this.loader = true;
+      this.getdata();
+    },
+  },
+  components: {
+    loader,
+  },
 };
 </script>
 
@@ -115,5 +207,14 @@ export default {
 .monthly-num {
   width: 35px;
   height: 45px;
+}
+.trackshow-span {
+  width: 75px;
+}
+.monthplay-span {
+  width: 150px;
+}
+.plays-span {
+  width: 80px;
 }
 </style>

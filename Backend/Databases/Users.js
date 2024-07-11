@@ -10,10 +10,9 @@ const {
   deletaccountplaylists,
   getallplaylists,
   findplaylistbyid,
+  playplaylist,
 } = require("./Playlists");
 const { findsocialmedia } = require("./Base");
-const { use, search } = require("../Routes/UsersRoutes");
-const { promises } = require("nodemailer/lib/xoauth2");
 
 require("dotenv").config();
 
@@ -1389,8 +1388,7 @@ async function getlastplay(token) {
     } else {
       return false;
     }
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -1836,18 +1834,46 @@ async function deleteplaylist(token, id) {
   }
 }
 
-async function changeidtouser(arr) {
-  await Promise.all(
-    arr.map(async (e) => {
-      if (e.artistid) {
-        e.artist = await User.findById(e.artistid);
-      } else {
-        e.artist = await User.findById(e.artist);
-      }
-      return e;
-    })
-  );
-  return arr;
+async function changeidtouser(arr, type) {
+  try{
+    if (type === "track") {
+      await Promise.all(
+        arr.map(async (e) => {
+          if (e.artistid) {
+            e.artist = await User.findById(e.artistid);
+          } else {
+            e.artist = await User.findById(e.artist);
+          }
+          return e;
+        })
+      );
+      return arr;
+    } else if (type === "album") {
+      await Promise.all(
+        arr.map(async (album) => {
+          await Promise.all(
+            album.tracks.map(async (track) => {
+              track.artist = await User.findById(track.artistid);
+            })
+          );
+          return album;
+        })
+      );
+  
+      return arr;
+    } else {
+      arr.forEach(async (e) => {
+        e.creator = new mongoose.Types.ObjectId(e.creator)
+        e.artist = await User.findById(e.creator);
+        return e;
+      });
+      
+      return arr;
+    }
+  }catch(err){
+    console.log(err);
+    return false
+  }
 }
 
 module.exports = {

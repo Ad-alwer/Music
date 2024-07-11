@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 const jwt = require("jsonwebtoken");
 
+const userDB = require("./Users");
+
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
@@ -219,6 +221,15 @@ async function getuseralbum(token) {
   );
   return search;
 }
+
+async function gettopalbum() {
+  let albums = await getallalbums();
+
+  albums.sort((a, b) => b.plays - a.plays);
+
+  let resault = albums.slice(0, 20);
+  return resault;
+}
 module.exports = {
   addalbum,
   editalbum,
@@ -229,4 +240,5 @@ module.exports = {
   monthlyListener,
   getallalbums,
   getuseralbum,
+  gettopalbum,
 };

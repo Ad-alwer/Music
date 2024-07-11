@@ -91,7 +91,7 @@ Router.get("/search/:name", (req, res) => {
 Router.get("/toptracks/:type", (req, res) => {
   trackDB.toptrack(req.params.type).then((data) => {
     if (data) {
-      userDB.changeidtouser(data).then((data) => {
+      userDB.changeidtouser(data,'track').then((data) => {
         res.send(data);
       });
     } else {

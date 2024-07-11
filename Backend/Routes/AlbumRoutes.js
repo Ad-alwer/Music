@@ -39,4 +39,14 @@ Router.get("/finduseralbum", (req, res) => {
   });
 });
 
+Router.get("/topalbum", (req, res) => {
+  albumDB.gettopalbum().then((data) => {
+    if (data) {
+      userDB.changeidtouser(data,'album').then(data=>res.send(data))
+    }else{
+      return false
+    }
+  });
+});
+
 module.exports = Router;

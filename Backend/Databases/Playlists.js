@@ -99,7 +99,7 @@ async function changeplayliststatus(id, visibility) {
       status: true,
       msg: "Playlist edited successfully",
     };
-  } catch  {
+  } catch {
     return {
       msg: "Please try again",
       status: false,
@@ -195,12 +195,20 @@ async function getuserplaylist(token) {
   return playlists;
 }
 
-async function getallplaylists(){
- return await Playlist.find({})
+async function getallplaylists() {
+  return await Playlist.find({});
 }
 
-async function findplaylistbyid(id){
-  return await Playlist.findById(id)
+async function findplaylistbyid(id) {
+  return await Playlist.findById(id);
+}
+async function topplaylist() {
+  let playlists = await getallplaylists();
+
+  playlists.sort((a, b) => b.plays - a.plays);
+
+  let resault = playlists.slice(0, 20);
+  return resault;
 }
 
 module.exports = {
@@ -213,5 +221,6 @@ module.exports = {
   deletplaylist,
   getuserplaylist,
   getallplaylists,
-  findplaylistbyid
+  findplaylistbyid,
+  topplaylist,
 };

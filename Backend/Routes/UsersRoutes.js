@@ -217,4 +217,11 @@ Router.get("/getusertracks/:type/:id", (req, res) => {
     .then((data) => res.send(data));
 });
 
+Router.get("/getusername/:val", (req, res) => {
+  usersDB;
+  usersDB.getusernamebyid(req.params.val).then((data) => {
+    res.send(data);
+  });
+});
+
 module.exports = Router;
