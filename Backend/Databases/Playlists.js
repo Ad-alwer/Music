@@ -211,6 +211,21 @@ async function topplaylist() {
   return resault;
 }
 
+async function playplaylist(id) {
+  try {
+    await Playlist.findByIdAndUpdate(id, {
+      $inc: {
+        plays: 1,
+      },
+    });
+
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
 module.exports = {
   checkplaylistname,
   createdplaylist,
@@ -223,4 +238,5 @@ module.exports = {
   getallplaylists,
   findplaylistbyid,
   topplaylist,
+  playplaylist,
 };

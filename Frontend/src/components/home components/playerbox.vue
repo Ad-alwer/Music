@@ -261,6 +261,11 @@ export default {
           } else {
             axios.put(`${this.apiaddress}track/play/${this.show.id}`);
           }
+          if (this.user.lastplay.type == "playlist") {
+            axios.put(
+              `${this.apiaddress}playlist/play/${this.user.lastplay.playlistid}`
+            );
+          }
         }
       }
     },
@@ -285,6 +290,8 @@ export default {
       this.$refs.range.value = this.$refs.audio.currentTime;
     },
     changelastplay: function () {
+      console.log(this.user.lastplay.type, "m");
+
       let data;
       if (this.user.lastplay.type == "track") {
         data = {
@@ -307,6 +314,7 @@ export default {
           playlistid: this.user.lastplay.playlistid,
         };
       }
+      console.log(data);
 
       axios.put(
         `${this.apiaddress}users/lastplay`,
@@ -504,7 +512,6 @@ export default {
         })
         .then((res) => (res.data ? (this.library = res.data) : null));
     },
-    
   },
   props: ["data"],
 };
