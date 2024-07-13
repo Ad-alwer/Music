@@ -1835,7 +1835,7 @@ async function deleteplaylist(token, id) {
 }
 
 async function changeidtouser(arr, type) {
-  try{
+  try {
     if (type === "track") {
       await Promise.all(
         arr.map(async (e) => {
@@ -1859,21 +1859,28 @@ async function changeidtouser(arr, type) {
           return album;
         })
       );
-  
+
       return arr;
     } else {
       arr.forEach(async (e) => {
-        e.creator = new mongoose.Types.ObjectId(e.creator)
+        e.creator = new mongoose.Types.ObjectId(e.creator);
         e.artist = await User.findById(e.creator);
         return e;
       });
-      
+
       return arr;
     }
-  }catch(err){
+  } catch (err) {
     console.log(err);
-    return false
+    return false;
   }
+}
+
+async function topartist() {
+  let users = await User.find({});
+  users.sort((a, b) => b.subscribe.length - a.subscribe.length);
+  let resault = users.slice(0, 20);
+  return resault;
 }
 
 module.exports = {
@@ -1937,4 +1944,5 @@ module.exports = {
   removesaveplaylist,
   getLibrary,
   changeidtouser,
+  topartist
 };

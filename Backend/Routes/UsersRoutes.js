@@ -218,10 +218,14 @@ Router.get("/getusertracks/:type/:id", (req, res) => {
 });
 
 Router.get("/getusername/:val", (req, res) => {
-  usersDB;
   usersDB.getusernamebyid(req.params.val).then((data) => {
     res.send(data);
   });
+});
+
+Router.get("/topartist", (req, res) => {
+  console.log('in');
+  usersDB.topartist().then((data) => res.send(data));
 });
 
 module.exports = Router;
