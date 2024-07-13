@@ -65,11 +65,15 @@ export default {
       "analyzeTopAlbum",
     ];
 
-    urllocation
-      ? (this.component = componentsarr.find((e) => {
-          return e == urllocation;
-        }))
-      : null;
+    if (urllocation) {
+      this.component = componentsarr.find((e) => {
+        return e.toLocaleLowerCase() == urllocation.toLocaleLowerCase();
+      });
+
+      !this.component ? (location.href = "/notfound") : null;
+
+    }
+
   },
 
   data() {
