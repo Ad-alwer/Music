@@ -1883,6 +1883,51 @@ async function topartist() {
   return resault;
 }
 
+async function getsavedtrack(token) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findById(decode._id);
+    const SavedTrack = user.saveTracks;
+
+    const tracks = await trackDB.getalltracks();
+    let library = []
+
+    await Promise.all(tracks.map(async (e) => {
+      if (e.status.toLowerCase() === 'public') {
+        e.artist = await User.findById(e.artist);
+        library.push(e);
+      }
+    }));
+
+    let albums = await albumDB.getallalbums();
+    await Promise.all(albums.map(async (album) => {
+      await Promise.all(album.tracks.map(async (e) => {
+        if (e.status.toLowerCase() === "public") {
+          e.cover = album.cover;
+          e.artist = await User.findById(e.artistid);
+          library.push(e);
+        }
+      }));
+    }));
+
+    let resault = [];
+
+    SavedTrack.forEach((e) => {
+      library.forEach((track) => {
+        if (e.toString() === track._id.toString()) {
+          
+          return resault.push(track);
+        }
+      });
+    });
+
+
+    return resault;
+  } catch {
+    return false;
+  }
+}
+
 module.exports = {
   checkusername,
   checkemail,
@@ -1944,5 +1989,6 @@ module.exports = {
   removesaveplaylist,
   getLibrary,
   changeidtouser,
-  topartist
+  topartist,
+  getsavedtrack,
 };

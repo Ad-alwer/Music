@@ -95,32 +95,31 @@
             <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
           </svg>
         </div>
-       
       </div>
     </section>
     <hr class="mx-5" />
-    <playerbox :data="data" />
+    <playerbox @check="checkfollowandsave" :data="data" :check="check" />
   </div>
 </template>
 
 <script>
-
-import playerbox from "./playerbox.vue"
-
+import playerbox from "./playerbox.vue";
 
 export default {
   name: "player",
   data() {
-    return {
-      
-    };
+    return {};
   },
-  components:{
-    playerbox
+  components: {
+    playerbox,
   },
-  methods: {},
+  methods: {
+    checkfollowandsave: function (e) {
+      this.$emit('check', e);
+    },
+  },
   mounted() {},
-  props:['data']
+  props: ["data", "check"],
 };
 </script>
 
@@ -154,6 +153,4 @@ export default {
   width: 80px;
   height: 80px;
 }
-
-
 </style>

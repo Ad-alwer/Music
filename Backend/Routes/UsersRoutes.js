@@ -224,8 +224,11 @@ Router.get("/getusername/:val", (req, res) => {
 });
 
 Router.get("/topartist", (req, res) => {
-  console.log('in');
   usersDB.topartist().then((data) => res.send(data));
+});
+
+Router.get("/savedtrack", (req, res) => {
+  usersDB.getsavedtrack(req.headers.jwt).then((data) => res.send(data));
 });
 
 module.exports = Router;

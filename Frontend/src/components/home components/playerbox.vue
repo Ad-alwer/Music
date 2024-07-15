@@ -191,7 +191,6 @@
 import info from "../../../default";
 import axios from "axios";
 
-
 import Register from "../Register.vue";
 
 export default {
@@ -235,6 +234,13 @@ export default {
   watch: {
     data: function () {
       this.getlastplay();
+    },
+    check: function (val) {
+      if (val.id.toString() === this.show.id.toString()) {
+        val.type === "like"
+          ? (this.show.liked = !this.show.liked)
+          : (this.show.booked = !this.show.booked);
+      }
     },
   },
   methods: {
@@ -290,8 +296,6 @@ export default {
       this.$refs.range.value = this.$refs.audio.currentTime;
     },
     changelastplay: function () {
-      console.log(this.user.lastplay.type, "m");
-
       let data;
       if (this.user.lastplay.type == "track") {
         data = {
@@ -314,7 +318,6 @@ export default {
           playlistid: this.user.lastplay.playlistid,
         };
       }
-      console.log(data);
 
       axios.put(
         `${this.apiaddress}users/lastplay`,
@@ -370,19 +373,8 @@ export default {
         this.$refs.range.value = this.show.currentTime;
 
         setTimeout(() => {
-          this.user.likes.forEach((e) => {
-            if (e == music._id) {
-              this.show.liked = true;
-            }
-          });
-
-          this.firstplay = true;
-
-          this.user.saveTracks.forEach((e) => {
-            if (e == music._id) {
-              this.show.booked = true;
-            }
-          });
+          this.checklike();
+          this.checksave();
         }, 1000);
         return true;
       }
@@ -412,7 +404,12 @@ export default {
               },
             }
           )
-          .then((res) => (res.data ? (this.show.liked = false) : null));
+          .then((res) => {
+            if (res.data) {
+              this.show.liked = false;
+              this.$emit("check", { id: this.music.id, type: "like" });
+            }
+          });
       } else {
         axios
           .put(
@@ -425,7 +422,10 @@ export default {
             }
           )
           .then((res) => {
-            this.show.liked = res.data;
+            if (res.data) {
+              this.show.liked = res.data;
+              this.$emit("check", { id: this.music.id, type: "like" });
+            }
           });
       }
     },
@@ -441,7 +441,12 @@ export default {
               },
             }
           )
-          .then((res) => (res.data ? (this.show.booked = false) : null));
+          .then((res) => {
+            if (res.data) {
+              this.show.booked = false;
+              this.$emit("check", { id: this.music.id, type: "save" });
+            }
+          });
       } else {
         axios
           .put(
@@ -453,8 +458,12 @@ export default {
               },
             }
           )
+
           .then((res) => {
-            this.show.booked = res.data;
+            if (res.data) {
+              this.show.booked = res.data;
+              this.$emit("check", { id: this.music.id, type: "save" });
+            }
           });
       }
     },
@@ -512,8 +521,22 @@ export default {
         })
         .then((res) => (res.data ? (this.library = res.data) : null));
     },
+    checklike: function () {
+      this.user.likes.forEach((e) => {
+        if (e == this.music._id) {
+          this.show.liked = true;
+        }
+      });
+    },
+    checksave: function () {
+      this.user.saveTracks.forEach((e) => {
+        if (e == this.music._id) {
+          this.show.booked = true;
+        }
+      });
+    },
   },
-  props: ["data"],
+  props: ["data", "check"],
 };
 </script>
 

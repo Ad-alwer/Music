@@ -11,7 +11,12 @@
         <discover v-if="component == 'discover'" class="active" />
         <explore v-if="component == 'explore'" />
         <search v-if="component == 'search'" />
-        <laibrarytrack v-if="component == 'laibrarytrack'" />
+        <laibrarytrack
+          v-if="component == 'laibrarytrack'"
+          @changemusic="changemusic"
+          @check="changeplayersaveandlike"
+          :check="this.librarycheck"
+        />
         <laibraryAlbum v-if="component == 'laibraryalbum'" />
         <laibraryplaylist v-if="component == 'laibraryplaylist'" />
         <laibraryArtist v-if="component == 'laibraryartist'" />
@@ -39,7 +44,11 @@
         <loader v-if="popups.loader" />
       </section>
       <aside class="player">
-        <player :data="newmusic" />
+        <player
+          @check="this.librarycheck = !this.librarycheck"
+          :data="newmusic"
+          :check="playercheck"
+        />
       </aside>
     </main>
   </div>
@@ -93,6 +102,8 @@ export default {
       popups: {
         loader: true,
       },
+      playercheck: null,
+      librarycheck: null,
     };
   },
 
@@ -100,7 +111,7 @@ export default {
     changecomponent: function (e) {
       this.component = e;
     },
-   
+
     changemusic: function (id) {
       this.newmusic = id;
     },
@@ -144,16 +155,14 @@ export default {
           }
 
           if (firsturllocation == "profile" && secondurllocation) {
-          
             const profilearr = ["socialmedia", "request", "recomenduser"];
             search = profilearr.find((e) => {
               return e == secondurllocation;
             });
-        
 
             if (search) {
               this.component = search;
-        
+
               this.popups.loader = false;
             } else {
               location.href = "/notfound";
@@ -172,6 +181,12 @@ export default {
         .then((res) => {
           this.user = res.data;
         });
+    },
+    changeplayersaveandlike: function (x) {
+      this.playercheck = x;
+    },
+    changelibrarysaveandlike: function (x) {
+      this.librarycheck = x;
     },
   },
   components: {
