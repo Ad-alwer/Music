@@ -1890,39 +1890,69 @@ async function getsavedtrack(token) {
     const SavedTrack = user.saveTracks;
 
     const tracks = await trackDB.getalltracks();
-    let library = []
+    let library = [];
 
-    await Promise.all(tracks.map(async (e) => {
-      if (e.status.toLowerCase() === 'public') {
-        e.artist = await User.findById(e.artist);
-        library.push(e);
-      }
-    }));
-
-    let albums = await albumDB.getallalbums();
-    await Promise.all(albums.map(async (album) => {
-      await Promise.all(album.tracks.map(async (e) => {
+    await Promise.all(
+      tracks.map(async (e) => {
         if (e.status.toLowerCase() === "public") {
-          e.cover = album.cover;
-          e.artist = await User.findById(e.artistid);
+          e.artist = await User.findById(e.artist);
           library.push(e);
         }
-      }));
-    }));
+      })
+    );
+
+    let albums = await albumDB.getallalbums();
+    await Promise.all(
+      albums.map(async (album) => {
+        await Promise.all(
+          album.tracks.map(async (e) => {
+            if (e.status.toLowerCase() === "public") {
+              e.cover = album.cover;
+              e.artist = await User.findById(e.artistid);
+              library.push(e);
+            }
+          })
+        );
+      })
+    );
 
     let resault = [];
 
     SavedTrack.forEach((e) => {
       library.forEach((track) => {
         if (e.toString() === track._id.toString()) {
-          
           return resault.push(track);
         }
       });
     });
 
-
     return resault;
+  } catch {
+    return false;
+  }
+}
+
+async function getsavedalbum(token) {
+  
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findById(decode._id);
+    const Savedalbum = user.saveAlbums;
+
+    const allalbums = await albumDB.getallalbums();
+    const albums = allalbums.filter(
+      (album) => album.status.toLowerCase() === "public"
+    );
+    let library = [];
+
+    await Promise.all(
+      Savedalbum.map(async (e) => {
+        const resault = albums.find((album) => album._id.toString() === e);
+        library.push(resault);
+      })
+    );
+
+    return library && library.length > 0 ? library : false;
   } catch {
     return false;
   }
@@ -1991,4 +2021,5 @@ module.exports = {
   changeidtouser,
   topartist,
   getsavedtrack,
+  getsavedalbum,
 };

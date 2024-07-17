@@ -230,5 +230,8 @@ Router.get("/topartist", (req, res) => {
 Router.get("/savedtrack", (req, res) => {
   usersDB.getsavedtrack(req.headers.jwt).then((data) => res.send(data));
 });
+Router.get("/savedalbum", (req, res) => {
+  usersDB.getsavedalbum(req.headers.jwt).then((data) => res.send(data));
+});
 
 module.exports = Router;

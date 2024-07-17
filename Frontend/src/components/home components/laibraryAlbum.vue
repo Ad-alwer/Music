@@ -1,97 +1,116 @@
 <template>
   <div id="parent" class="container mt-5 px-3 position-relative">
-    <section>
+    <loader v-if="loader"/>
+    <section v-else>
       <div>
         <div class="d-flex justify-content-between p">
-          <span class="text-uppercase color-blue fw-semibold"
+          <span class="text-uppercase color-blue fw-semibold fs-5"
             >Saved albums</span
           >
         </div>
-        <div class="d-flex justify-content-start mt-4 gap-3 flex-wrap">
-          <div class="track-body position-relative">
+        <div
+          v-if="data.length > 0"
+          class="d-flex justify-content-start mt-4 gap-3 flex-wrap"
+        >
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative"
+          >
             <img
-              src="../../assets/img/test/eminem.jpg"
-              class="img-fluid rounded-4"
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
               alt=""
             />
-
-            <ul
-              class="w-100 tracklist w-100 h-100 rounded-4 d-flex flex-column"
-            >
-              <li class="text-center p-1 border-bottom pointer text-capitalize">
-                Track1
-              </li>
-              <li class="text-center p-1 border-bottom pointer text-capitalize">
-                Track2
-              </li>
-              <li class="text-center p-1 border-bottom pointer text-capitalize">
-                Track3
-              </li>
-              <li class="text-center p-1 border-bottom pointer text-capitalize">
-                Track4
-              </li>
-
-              <li class="text-center p-1 pointer other text-capitalize">
-                more
-              </li>
-            </ul>
 
             <div
               class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
             >
-              <p class="color-black">Eminem</p>
-              <span>25 Tracks</span>
-            </div>
-          </div>
-          <div class="track-body position-relative">
-            <img
-              src="../../assets/img/test/eminem.jpg"
-              class="img-fluid rounded-4"
-              alt=""
-            />
-
-            <ul
-              class="w-100 tracklist w-100 h-100 rounded-4 d-flex flex-column"
-            >
-              <li class="text-center p-1 border-bottom pointer text-capitalize">
-                Track1
-              </li>
-              <li class="text-center p-1 border-bottom pointer text-capitalize">
-                Track2
-              </li>
-              <li class="text-center p-1 border-bottom pointer text-capitalize">
-                Track3
-              </li>
-              <li class="text-center p-1 border-bottom pointer text-capitalize">
-                Track4
-              </li>
-
-              <li class="text-center p-1 pointer other text-capitalize">
-                more
-              </li>
-            </ul>
-
-            <div
-              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
-            >
-              <p class="color-black">Eminem</p>
-              <span>25 Tracks</span>
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer"
+                >{{ x.tracks.length }} Tracks</span
+              >
             </div>
           </div>
         </div>
+        <div
+          class="d-flex justify-content-center align-items-center mt-5 pt-5"
+          v-else
+        >
+          <img src="../../assets/img/empty.png" alt="" />
+        </div>
       </div>
     </section>
-    <section class="pagination w-100"><pagination class="" /></section>
   </div>
 </template>
 
 <script>
-import pagination from "./pagination.vue";
+import axios from "axios";
+import info from "../../../default";
+import Register from "../Register.vue";
+import loader from "../loader.vue";
 export default {
   name: "libraryAlbum",
-  components: {
-    pagination,
+
+  beforeMount() {
+    axios
+      .get(`${this.apiaddress}users/savedalbum`, {
+        headers: {
+          jwt: Register.methods.getcookies("jwt"),
+        },
+      })
+      .then((res) => {
+        if (res.data) {
+          this.data = res.data;
+          this.loader = false;
+        }
+      });
   },
+  data() {
+    return {
+      apiaddress: info.Api_ADDRESS,
+      data: [],
+      loader: true,
+    };
+  },
+  methods: {
+    gototracklist: function (username, albumname) {
+      location.href = `/user/${username}/album/${albumname}`;
+    },
+    play: function (albumid) {
+      let data = {
+        type: "album",
+        albumid,
+        time: 0,
+      };
+
+      axios
+        .put(
+          `${this.apiaddress}users/lastplay`,
+          {
+            data,
+          },
+          {
+            headers: {
+              jwt: Register.methods.getcookies("jwt"),
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data) {
+            this.$emit("changemusic", albumid);
+          }
+        });
+    },
+  },
+  components: {loader},
 };
 </script>
 
@@ -128,19 +147,7 @@ export default {
   display: flex;
   justify-content: center;
 }
-.tracklist {
-  background-color: rgba(0, 0, 0, 0.5);
-  font-weight: bold;
-  color: white;
-  /* width: 160px;
-    height: 160px; */
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  transition: all 1s;
-  opacity: 0;
-}
+
 .tracklist li {
   position: relative;
   left: -32px;
@@ -148,5 +155,9 @@ export default {
 }
 .track-body:hover .tracklist {
   opacity: 0.9;
+}
+.tumbnail {
+  width: 150px;
+  height: 150px;
 }
 </style>

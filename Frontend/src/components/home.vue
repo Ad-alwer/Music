@@ -17,7 +17,10 @@
           @check="changeplayersaveandlike"
           :check="this.librarycheck"
         />
-        <laibraryAlbum v-if="component == 'laibraryalbum'" />
+        <laibraryAlbum
+          v-if="component == 'laibraryalbum'"
+          @changemusic="changemusic"
+        />
         <laibraryplaylist v-if="component == 'laibraryplaylist'" />
         <laibraryArtist v-if="component == 'laibraryartist'" />
         <upload v-if="component == 'upload'" :user="user" />
