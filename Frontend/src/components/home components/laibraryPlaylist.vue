@@ -1,14 +1,22 @@
 <template>
   <div id="parent" class="container mt-5 px-3 position-relative">
-    <section>
+    <loader v-if="loader" />
+    <section v-else >
       <div>
         <div class="d-flex justify-content-between p">
           <span class="text-uppercase color-blue fw-semibold fs-5"
             >Saved playlist</span
           >
         </div>
-        <div  v-if="data.length > 0" class="d-flex justify-content-start mt-4 gap-3 flex-wrap">
-          <div v-for="x in data" :key="x._id" class="track-body position-relative">
+        <div
+          v-if="data.length > 0"
+          class="d-flex justify-content-start mt-4 gap-3 flex-wrap"
+        >
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative"
+          >
             <img
               :src="x.cover.url"
               class="img-fluid rounded-4 tumbnail"
@@ -27,18 +35,17 @@
             >
               <span
                 class="text-white p-2 text-capitalize px-3 fs-5 border-bottom pointer info-box"
-                >{{x.tracks.length}} tracks</span
+                >{{ x.tracks.length }} tracks</span
               >
               <span
                 class="text-white p-2 text-capitalize px-3 fs-5 border-bottom info-box"
-                >{{formatview(x.plays)}} plays</span
+                >{{ formatview(x.plays) }} plays</span
               >
               <span
-              @click="gototracklist(x.creator,x.name)"
+                @click="gototracklist(x.creator, x.name)"
                 class="text-white p-2 text-capitalize px-3 fs-5 border-bottom info-box text-center pointer"
-                >{{x.name}}</span
+                >{{ x.name }}</span
               >
-             
             </div>
           </div>
         </div>
@@ -57,11 +64,11 @@
 import axios from "axios";
 import info from "../../../default";
 import Register from "../Register.vue";
-// import loader from "../loader.vue";
+import loader from "../loader.vue";
 
 export default {
   name: "libraryplaylist",
-  beforeMount(){
+  beforeMount() {
     axios
       .get(`${this.apiaddress}users/savedplaylist`, {
         headers: {
@@ -75,14 +82,14 @@ export default {
         }
       });
   },
-  data(){
+  data() {
     return {
       apiaddress: info.Api_ADDRESS,
       data: [],
       loader: true,
     };
   },
-  methods:{
+  methods: {
     formatview: function (number) {
       if (number >= 1e6) {
         return (number / 1e6).toFixed(0) + "M";
@@ -97,7 +104,7 @@ export default {
     },
   },
   components: {
-
+    loader,
   },
 };
 </script>
@@ -142,12 +149,12 @@ export default {
   z-index: 20;
 }
 
-.tumbnail{
+.tumbnail {
   width: 180px;
   height: 180px;
 }
 
-.info-box{
+.info-box {
   width: 120px;
 }
 </style>
