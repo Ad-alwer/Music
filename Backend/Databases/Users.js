@@ -1933,7 +1933,6 @@ async function getsavedtrack(token) {
 }
 
 async function getsavedalbum(token) {
-  
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
     const user = await User.findById(decode._id);
@@ -1951,6 +1950,36 @@ async function getsavedalbum(token) {
         library.push(resault);
       })
     );
+
+    return library && library.length > 0 ? library : false;
+  } catch {
+    return false;
+  }
+}
+
+async function getsavedplaylist(token) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findById(decode._id);
+    const savePlaylists = user.savePlaylists;
+
+    const playlists = await getallplaylists();
+    const publicplaylists = playlists.filter(
+      (e) => e.visibility.toLowerCase() === "public"
+    );
+
+    let library = [];
+
+    await Promise.all(
+      savePlaylists.map(async (e) => {
+        let result = publicplaylists.find(
+          (playlist) => playlist._id.toString() === e
+        );
+        library.push(result);
+      })
+    );
+
+    
 
     return library && library.length > 0 ? library : false;
   } catch {
@@ -2022,4 +2051,5 @@ module.exports = {
   topartist,
   getsavedtrack,
   getsavedalbum,
+  getsavedplaylist,
 };
