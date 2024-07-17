@@ -1979,10 +1979,27 @@ async function getsavedplaylist(token) {
       })
     );
 
-    
-
     return library && library.length > 0 ? library : false;
   } catch {
+    return false;
+  }
+}
+
+async function artist(token) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findById(decode._id);
+    let artist = user.artists;
+
+    const library = await Promise.all(
+      artist.map(async (e) => {
+        return await getuserbyid(e);
+      })
+    );
+
+    return library;
+  } catch (err) {
+    console.log(err);
     return false;
   }
 }
@@ -2052,4 +2069,5 @@ module.exports = {
   getsavedtrack,
   getsavedalbum,
   getsavedplaylist,
+  artist,
 };

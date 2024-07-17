@@ -234,8 +234,13 @@ Router.get("/savedtrack", (req, res) => {
 Router.get("/savedalbum", (req, res) => {
   usersDB.getsavedalbum(req.headers.jwt).then((data) => res.send(data));
 });
+
 Router.get("/savedplaylist", (req, res) => {
   usersDB.getsavedplaylist(req.headers.jwt).then((data) => res.send(data));
+});
+
+Router.get("/artist", (req, res) => {
+  usersDB.artist(req.headers.jwt).then((data) => res.send(data));
 });
 
 module.exports = Router;

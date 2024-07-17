@@ -22,7 +22,7 @@
           @changemusic="changemusic"
         />
         <laibraryplaylist v-if="component == 'laibraryplaylist'" />
-        <laibraryArtist v-if="component == 'laibraryartist'" />
+        <laibraryArtist v-if="component == 'laibraryartist'"  @changemusic="changemusic" />
         <upload v-if="component == 'upload'" :user="user" />
         <publishTrack
           v-if="component == 'publishmusic' || component == 'publishpodcast'"
