@@ -1256,9 +1256,12 @@ async function edittrack(token, id, newname) {
 async function deletetrack(token, id) {
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
+
+    const trackid = new mongoose.Types.ObjectId(id);
+
     await User.findByIdAndUpdate(decode._id, {
       $pull: {
-        tracks: id,
+        tracks: { id: new mongoose.Types.ObjectId(trackid) },
       },
     });
     return true;

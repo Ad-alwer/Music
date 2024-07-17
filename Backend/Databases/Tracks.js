@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 const schedule = require("node-schedule");
+const jwt = require("jsonwebtoken");
 
 const userDB = require("../Databases/Users");
 const albumDB = require("../Databases/Albums");
@@ -141,25 +142,34 @@ async function edittrack(
   genre,
   status,
   description,
-  album,
   lyric,
-  cover,
-  feat
+  cover
 ) {
   try {
-    await Track.findByIdAndUpdate(id, {
-      $set: {
-        name,
-        type,
-        genre,
-        status,
-        description,
-        album,
-        lyric,
-        cover,
-        feat,
-      },
-    });
+    if (cover) {
+      await Track.findByIdAndUpdate(id, {
+        $set: {
+          name,
+          type,
+          genre,
+          status,
+          description,
+          lyric,
+          cover,
+        },
+      });
+    } else {
+      await Track.findByIdAndUpdate(id, {
+        $set: {
+          name,
+          type,
+          genre,
+          status,
+          description,
+          lyric,
+        },
+      });
+    }
 
     return {
       msg: "Edited successfully",
@@ -180,7 +190,8 @@ async function deletetrack(id) {
       msg: "Deleted successfully",
       status: true,
     };
-  } catch {
+  } catch (err){
+    console.log(err);
     return {
       msg: "Please try again",
       status: false,
@@ -266,10 +277,16 @@ async function changealbum(trackid, albumid) {
         album: albumid,
       },
     });
-    return true;
+    return {
+      msg: "Edited successfully",
+      status: true,
+    };
   } catch {
-    return false;
-  }
+    return {
+      msg: "Please try again",
+      status: false,
+    };
+}
 }
 
 async function deletedaccounttracks(id) {
@@ -372,6 +389,17 @@ async function toptrack(type) {
   return resault;
 }
 
+async function getusertrack(token) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const artist = new mongoose.Types.ObjectId(decode._id);
+    const resault = await Track.find({ artist });
+    return resault;
+  } catch {
+    return false;
+  }
+}
+
 module.exports = {
   addtrack,
   like,
@@ -387,4 +415,5 @@ module.exports = {
   search,
   getalltracks,
   toptrack,
+  getusertrack,
 };

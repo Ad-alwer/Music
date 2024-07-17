@@ -21,7 +21,7 @@ Router.put("/update/:trackid", (req, res) => {
 Router.delete("/delete/:trackid", (req, res) => {
   userDB.deletetrack(req.headers.jwt, req.params.trackid).then((data) => {
     if (data) {
-      trackDB.deletetrack(req.params.id).then((data) => res.send(data));
+      trackDB.deletetrack(req.params.trackid).then((data) => res.send(data));
     } else {
       res.send(false);
     }
@@ -91,7 +91,7 @@ Router.get("/search/:name", (req, res) => {
 Router.get("/toptracks/:type", (req, res) => {
   trackDB.toptrack(req.params.type).then((data) => {
     if (data) {
-      userDB.changeidtouser(data,'track').then((data) => {
+      userDB.changeidtouser(data, "track").then((data) => {
         res.send(data);
       });
     } else {
@@ -99,5 +99,10 @@ Router.get("/toptracks/:type", (req, res) => {
     }
   });
 });
+
+Router.get("/getusertrack", (req, res) => {
+  trackDB.getusertrack(req.headers.jwt).then((data) => res.send(data));
+});
+
 
 module.exports = Router;

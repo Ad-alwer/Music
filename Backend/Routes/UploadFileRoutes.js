@@ -8,9 +8,9 @@ require("dotenv").config();
 const usersDB = require("../Databases/users");
 const playlistDB = require("../Databases/Playlists");
 const { addbanner, addresbanner, addsocialicon } = require("../Databases/Base");
+const trackDB = require('../Databases/Tracks')
 
 const ffmpeg = require("fluent-ffmpeg");
-const { json } = require("express");
 const { default: mongoose } = require("mongoose");
 const { editalbum } = require("../Databases/Albums");
 const ffprobePath = require("ffprobe-static").path;
@@ -396,4 +396,36 @@ Router.put(
     });
   }
 );
+
+
+
+Router.put(
+  "/track",
+  uploadbanner.single("objectKey"),
+  async function (req, res) {
+    cover = req.file
+      ? (cover = { url: req.file.location, name: req.file.key })
+      : null;
+
+    trackDB
+      .edittrack(
+        req.body.id,
+        req.body.name,
+        req.body.type,
+        req.body.genre,
+        req.body.status,
+        req.body.description,
+        req.body.lyric,
+        cover,
+        
+      )
+      .then((data) => res.send(data));
+  }
+);
+
+
+
+
+
+
 module.exports = Router;
