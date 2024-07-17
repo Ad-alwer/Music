@@ -2,78 +2,87 @@
   <div id="parent" class="container mt-5 px-3 position-relative">
     <loader v-if="loader" />
     <section v-else>
-      <div>
-        <div class="d-flex justify-content-between p">
-          <span class="text-uppercase color-blue fw-semibold">following</span>
-        </div>
-        <div class="d-flex mt-4 gap-3">
-          <section class="d-flex flex-column artist-body py-2 gap-2">
-            <div
-              v-for="(x, i) in data"
-              @click="select = i"
-              :key="x._id"
-              :class="
-                select === i
-                  ? 'd-flex align-items-start gap-2 flex-column artist-box pointer me-2 pe-2 selected'
-                  : 'd-flex align-items-start gap-2 flex-column artist-box pointer me-2 pe-2 '
-              "
-            >
-              <div
-                class="d-flex justify-content-start align-items-center gap-3"
-              >
-                <img
-                  :src="
-                    x.profile ? x.profile : require('../../assets/img/icon.jpg')
-                  "
-                  class="img-profile rounded-circle"
-                  alt=""
-                />
-                <span class="color-black fw-semibold text-capitalize fs-5">{{
-                  x.username
-                }}</span>
-              </div>
+      <div class="d-flex justify-content-between p">
+        <span class="text-uppercase color-blue fw-semibold">following</span>
+      </div>
+      <div v-if="data.length > 0" class="d-flex mt-4 gap-3">
+        <section class="d-flex flex-column artist-body py-2 gap-2">
+          <div
+            v-for="(x, i) in data"
+            @click="select = i"
+            :key="x._id"
+            :class="
+              select === i
+                ? 'd-flex align-items-start gap-2 flex-column artist-box pointer me-2 pe-2 selected'
+                : 'd-flex align-items-start gap-2 flex-column artist-box pointer me-2 pe-2 '
+            "
+          >
+            <div class="d-flex justify-content-start align-items-center gap-3">
+              <img
+                :src="
+                  x.profile ? x.profile : require('../../assets/img/icon.jpg')
+                "
+                class="img-profile rounded-circle"
+                alt=""
+              />
+              <span class="color-black fw-semibold text-capitalize fs-5">{{
+                x.username
+              }}</span>
             </div>
-          </section>
-          <div class="d-flex flex-column">
-            <div class="d-flex flex-column align-items-start">
-              <p
-                @click="gotoartist(data[select].username)"
-                class="fw-bold fs-5 color-black text-capitalize mb-1 pointer"
-              >
-                {{ data[select].username }}
-              </p>
-              <span class="color-gray text-capitalize"
-                >{{ data[select].albums.length }} Albums ,
-                {{ data[select].tracklibrary.length }} Tracks</span
-              >
-            </div>
-            <div
-              class="d-flex mt-3 flex-wrap gap-3 tracks-parent justify-content-start align-items-start pointer"
-            >
-              <div
-                v-for="y in data[select].tracklibrary"
-                :key="y"
-                class="d-flex flex-column align-items-center"
-              >
-                <img :src="y.cover.url" class="img-detail rounded-4" alt="" />
-                <span
-                  @click="play(y._id)"
-                  class="text-capitalize color-black fw-bold fs-5 pointer"
-                  >{{ y.name }}</span
-                >
-                <span class="text-capitalize color-gray"
-                  >{{ formatview(y.plays) }} plays</span
-                >
-              </div>
-            </div>
+          </div>
+        </section>
+        <div class="d-flex flex-column">
+          <div class="d-flex flex-column align-items-start">
             <p
               @click="gotoartist(data[select].username)"
-              class="text-center color-blue pointer fw-bold mt-2 text-capitalize"
+              class="fw-bold fs-5 color-black text-capitalize mb-1 pointer"
             >
-              See More by {{ data[select].username }}
+              {{ data[select].username }}
             </p>
+            <span class="color-gray text-capitalize"
+              >{{ data[select].albums.length }} Albums ,
+              {{ data[select].tracklibrary.length }} Tracks</span
+            >
           </div>
+          <div
+            v-if="data[select].tracklibrary.length > 0"
+            class="d-flex mt-3 flex-wrap gap-3 tracks-parent justify-content-start align-items-start pointer"
+          >
+            <div
+              v-for="y in data[select].tracklibrary"
+              :key="y"
+              class="d-flex flex-column align-items-center"
+            >
+              <img :src="y.cover.url" class="img-detail rounded-4" alt="" />
+              <span
+                @click="play(y._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer"
+                >{{ y.name }}</span
+              >
+              <span class="text-capitalize color-gray"
+                >{{ formatview(y.plays) }} plays</span
+              >
+            </div>
+          </div>
+          <div
+            class="d-flex justify-content-center align-items-center  pt-3 "
+            v-else
+          >
+            <img src="../../assets/img/empty.png" alt="" />
+          </div>
+          <p
+            @click="gotoartist(data[select].username)"
+            class="text-center color-blue pointer fw-bold mt-2 text-capitalize"
+          >
+            See More by {{ data[select].username }}
+          </p>
         </div>
+      </div>
+      <div
+        class="d-flex justify-content-center align-items-center mt-5 pt-5"
+        v-else
+      >
+        <img src="../../assets/img/empty.png" alt="" />
       </div>
     </section>
   </div>
