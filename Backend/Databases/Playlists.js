@@ -226,6 +226,14 @@ async function playplaylist(id) {
   }
 }
 
+
+async function searchbyusername(name){
+  const playlists = await Playlist.find({
+    name: { $regex: name, $options: "i" },
+  });
+  return playlists.filter((e) => e.visibility.toLowerCase() === "public");
+}
+
 module.exports = {
   checkplaylistname,
   createdplaylist,
@@ -239,4 +247,5 @@ module.exports = {
   findplaylistbyid,
   topplaylist,
   playplaylist,
+  searchbyusername
 };

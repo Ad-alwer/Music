@@ -6,12 +6,8 @@ const schedule = require("node-schedule");
 
 const trackDB = require("./Tracks");
 const albumDB = require("./Albums");
-const {
-  deletaccountplaylists,
-  getallplaylists,
-  findplaylistbyid,
-  playplaylist,
-} = require("./Playlists");
+const playlistDB = require("./Playlists");
+
 const { findsocialmedia } = require("./Base");
 
 require("dotenv").config();
@@ -394,7 +390,7 @@ async function getuser(token) {
     if (user.playlists.length > 0) {
       await Promise.all(
         user.playlists.map(async (playlistid) => {
-          const playlist = await findplaylistbyid(playlistid);
+          const playlist = await playlistDB.findplaylistbyid(playlistid);
           playlists.push(playlist);
         })
       );
@@ -413,7 +409,7 @@ async function getuserbyid(id) {
     const user = await User.findOne({ _id: id });
     user.playlists = await Promise.all(
       user.playlists.map(async (e) => {
-        return await findplaylistbyid(e);
+        return await playlistDB.findplaylistbyid(e);
       })
     );
     user.albums = await Promise.all(
@@ -424,7 +420,7 @@ async function getuserbyid(id) {
 
     user.playlists = await Promise.all(
       user.playlists.map(async (e) => {
-        return await findplaylistbyid(e);
+        return await playlistDB.findplaylistbyid(e);
       })
     );
 
@@ -484,7 +480,7 @@ async function getuserbyusername(username) {
 
     user.playlists = await Promise.all(
       user.playlists.map(async (e) => {
-        return await findplaylistbyid(e);
+        return await playlistDB.findplaylistbyid(e);
       })
     );
 
@@ -1354,7 +1350,9 @@ async function getlastplay(token) {
       };
       return resaultTrack;
     } else if (user.lastplay.type == "playlist") {
-      const playlist = await findplaylistbyid(user.lastplay.playlistid);
+      const playlist = await playlistDB.findplaylistbyid(
+        user.lastplay.playlistid
+      );
       if (playlist.visibility.toLowerCase() === "public") {
         let track;
         let library = [];
@@ -1458,7 +1456,7 @@ async function getLibrary(token) {
       );
       return resault;
     } else {
-      const playlists = await getallplaylists();
+      const playlists = await playlistDB.getallplaylists();
       let publicplaylists = playlists.filter(
         (e) => e.visibility.toLowerCase() === "public"
       );
@@ -1665,7 +1663,7 @@ async function deletealbum(token, id) {
 async function deletacccount(id) {
   try {
     await trackDB.deletedaccounttracks(id);
-    await deletaccountplaylists(id);
+    await playlistDB.deletaccountplaylists(id);
     await User.findByIdAndUpdate(id, {
       $set: {
         status: "deleted",
@@ -1966,7 +1964,7 @@ async function getsavedplaylist(token) {
     const user = await User.findById(decode._id);
     const savePlaylists = user.savePlaylists;
 
-    const playlists = await getallplaylists();
+    const playlists = await playlistDB.getallplaylists();
     const publicplaylists = playlists.filter(
       (e) => e.visibility.toLowerCase() === "public"
     );
@@ -2001,6 +1999,56 @@ async function artist(token) {
     );
 
     return library;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+async function fullsearch(val) {
+  try {
+    const users = await searchbyusername(val);
+
+    let library = [];
+    const tracks = await trackDB.getalltracks();
+    const albums = await albumDB.getallalbums();
+    await Promise.all(
+      tracks.map(async (e) => {
+        if (e.status.toLowerCase() === "public") {
+          e.artist = await User.findById(e.artist);
+          library.push(e);
+        }
+      })
+    );
+    await Promise.all(
+      albums.map(async (album) => {
+        await Promise.all(
+          album.tracks.map(async (track) => {
+            if (track.status.toLowerCase() === "public") {
+              track.cover = album.cover;
+              track.artist = await User.findById(track.artistid);
+              library.push(track);
+            }
+          })
+        );
+      })
+    );
+    const regex = new RegExp(val, "i");
+    const resulttracks = library.filter((e) => regex.test(e.name));
+
+    const searchalbums = await albumDB.searchbyusername(val);
+
+    const searchplaylists = await playlistDB.searchbyusername(val);
+    
+
+    const resault = {
+      users,
+      tracks: resulttracks,
+      albums: searchalbums,
+      playlists: searchplaylists,
+    };
+
+    return resault;
   } catch (err) {
     console.log(err);
     return false;
@@ -2073,4 +2121,5 @@ module.exports = {
   getsavedalbum,
   getsavedplaylist,
   artist,
+  fullsearch,
 };

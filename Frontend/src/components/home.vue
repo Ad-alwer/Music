@@ -10,7 +10,7 @@
       <section class="content">
         <discover v-if="component == 'discover'" class="active" />
         <explore v-if="component == 'explore'" />
-        <search v-if="component == 'search'" />
+        <search v-if="component == 'search'"   @changemusic="changemusic" />
         <laibrarytrack
           v-if="component == 'laibrarytrack'"
           @changemusic="changemusic"

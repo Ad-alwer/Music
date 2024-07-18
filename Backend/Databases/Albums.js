@@ -230,6 +230,14 @@ async function gettopalbum() {
   let resault = albums.slice(0, 20);
   return resault;
 }
+
+async function searchbyusername(name) {
+  const albums = await Album.find({
+    name: { $regex: name, $options: "i" },
+  });
+  return albums.filter((e) => e.status.toLowerCase() === "public");
+}
+
 module.exports = {
   addalbum,
   editalbum,
@@ -241,4 +249,5 @@ module.exports = {
   getallalbums,
   getuseralbum,
   gettopalbum,
+  searchbyusername,
 };

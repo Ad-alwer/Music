@@ -243,4 +243,8 @@ Router.get("/artist", (req, res) => {
   usersDB.artist(req.headers.jwt).then((data) => res.send(data));
 });
 
+Router.get("/fullsearch/:val", (req, res) => {
+  usersDB.fullsearch(req.params.val).then((data) => res.send(data));
+});
+
 module.exports = Router;

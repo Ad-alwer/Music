@@ -9,8 +9,10 @@
           class="search-input"
           maxlength="69"
           placeholder="Search ..."
+          ref="searchinp"
         />
         <svg
+          @click="search($refs.searchinp.value)"
           class="search-icon pointer"
           width="20"
           height="20"
@@ -26,136 +28,171 @@
         </svg>
       </div>
     </section>
-    <section>
-      <div class="d-flex justify-content-between pt-2 mt-4">
-        <span class="text-uppercase color-black fw-semibold">Members</span>
-        <span class="text-capitalize color-gray pointer color-blue"
-          >See All</span
+    <section
+      v-if="
+        !loader &&
+        data &&
+        (data.users.length > 0 ||
+          data.tracks.length > 0 ||
+          data.albums.length > 0 ||
+          data.playlists.length > 0)
+      "
+    >
+      <div v-if="data.users.length > 0">
+        <div class="d-flex justify-content-between pt-2 mt-4">
+          <span class="text-uppercase color-black fw-semibold">Members</span>
+          <span class="text-capitalize color-gray pointer color-blue"
+            >See All</span
+          >
+        </div>
+        <Swiper
+          class="py-4"
+          :modules="modules"
+          :slides-per-view="8"
+          :space-between="20"
+          :scrollbar="{ draggable: true }"
+          loop="true"
+          @swiper="onSwiper"
+          @slideChange="onSlideChange"
+          :autoplay="autoplay"
         >
+          <swiper-slide
+            v-for="x in data.users"
+            @click="gotoartist(x.username)"
+            :key="x"
+            data-swiper-autoplay="2000"
+            class="swiper-members-child d-flex justify-content-center align-items-center flex-column pointer"
+          >
+            <img
+              :src="
+                x.profile ? x.profile : require('../../assets/img/icon.jpg')
+              "
+              class="img-thumbnail swiper-img rounded-circle user-img"
+              alt=""
+            />
+            <p class="color-black">{{ x.username }}</p>
+          </swiper-slide>
+        </Swiper>
       </div>
-      <Swiper
-        class="py-4"
-        :modules="modules"
-        :slides-per-view="8"
-        :space-between="20"
-        :scrollbar="{ draggable: true }"
-        loop="true"
-        @swiper="onSwiper"
-        @slideChange="onSlideChange"
-        :autoplay="autoplay"
-      >
-        <swiper-slide
-          data-swiper-autoplay="2000"
-          class="swiper-members-child d-flex justify-content-center align-items-center flex-column pointer"
+      <div v-if="data.tracks.length > 0">
+        <div class="d-flex justify-content-between pt-4">
+          <span class="text-uppercase color-black fw-semibold">Tracks</span>
+          <span class="text-capitalize color-gray pointer color-blue"
+            >See All</span
+          >
+        </div>
+        <Swiper
+          class="py-4"
+          :modules="modules"
+          :slides-per-view="6"
+          :space-between="20"
+          :scrollbar="{ draggable: true }"
+          loop="true"
+          @swiper="onSwiper"
+          @slideChange="onSlideChange"
+          :autoplay="autoplay"
         >
-          <img
-            src="../../assets/img/test/eminem.jpg"
-            class="img-thumbnail swiper-img rounded-circle"
-            alt=""
-          />
-          <p class="color-black">Eminem</p>
-        </swiper-slide>
-      </Swiper>
-    </section>
-    <section>
-      <div class="d-flex justify-content-between pt-4">
-        <span class="text-uppercase color-black fw-semibold">Tracks</span>
-        <span class="text-capitalize color-gray pointer color-blue"
-          >See All</span
-        >
+          <swiper-slide
+            @click="play(x._id)"
+            v-for="x in data.tracks"
+            :key="x"
+            data-swiper-autoplay="2000"
+            class="swiper-tracks-child d-flex justify-content-center align-items-center flex-column pointer"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid swiper-img rounded-4 tracks-img"
+              alt=""
+            />
+            <p class="color-black">{{ x.name }}</p>
+            <span>{{ x.artist.username }}</span>
+          </swiper-slide>
+        </Swiper>
       </div>
-      <Swiper
-        class="py-4"
-        :modules="modules"
-        :slides-per-view="6"
-        :space-between="20"
-        :scrollbar="{ draggable: true }"
-        loop="true"
-        @swiper="onSwiper"
-        @slideChange="onSlideChange"
-        :autoplay="autoplay"
-      >
-        <swiper-slide
-          data-swiper-autoplay="2000"
-          class="swiper-tracks-child d-flex justify-content-center align-items-center flex-column pointer"
+      <div v-if="data.albums.length > 0">
+        <div class="d-flex justify-content-between pt-2">
+          <span class="text-uppercase color-black fw-semibold">Albums</span>
+          <span class="text-capitalize color-gray pointer color-blue"
+            >See All</span
+          >
+        </div>
+        <Swiper
+          class="py-4"
+          :modules="modules"
+          :slides-per-view="5"
+          :space-between="20"
+          :scrollbar="{ draggable: true }"
+          loop="true"
+          @swiper="onSwiper"
+          @slideChange="onSlideChange"
+          :autoplay="autoplay"
         >
-          <img
-            src="../../assets/img/test/eminem.jpg"
-            class="img-fluid swiper-img rounded-4"
-            alt=""
-          />
-          <p class="color-black">Trackname</p>
-          <span>Eminem</span>
-        </swiper-slide>
-      </Swiper>
-    </section>
-    <section>
-      <div class="d-flex justify-content-between pt-2">
-        <span class="text-uppercase color-black fw-semibold">Albums</span>
-        <span class="text-capitalize color-gray pointer color-blue"
-          >See All</span
-        >
+          <swiper-slide
+            v-for="x in data.albums"
+            :key="x"
+            @click="gotoalbum(x.name, x.tracks[0].artistid)"
+            data-swiper-autoplay="2000"
+            class="swiper-albums-child d-flex justify-content-center align-items-center flex-column pointer"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid swiper-img rounded-4 albumandplaylist-img"
+              alt=""
+            />
+            <div
+              class="swiper-albums-text d-flex flex-column align-items-center"
+            >
+              <p class="text-capitalize">{{ x.name }}</p>
+            </div>
+          </swiper-slide>
+        </Swiper>
       </div>
-      <Swiper
-        class="py-4"
-        :modules="modules"
-        :slides-per-view="5"
-        :space-between="20"
-        :scrollbar="{ draggable: true }"
-        loop="true"
-        @swiper="onSwiper"
-        @slideChange="onSlideChange"
-        :autoplay="autoplay"
-      >
-        <swiper-slide
-          data-swiper-autoplay="2000"
-          class="swiper-albums-child d-flex justify-content-center align-items-center flex-column pointer"
+      <div v-if="data.playlists.length > 0">
+        <div class="d-flex justify-content-between pt-2">
+          <span class="text-uppercase color-black fw-semibold">Playlist</span>
+          <span class="text-capitalize color-gray pointer color-blue"
+            >See All</span
+          >
+        </div>
+        <Swiper
+          class="py-4"
+          :modules="modules"
+          :slides-per-view="5"
+          :space-between="20"
+          :scrollbar="{ draggable: true }"
+          loop="true"
+          @swiper="onSwiper"
+          @slideChange="onSlideChange"
+          :autoplay="autoplay"
         >
-          <img
-            src="../../assets/img/test/eminem.jpg"
-            class="img-fluid swiper-img rounded-4"
-            alt=""
-          />
-          <div class="swiper-albums-text d-flex flex-column align-items-center">
-            <p class="text-capitalize">Name</p>
-            <span class="text-capitalize">Artist</span>
-          </div>
-        </swiper-slide>
-      </Swiper>
-    </section>
-    <section>
-      <div class="d-flex justify-content-between pt-2">
-        <span class="text-uppercase color-black fw-semibold">Playlist</span>
-        <span class="text-capitalize color-gray pointer color-blue"
-          >See All</span
-        >
+          <swiper-slide
+            v-for="x in data.playlists"
+            :key="x"
+            @click="gotoplaylist(x.name, x.creator)"
+            data-swiper-autoplay="2000"
+            class="swiper-albums-child d-flex justify-content-center align-items-center flex-column pointer"
+          >
+            <img
+              src="../../assets/img/test/eminem.jpg"
+              class="img-fluid swiper-img rounded-4"
+              alt=""
+            />
+            <div
+              class="swiper-albums-text d-flex flex-column align-items-center"
+            >
+              <p class="text-capitalize">{{ x.name }}</p>
+            </div>
+          </swiper-slide>
+        </Swiper>
       </div>
-      <Swiper
-        class="py-4"
-        :modules="modules"
-        :slides-per-view="5"
-        :space-between="20"
-        :scrollbar="{ draggable: true }"
-        loop="true"
-        @swiper="onSwiper"
-        @slideChange="onSlideChange"
-        :autoplay="autoplay"
-      >
-        <swiper-slide
-          data-swiper-autoplay="2000"
-          class="swiper-albums-child d-flex justify-content-center align-items-center flex-column pointer"
-        >
-          <img
-            src="../../assets/img/test/eminem.jpg"
-            class="img-fluid swiper-img rounded-4"
-            alt=""
-          />
-          <div class="swiper-albums-text d-flex flex-column align-items-center">
-            <p class="text-capitalize">Name</p>
-          </div>
-        </swiper-slide>
-      </Swiper>
     </section>
+    <section
+      v-else-if="!loader"
+      class="d-flex justify-content-center pt-5 mt-5"
+    >
+      <img src="../../assets/img/empty.png" class="img-fluid" alt="" />
+    </section>
+    <loader v-else-if="loader" />
   </div>
 </template>
 
@@ -178,22 +215,79 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/grid";
 
+import axios from "axios";
+import info from "../../../default";
+import Register from "../Register.vue";
+import loader from "../loader.vue";
 export default {
   name: "search",
+  beforeMount() {
+    const search = location.pathname.split("/")[2];
+
+    if (search) {
+      this.search(search);
+    }
+  },
+  methods: {
+    search: function (value) {
+      this.loader = true;
+      axios.get(`${this.apiaddress}users/fullsearch/${value}`).then((res) => {
+        res.data ? (this.data = res.data) : null;
+        this.loader = false;
+        this.$refs.searchinp.value = value;
+      });
+    },
+    gotoartist: function (username) {
+      location.href = `/user/${username}`;
+    },
+    play: function (id) {
+      let data = {
+        type: "track",
+        id,
+        time: 0,
+      };
+
+      axios
+        .put(
+          `${this.apiaddress}users/lastplay`,
+          {
+            data,
+          },
+          {
+            headers: {
+              jwt: Register.methods.getcookies("jwt"),
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data) {
+            this.$emit("changemusic", id);
+          }
+        });
+    },
+    gotoalbum: function (albumname, userid) {
+      location.href = `/user/${userid}/album/${albumname}`;
+    },
+    gotoplaylist: function (name, id) {
+      location.href = `/user/${id}/playlist/${name}`;
+    },
+  },
   data() {
     return {
+      apiaddress: info.Api_ADDRESS,
       pagination: true,
       draggable: true,
-
       autoplay: {
         delay: 5000,
       },
-      arr: [],
+      data: null,
+      loader: false,
     };
   },
   components: {
     Swiper,
     SwiperSlide,
+    loader,
   },
   setup() {
     const onSwiper = (swiper) => {
@@ -215,7 +309,6 @@ export default {
 .search-icon {
   width: 18px;
   height: 18px;
-  
 }
 .search-input {
   caret-color: var(--blue-main);
@@ -260,5 +353,18 @@ export default {
   position: absolute;
   color: white;
   bottom: 2%;
+}
+
+.user-img {
+  width: 90px;
+  height: 90px;
+}
+.tracks-img {
+  width: 128px;
+  height: 128px;
+}
+.albumandplaylist-img {
+  width: 158px;
+  height: 158px;
 }
 </style>
