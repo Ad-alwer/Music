@@ -28,8 +28,46 @@
         </svg>
       </div>
     </section>
+    <loader v-if="loader" />
+
+    <section v-else-if="seemore" class="mx-2">
+      <i
+        class="fas fa-solid fa-arrow-left text-danger mt-5 fs-5 pointer"
+        @click="seemore = null"
+      ></i>
+      <div v-if="seemore.val.length > 0" class="d-flex align-items-center flex-wrap gap-3 mt-2">
+
+        <div
+          v-for="x in seemore.val"
+          :key="x"
+          class="d-flex justify-content-center flex-column gap-1"
+        >
+          <img
+            :src="
+              x.cover
+                ? x.cover.url
+                : x.profile
+                ? x.profile
+                : require('../../assets/img/icon.jpg')
+            "
+            :class="
+              x.cover
+                ? 'seemore rounded-4 img-img-fluid'
+                : 'seemore-profile img-thumbnail rounded-circle'
+            "
+            alt=""
+          />
+          <p class="text-center text-capitalize fw-semibold">
+            {{ x.username ? x.username : x.name }}
+          </p>
+        </div>
+      </div>
+      <div v-else class="d-flex justify-content-center align-items-center">
+        <img src="../../assets/img/empty.png" class="img-fluid" alt="" />
+      </div>
+    </section>
     <section
-      v-if="
+      v-else-if="
         !loader &&
         data &&
         (data.users.length > 0 ||
@@ -41,7 +79,9 @@
       <div v-if="data.users.length > 0">
         <div class="d-flex justify-content-between pt-2 mt-4">
           <span class="text-uppercase color-black fw-semibold">Members</span>
-          <span class="text-capitalize color-gray pointer color-blue"
+          <span
+            @click="openseemore(data.users, 'user')"
+            class="text-capitalize color-gray pointer color-blue"
             >See All</span
           >
         </div>
@@ -77,7 +117,9 @@
       <div v-if="data.tracks.length > 0">
         <div class="d-flex justify-content-between pt-4">
           <span class="text-uppercase color-black fw-semibold">Tracks</span>
-          <span class="text-capitalize color-gray pointer color-blue"
+          <span
+            @click="openseemore(data.tracks, 'track')"
+            class="text-capitalize color-gray pointer color-blue"
             >See All</span
           >
         </div>
@@ -112,7 +154,9 @@
       <div v-if="data.albums.length > 0">
         <div class="d-flex justify-content-between pt-2">
           <span class="text-uppercase color-black fw-semibold">Albums</span>
-          <span class="text-capitalize color-gray pointer color-blue"
+          <span
+            @click="openseemore(data.albums, 'album')"
+            class="text-capitalize color-gray pointer color-blue"
             >See All</span
           >
         </div>
@@ -150,7 +194,9 @@
       <div v-if="data.playlists.length > 0">
         <div class="d-flex justify-content-between pt-2">
           <span class="text-uppercase color-black fw-semibold">Playlist</span>
-          <span class="text-capitalize color-gray pointer color-blue"
+          <span
+            @click="openseemore(data.playlists, 'playlist')"
+            class="text-capitalize color-gray pointer color-blue"
             >See All</span
           >
         </div>
@@ -173,8 +219,8 @@
             class="swiper-albums-child d-flex justify-content-center align-items-center flex-column pointer"
           >
             <img
-              src="../../assets/img/test/eminem.jpg"
-              class="img-fluid swiper-img rounded-4"
+              :src="x.cover.url"
+              class="img-fluid swiper-img rounded-4 albumandplaylist-img"
               alt=""
             />
             <div
@@ -192,7 +238,6 @@
     >
       <img src="../../assets/img/empty.png" class="img-fluid" alt="" />
     </section>
-    <loader v-else-if="loader" />
   </div>
 </template>
 
@@ -230,12 +275,27 @@ export default {
   },
   methods: {
     search: function (value) {
-      this.loader = true;
-      axios.get(`${this.apiaddress}users/fullsearch/${value}`).then((res) => {
-        res.data ? (this.data = res.data) : null;
-        this.loader = false;
-        this.$refs.searchinp.value = value;
-      });
+      if (value) {
+        this.loader = true;
+        axios.get(`${this.apiaddress}users/fullsearch/${value}`).then((res) => {
+          res.data ? (this.data = res.data) : null;
+          this.$refs.searchinp.value = value;
+
+          if (this.seemore) {
+            this.seemore.val =
+              this.seemore.type === "user"
+                ? (this.seemore.val = res.data.users)
+                : this.seemore.type === "album"
+                ? (this.seemore.val = res.data.albums)
+                : this.seemore.type === "playlist"
+                ? (this.seemore.val = res.data.playlists)
+                : (this.seemore.val = res.data.tracks);
+          }
+
+          this.loader = false;
+
+        });
+      }
     },
     gotoartist: function (username) {
       location.href = `/user/${username}`;
@@ -271,6 +331,9 @@ export default {
     gotoplaylist: function (name, id) {
       location.href = `/user/${id}/playlist/${name}`;
     },
+    openseemore: function (val, type) {
+      this.seemore = { val: val.reverse(), type };
+    },
   },
   data() {
     return {
@@ -282,6 +345,7 @@ export default {
       },
       data: null,
       loader: false,
+      seemore: null,
     };
   },
   components: {
@@ -366,5 +430,14 @@ export default {
 .albumandplaylist-img {
   width: 158px;
   height: 158px;
+}
+.seemore {
+  width: 120px;
+  height: 120px;
+}
+
+.seemore-profile {
+  width: 90px;
+  height: 90px;
 }
 </style>
