@@ -35,11 +35,14 @@
         class="fas fa-solid fa-arrow-left text-danger mt-5 fs-5 pointer"
         @click="seemore = null"
       ></i>
-      <div v-if="seemore.val.length > 0" class="d-flex align-items-center flex-wrap gap-3 mt-2">
-
+      <div
+        v-if="seemore.val.length > 0"
+        class="d-flex align-items-center flex-wrap gap-3 mt-2"
+      >
         <div
-          v-for="x in seemore.val"
+          v-for="(x, i) in seemore.val"
           :key="x"
+          @click="seemoreclick(i)"
           class="d-flex justify-content-center flex-column gap-1"
         >
           <img
@@ -57,7 +60,7 @@
             "
             alt=""
           />
-          <p class="text-center text-capitalize fw-semibold">
+          <p class="text-center text-capitalize fw-semibold pointer">
             {{ x.username ? x.username : x.name }}
           </p>
         </div>
@@ -293,7 +296,6 @@ export default {
           }
 
           this.loader = false;
-
         });
       }
     },
@@ -333,6 +335,21 @@ export default {
     },
     openseemore: function (val, type) {
       this.seemore = { val: val.reverse(), type };
+    },
+    seemoreclick: function (index) {
+      this.seemore.type === "user"
+        ? this.gotoartist(this.seemore.val[index].username)
+        : this.seemore.type === "album"
+        ? this.gotoalbum(
+            this.seemore.val[index].name,
+            this.seemore.val[index].tracks[0].artistid
+          )
+        : this.seemore.type === "playlist"
+        ? this.gotoplaylist(
+            this.seemore.val[index].name,
+            this.seemore.val[index].creator
+          )
+        : this.play(this.seemore.val[index]._id);
     },
   },
   data() {
