@@ -16,7 +16,6 @@ Router.post("/login", (req, res) => {
 });
 
 Router.get("/forgetpassword/:username", (req, res) => {
-
   usersDB.forgetpassword(req.params.username).then((data) => res.send(data));
 });
 
@@ -255,8 +254,11 @@ Router.get("/discover", (req, res) => {
   usersDB.discover().then((data) => res.send(data));
 });
 
-Router.get("/toptracks",(req, res) => {
+Router.get("/toptracks", (req, res) => {
   usersDB.toptracks().then((data) => res.send(data));
 });
 
+Router.get("/notification", (req, res) => {
+  usersDB.getnotification(req.headers.jwt).then((data) => res.send(data));
+});
 module.exports = Router;

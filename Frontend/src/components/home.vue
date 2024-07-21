@@ -54,6 +54,7 @@
           @check="changeplayersaveandlike"
           :check="this.librarycheck"
         />
+        <notification v-if="component == 'notification'" />
         <loader v-if="popups.loader" />
       </section>
       <aside class="player">
@@ -91,6 +92,7 @@ import socialmedia from "./profile components/socialmedia.vue";
 import request from "./profile components/request.vue";
 import recomenduser from "./profile components/recomenduser.vue";
 import toptracks from "./home components/toptracks.vue";
+import notification from "./home components/notification.vue";
 
 import Register from "./Register.vue";
 import axios from "axios";
@@ -155,6 +157,7 @@ export default {
           "settings",
           "profile",
           "toptracks",
+          "notification",
         ];
 
         let search = componentsarr.find((e) => {
@@ -226,6 +229,7 @@ export default {
     recomenduser,
     loader,
     toptracks,
+    notification,
   },
 };
 </script>

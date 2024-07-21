@@ -92,6 +92,7 @@ async function register(username, email, password) {
   });
   await user.save();
   token = jwt.sign({ _id: user.id }, process.env.REGISTER_JWT);
+  await notification({ _id: user.id},"/profile",'welcome to our site','welcome')
   return {
     token: token,
   };
@@ -532,11 +533,17 @@ async function changeusername(token, newusername) {
         username: newusername,
       },
     });
+    await notification(
+      { _id: decode._id },
+      "/profile",
+      `your username was chaged to ${newusername}`,
+      "changeusername"
+    );
     return {
       status: true,
       msg: "Username successfully changed",
     };
-  } catch {
+  } catch  {
     return {
       status: false,
       msg: "Please try again",
@@ -811,7 +818,12 @@ async function subscribe(token, id) {
       { new: true }
     );
 
-    await notification({ _id: id }, "/profile", ` subscribed to you`, "follow");
+    await notification(
+      { _id: id },
+      "/profile",
+      `${subscriber.username} subscribed to you`,
+      "follow"
+    );
 
     return true;
   } catch (error) {
@@ -1077,7 +1089,7 @@ async function verifytrack(token, name) {
       { _id: userId },
       "/profile/request",
       `${name} has been accepted`,
-      updatedRequests.cover
+      "accept"
     );
     return true;
   } catch (err) {
@@ -1116,7 +1128,7 @@ async function rejectrack(token, name, msg) {
       { _id: userId },
       "/profile/request",
       `${name} was been rejected`,
-      updatedRequests.cover
+      "reject"
     );
     return true;
   } catch {
@@ -1489,7 +1501,6 @@ async function getLibrary(token) {
 }
 
 async function notification(query, link, text, img) {
-  console.log(img);
   let users = await User.find(query);
   for (const user of users) {
     await User.findByIdAndUpdate(user._id, {
@@ -1558,7 +1569,7 @@ async function verifyalbum(token, name) {
       { _id: userId },
       "/profile/request",
       `${name} has been verified`,
-      updatedRequests.cover
+      " accept"
     );
 
     return true;
@@ -1598,7 +1609,7 @@ async function rejectalbum(token, name, msg) {
       { _id: userId },
       "/profile/request",
       `${name} was been rejected`,
-      updatedRequests.cover
+      "reject"
     );
     return true;
   } catch {
@@ -2176,6 +2187,17 @@ async function toptracks() {
   }
 }
 
+async function getnotification(token) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findById(decode._id);
+    const notification = user.notification;
+    return notification;
+  } catch {
+    return false;
+  }
+}
+
 module.exports = {
   checkusername,
   checkemail,
@@ -2246,4 +2268,5 @@ module.exports = {
   newtracksandalbum,
   discover,
   toptracks,
+  getnotification,
 };
