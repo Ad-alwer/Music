@@ -1,6 +1,7 @@
 <template>
   <div id="parent">
-    <section class="">
+    <loader v-if="loader" />
+    <section v-else class="">
       <section v-show="!show.lyricsshow">
         <div class="d-flex flex-column align-items-center px-4">
           <h4 class="text-center text-uppercase fw-semibold">now playing</h4>
@@ -46,7 +47,13 @@
           <div class="d-flex align-items-center gap-5 mt-1">
             <div class="pointer like-imgs">
               <img
-                v-if="show.liked"
+                class="pointer opacity-25"
+                v-if="show.artist.toLowerCase() === user.username.toLowerCase()"
+                src="../../assets/icons/like.png"
+                alt=""
+              />
+              <img
+                v-else-if="show.liked"
                 src="../../assets/icons/like.png"
                 @click="like"
                 alt=""
@@ -123,7 +130,13 @@
             </div>
             <div class="pointer bookmark-imgs">
               <img
-                v-if="show.booked"
+                class="pointer opacity-25"
+                v-if="show.artist.toLowerCase() === user.username.toLowerCase()"
+                src="../../assets/icons/bookmark.png"
+                alt=""
+              />
+              <img
+                v-else-if="show.booked"
                 src="../../assets/icons/bookmark.png"
                 @click="booked"
                 alt=""
@@ -192,6 +205,7 @@ import info from "../../../default";
 import axios from "axios";
 
 import Register from "../Register.vue";
+import loader from "../loader.vue";
 
 export default {
   name: "playerbox",
@@ -229,6 +243,7 @@ export default {
       user: [],
       music: [],
       library: [],
+      loader: true,
     };
   },
   watch: {
@@ -512,6 +527,7 @@ export default {
         })
         .then((res) => {
           this.music = res.data;
+          this.loader = false;
           this.getmusic(this.music);
         });
     },
@@ -539,7 +555,8 @@ export default {
       });
     },
   },
-  props: ["data", "check","playmusic"],
+  props: ["data", "check", "playmusic"],
+  components: { loader },
 };
 </script>
 
