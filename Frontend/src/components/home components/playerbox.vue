@@ -235,6 +235,9 @@ export default {
     data: function () {
       this.getlastplay();
     },
+    playmusic: function () {
+      this.getlastplay();
+    },
     check: function (val) {
       if (val.id.toString() === this.show.id.toString()) {
         val.type === "like"
@@ -536,7 +539,7 @@ export default {
       });
     },
   },
-  props: ["data", "check"],
+  props: ["data", "check","playmusic"],
 };
 </script>
 

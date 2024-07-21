@@ -48,6 +48,12 @@
         <socialmedia v-if="component == 'socialmedia'" />
         <request v-if="component == 'request'" />
         <recomenduser v-if="component == 'recomenduser'" />
+        <toptracks
+          v-if="component == 'toptracks'"
+          @changemusic="changemusic"
+          @check="changeplayersaveandlike"
+          :check="this.librarycheck"
+        />
         <loader v-if="popups.loader" />
       </section>
       <aside class="player">
@@ -84,6 +90,7 @@ import profile from "./home components/Profile.vue";
 import socialmedia from "./profile components/socialmedia.vue";
 import request from "./profile components/request.vue";
 import recomenduser from "./profile components/recomenduser.vue";
+import toptracks from "./home components/toptracks.vue";
 
 import Register from "./Register.vue";
 import axios from "axios";
@@ -147,6 +154,7 @@ export default {
           "user",
           "settings",
           "profile",
+          "toptracks",
         ];
 
         let search = componentsarr.find((e) => {
@@ -217,6 +225,7 @@ export default {
     request,
     recomenduser,
     loader,
+    toptracks,
   },
 };
 </script>

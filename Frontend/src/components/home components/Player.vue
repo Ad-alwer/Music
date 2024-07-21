@@ -1,122 +1,142 @@
 <template>
   <div id="parent" class="d-flex flex-column mt-1">
-    <section class="px-3">
+    <section v-if="!laoder" class="px-3">
       <div class="d-flex justify-content-between align-items-center">
-        <span class="text-uppercase color-black fs-5 fw-semibold"
-          >Top 100 Monthly</span
-        >
-        <span class="text-capitalize color-gray pointer">More List</span>
+        <span class="text-uppercase color-black fs-5 fw-semibold">Top tracks </span>
+        <span class="text-capitalize color-gray pointer fw-semibold" @click="gototoptracks">More List</span>
       </div>
       <div class="mt-2">
-        <div class="monthly-box d-flex gap-3 align-items-center">
+        <div
+          v-for="(x, i) in tracks"
+          :key="x"
+          @click="play(x._id)"
+          class="monthly-box d-flex gap-3 align-items-center"
+        >
           <div
             class="monthly-num d-flex justify-content-center align-items-center"
           >
-            <span class="color-gray fs-3">01</span>
+            <span class="color-gray fs-3">{{ formatNumber(i + 1) }}</span>
           </div>
           <img
             class="monthly-img img-fluid rounded-3"
-            src="../../assets/img/test/eminem.jpg"
+            :src="x.cover.url"
             alt=""
           />
           <div class="d-flex flex-column monthly-text">
             <p class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer">
-              Track
+              {{ x.name }}
             </p>
-            <span class="text-capitalize color-gray pointer">eminem</span>
+            <span class="text-capitalize color-gray pointer">{{
+              x.artist
+            }}</span>
           </div>
-          <span class="me-3">03:15</span>
-          <svg
-            width="18"
-            height="6"
-            viewBox="0 0 18 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="3" cy="3" r="3" fill="#B3B3BC" />
-            <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
-          </svg>
-        </div>
-        <div class="monthly-box d-flex gap-3 align-items-center">
-          <div
-            class="monthly-num d-flex justify-content-center align-items-center"
-          >
-            <span class="color-gray fs-3">02</span>
+          <div class="duration-box d-flex justify-content-center">
+            <span class="">{{
+              formattime(x.duration ? x.duration : x.track.duration)
+            }}</span>
           </div>
-          <img
-            class="monthly-img img-fluid rounded-3"
-            src="../../assets/img/test/eminem.jpg"
-            alt=""
-          />
-          <div class="d-flex flex-column monthly-text">
-            <p class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer">
-              Track
-            </p>
-            <span class="text-capitalize color-gray pointer">eminem</span>
-          </div>
-          <span class="me-3">03:15</span>
-          <svg
-            width="18"
-            height="6"
-            viewBox="0 0 18 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="3" cy="3" r="3" fill="#B3B3BC" />
-            <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
-          </svg>
-        </div>
-        <div class="monthly-box d-flex gap-3 align-items-center">
-          <div
-            class="monthly-num d-flex justify-content-center align-items-center"
-          >
-            <span class="color-gray fs-3">03</span>
-          </div>
-          <img
-            class="monthly-img img-fluid rounded-3"
-            src="../../assets/img/test/eminem.jpg"
-            alt=""
-          />
-          <div class="d-flex flex-column monthly-text">
-            <p class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer">
-              Track
-            </p>
-            <span class="text-capitalize color-gray pointer">eminem</span>
-          </div>
-          <span class="me-3">03:15</span>
-          <svg
-            width="18"
-            height="6"
-            viewBox="0 0 18 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="3" cy="3" r="3" fill="#B3B3BC" />
-            <circle cx="15" cy="3" r="3" fill="#B3B3BC" />
-          </svg>
         </div>
       </div>
     </section>
-    <hr class="mx-5" />
-    <playerbox @check="checkfollowandsave" :data="data" :check="check" />
+    <hr v-if="!laoder" class="mx-5" />
+    <playerbox v-if="!laoder"
+      @check="checkfollowandsave"
+      :data="data"
+      :check="check"
+      :playmusic="playmusic"
+    />
+    <loader v-else/>
+    
   </div>
 </template>
 
 <script>
 import playerbox from "./playerbox.vue";
 
+import axios from "axios";
+import info from "../../../default";
+import Register from "../Register.vue";
+
+import loader from '../loader.vue';
+
 export default {
   name: "player",
+  beforeMount() {
+    axios.get(`${this.apiaddress}users/toptracks`).then((res) => {
+      if (res.data) {
+        this.tracks = res.data.splice(0, 3);
+        this.loader = false
+      }
+    });
+  },
   data() {
-    return {};
+    return {
+      apiaddress: info.Api_ADDRESS,
+      tracks: [],
+      loader: true,
+      playmusic: null,
+    };
   },
   components: {
     playerbox,
+    loader
   },
   methods: {
     checkfollowandsave: function (e) {
-      this.$emit('check', e);
+      this.$emit("check", e);
     },
+    formatNumber: function (num) {
+      return num < 10 ? "0" + num : num.toString();
+    },
+    formattime: function (seconds) {
+      let minutes = Math.floor(seconds / 60);
+      let remainingSeconds = seconds % 60;
+
+      let formattedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+      let formattedSeconds =
+        remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`;
+
+      return `${formattedMinutes}:${formattedSeconds}`;
+    },
+    formatview: function (number) {
+      if (number >= 1e6) {
+        return (number / 1e6).toFixed(0) + "M";
+      } else if (number >= 1e3) {
+        return (number / 1e3).toFixed(0) + "K";
+      } else {
+        return number;
+      }
+    },
+    play: function (id) {
+      let data;
+
+      data = {
+        type: "track",
+        id,
+        time: 0,
+      };
+
+      axios
+        .put(
+          `${this.apiaddress}users/lastplay`,
+          {
+            data,
+          },
+          {
+            headers: {
+              jwt: Register.methods.getcookies("jwt"),
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data) {
+            this.playmusic = id;
+          }
+        });
+    },
+    gototoptracks:function(){
+      location.href = `/toptracks`
+    }
   },
   mounted() {},
   props: ["data", "check"],
@@ -149,8 +169,8 @@ export default {
   width: 35px;
   height: 45px;
 }
-.tumbnail {
+
+.duration-box {
   width: 80px;
-  height: 80px;
 }
 </style>

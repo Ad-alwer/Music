@@ -2138,6 +2138,44 @@ async function discover() {
   }
 }
 
+async function toptracks() {
+  try {
+    let tracks = await trackDB.getalltracks();
+    tracks = tracks.filter(
+      (e) =>
+        e.status.toLowerCase() === "public" && e.type.toLowerCase() === "music"
+    );
+    tracks = await Promise.all(
+      tracks.map(async (track) => {
+        track.artist = await getusernamebyid(track.artist);
+        return track;
+      })
+    );
+
+    const albums = await albumDB.getallalbums();
+
+    await Promise.all(
+      albums.map(async (album) => {
+        await Promise.all(
+          album.tracks.map(async (track) => {
+            if (track.status.toLowerCase() === "public") {
+              track.artist = await getusernamebyid(track.artistid);
+              track.cover = album.cover;
+              tracks.push(track);
+            }
+          })
+        );
+      })
+    );
+
+    tracks.sort((a, b) => b.plays - a.plays).slice(0, 30);
+    return tracks;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
 module.exports = {
   checkusername,
   checkemail,
@@ -2207,4 +2245,5 @@ module.exports = {
   fullsearch,
   newtracksandalbum,
   discover,
+  toptracks,
 };

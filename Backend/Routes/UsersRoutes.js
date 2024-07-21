@@ -16,7 +16,7 @@ Router.post("/login", (req, res) => {
 });
 
 Router.get("/forgetpassword/:username", (req, res) => {
-  console.log("in");
+
   usersDB.forgetpassword(req.params.username).then((data) => res.send(data));
 });
 
@@ -255,6 +255,8 @@ Router.get("/discover", (req, res) => {
   usersDB.discover().then((data) => res.send(data));
 });
 
-
+Router.get("/toptracks",(req, res) => {
+  usersDB.toptracks().then((data) => res.send(data));
+});
 
 module.exports = Router;
