@@ -37,8 +37,17 @@
               }}</span>
               <div>
                 <img
+                  class="pointer opacity-25"
+                  v-if="
+                    x.artist.username.toLowerCase() ===
+                    user.username.toLowerCase()
+                  "
+                  src="../../assets/icons/like.png"
+                  alt=""
+                />
+                <img
                   class="pointer"
-                  v-if="x.checklike"
+                  v-else-if="x.checklike"
                   src="../../assets/icons/like.png"
                   alt=""
                   @click="like(x.checklike, x._id)"
@@ -72,12 +81,20 @@
                 </li>
 
                 <li
+                v-if="
+                    x.artist.username.toLowerCase() ===
+                    user.username.toLowerCase()
+                  "
                   @click="unsave(x._id)"
                   class="fw-semibold text-capitalize px-2 py-1 li-child"
                 >
                   Unsave
                 </li>
                 <li
+                v-if="
+                    x.artist.username.toLowerCase() ===
+                    user.username.toLowerCase()
+                  "
                   @click="like(x.checklike, x._id)"
                   class="fw-semibold text-capitalize px-2 py-1 li-child border-bottom-0"
                 >
