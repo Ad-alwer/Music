@@ -2039,7 +2039,6 @@ async function fullsearch(val) {
     const searchalbums = await albumDB.searchbyusername(val);
 
     const searchplaylists = await playlistDB.searchbyusername(val);
-    
 
     const resault = {
       users,
@@ -2051,6 +2050,76 @@ async function fullsearch(val) {
     return resault;
   } catch (err) {
     console.log(err);
+    return false;
+  }
+}
+
+async function newtracksandalbum() {
+  try {
+    let albums = await albumDB.getallalbums();
+    albums = albums
+      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+      .slice(0, 20);
+
+    const resaultAlbums = await Promise.all(
+      albums.map(async (album) => {
+        await Promise.all(
+          album.tracks.map(async (track) => {
+            track.artist = await User.findById(track.artistid);
+            return track;
+          })
+        );
+        return album;
+      })
+    );
+
+    const tracks = await trackDB.getalltracks();
+
+    let podcasts = tracks
+      .filter(
+        (e) =>
+          e.status.toLowerCase() === "public" &&
+          e.type.toLowerCase() === "podcast"
+      )
+      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+      .slice(0, 20);
+    const resultPodcasts = await Promise.all(
+      podcasts.map(async (e) => {
+        e.artist = await User.findById(e.artist);
+        return e;
+      })
+    );
+
+    let musics = tracks.filter(
+      (e) =>
+        e.status.toLowerCase() === "public" && e.type.toLowerCase() === "music"
+    );
+
+    musics = await Promise.all(
+      musics.map(async (e) => {
+        e.artist = await User.findById(e.artist);
+        return e;
+      })
+    );
+    albums.map((album) => {
+      album.tracks.forEach((track) => {
+        if (track.status.toLowerCase() === "public") {
+          track.cover = album.cover;
+          musics.push(track);
+        }
+      });
+    });
+
+    const resaultMusic = musics
+      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+      .slice(0, 20);
+
+    return {
+      newmusic: resaultMusic,
+      newpodcast: resultPodcasts,
+      newalbum: resaultAlbums,
+    };
+  } catch {
     return false;
   }
 }
@@ -2122,4 +2191,5 @@ module.exports = {
   getsavedplaylist,
   artist,
   fullsearch,
+  newtracksandalbum,
 };

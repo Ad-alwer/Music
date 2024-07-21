@@ -9,8 +9,8 @@
       </aside>
       <section class="content">
         <discover v-if="component == 'discover'" class="active" />
-        <explore v-if="component == 'explore'" />
-        <search v-if="component == 'search'"   @changemusic="changemusic" />
+        <explore v-if="component == 'explore'" @changemusic="changemusic" />
+        <search v-if="component == 'search'" @changemusic="changemusic" />
         <laibrarytrack
           v-if="component == 'laibrarytrack'"
           @changemusic="changemusic"

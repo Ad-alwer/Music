@@ -247,4 +247,10 @@ Router.get("/fullsearch/:val", (req, res) => {
   usersDB.fullsearch(req.params.val).then((data) => res.send(data));
 });
 
+Router.get("/newtracksandalbum", (req, res) => {
+  usersDB.newtracksandalbum().then((data) => res.send(data));
+});
+
+
+
 module.exports = Router;
