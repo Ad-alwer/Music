@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 
+const trackDB = require("./Tracks");
+const albumDB = require("./Albums");
+
 require("dotenv").config();
 mongoose.connect(process.env.DB_ADRESS).then(() => console.log("conect"));
 
@@ -36,9 +39,8 @@ async function isempty() {
 }
 
 async function change(field, val) {
-
   try {
- await Base.findOneAndUpdate(
+    await Base.findOneAndUpdate(
       {},
       {
         $set: {
@@ -51,8 +53,7 @@ async function change(field, val) {
       status: true,
       msg: "Saved successfully",
     };
-  } catch  {
-   
+  } catch {
     return {
       status: false,
       msg: "Please try again",
@@ -159,15 +160,15 @@ async function removesocialicon(id) {
   }
 }
 
-async function findsocialmedia(name){
-  const base = await  Base.findOne({})
-  const socilamedia = base.socialicon
+async function findsocialmedia(name) {
+  const base = await Base.findOne({});
+  const socilamedia = base.socialicon;
 
-  const search = socilamedia.find(e => e.name === name);
-  if(search){
-    return search.file.url
-  }else{
-    return false
+  const search = socilamedia.find((e) => e.name === name);
+  if (search) {
+    return search.file.url;
+  } else {
+    return false;
   }
 }
 
@@ -264,11 +265,66 @@ async function removeresbanner(id) {
   }
 }
 
-async function getgenre(){
-  const base = await Base.find({})
-  const genre = base[0].genres
-  return genre
+async function getgenre() {
+  const base = await Base.find({});
+  const genre = base[0].genres;
+  return genre;
+}
 
+async function getbanner() {
+  const base = await Base.find({});
+  const banners = base[0].banners;
+  return banners;
+}
+
+async function getresbanner() {
+  const base = await Base.find({});
+  const responsivebanners = base[0].responsivebanners;
+  return responsivebanners;
+}
+
+async function gettopgenre() {
+try {
+  let tracks = await trackDB.getalltracks();
+
+  const albums = await albumDB.getallalbums();
+  albums.forEach((album) => {
+    album.tracks.forEach((track) => {
+      tracks.push(track);
+    });
+  });
+
+  let resault = [];
+
+  tracks.forEach((track) => {
+    const find = resault.findIndex(
+      (e) => e.genre.toLowerCase() === track.genre.toLowerCase()
+    );
+
+    if (find >= 0) {
+      resault[find].count++;
+    } else {
+      resault.push({
+        genre: track.genre,
+        count: 1,
+      });
+    }
+  });
+
+  const genres = await getgenre();
+  
+  resault.forEach((e) => {
+    genres.forEach((genre) => {
+      
+        if (genre.name.toLowerCase() === e.genre.toLowerCase()) {
+            e.color = genre.color;
+        }
+    });
+});
+  return resault; 
+} catch (err)  {
+  console.log(err);
+}
 }
 
 module.exports = {
@@ -283,5 +339,8 @@ module.exports = {
   removegenre,
   removesocialicon,
   getgenre,
-  findsocialmedia
+  findsocialmedia,
+  getbanner,
+  getresbanner,
+  gettopgenre,
 };

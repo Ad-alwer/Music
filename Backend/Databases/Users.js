@@ -1,34 +1,16 @@
 const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
-const schedule = require("node-schedule");
 
 const trackDB = require("./Tracks");
 const albumDB = require("./Albums");
 const playlistDB = require("./Playlists");
-
-const { findsocialmedia } = require("./Base");
+const baseDB = require("./Base");
 
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
   console.log("conect");
-  schedule.scheduleJob("0 0 1 * *", async () => {
-    let query = {
-      "user.tracks": {
-        $exists: true,
-        $not: {
-          $size: 0,
-        },
-      },
-    };
-    await notification(
-      query,
-      "/profile/monthlylistener",
-      `Your monthlylistener report is available nowimg/profile`
-    );
-  });
 });
 
 const musicschema = new mongoose.Schema({
@@ -375,7 +357,7 @@ async function getuser(token) {
     if (user.socialmedia.length > 0) {
       await Promise.all(
         user.socialmedia.map(async (e) => {
-          e.iconlink = await findsocialmedia(e.icon);
+          e.iconlink = await baseDB.findsocialmedia(e.icon);
         })
       );
     }
@@ -2124,6 +2106,38 @@ async function newtracksandalbum() {
   }
 }
 
+async function discover() {
+  try {
+    const banner = await baseDB.getbanner();
+    const resbanner = await baseDB.getresbanner();
+    const topgenre = await baseDB.gettopgenre();
+
+    const users = await User.find({});
+    const resaultusers = users
+      .sort((a, b) => new Date(b.subscribe) - new Date(a.subscribe))
+      .slice(0, 20);
+
+    let playlists = await playlistDB.getallplaylists();
+    playlists = playlists.filter(
+      (e) => e.visibility.toLowerCase() === "public"
+    );
+    const resaultplaylists = playlists
+      .sort((a, b) => new Date(b.plays) - new Date(a.plays))
+      .slice(0, 20);
+
+    const resault = {
+      banner,
+      resbanner,
+      topgenre,
+      topusers: resaultusers,
+      topplaylists: resaultplaylists,
+    };
+    return resault;
+  } catch {
+    return false;
+  }
+}
+
 module.exports = {
   checkusername,
   checkemail,
@@ -2192,4 +2206,5 @@ module.exports = {
   artist,
   fullsearch,
   newtracksandalbum,
+  discover,
 };

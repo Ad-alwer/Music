@@ -251,6 +251,10 @@ Router.get("/newtracksandalbum", (req, res) => {
   usersDB.newtracksandalbum().then((data) => res.send(data));
 });
 
+Router.get("/discover", (req, res) => {
+  usersDB.discover().then((data) => res.send(data));
+});
+
 
 
 module.exports = Router;
