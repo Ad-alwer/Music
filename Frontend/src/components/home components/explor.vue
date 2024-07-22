@@ -19,9 +19,10 @@
             class="seemore rounded-4 img-img-fluid"
             alt=""
           />
-          <span class="color-black text-capitalize text-center fw-bold fs-6 seemore-name pointer">{{
-            x.name
-          }}</span>
+          <span
+            class="color-black text-capitalize text-center fw-bold fs-6 seemore-name pointer"
+            >{{ x.name }}</span
+          >
           <span
             @click="
               gotoartist(
@@ -37,7 +38,7 @@
       </div>
     </section>
     <section v-else>
-      <div v-if="data.newalbum.length > 0">
+      <div v-if="data.newalbum.length > 0" id="album">
         <div class="d-flex justify-content-between pt-4">
           <span class="text-uppercase color-black fw-semibold">new Album</span>
           <span
@@ -80,7 +81,7 @@
           </swiper-slide>
         </Swiper>
       </div>
-      <div v-if="data.newmusic.length > 0">
+      <div v-if="data.newmusic.length > 0" id="music">
         <div class="d-flex justify-content-between pt-5">
           <span class="text-uppercase color-black fw-semibold">new music</span>
           <span
@@ -117,7 +118,7 @@
           </swiper-slide>
         </Swiper>
       </div>
-      <div v-if="data.newpodcast.length > 0">
+      <div v-if="data.newpodcast.length > 0" id="podcast">
         <div class="d-flex justify-content-between pt-5">
           <span class="text-uppercase color-black fw-semibold"
             >new podcast</span
@@ -188,6 +189,19 @@ export default {
       if (res.data) {
         this.data = res.data;
         this.loader = false;
+
+        const url = location.hash;
+        const id = url.substring(1);
+
+        const datas = ["album", "music", "podcast"];
+        const search = datas.find((e) => e === id.toLowerCase());
+
+        if (location && search) {
+          const element = document.getElementById(search);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+          }
+        }
       }
     });
   },

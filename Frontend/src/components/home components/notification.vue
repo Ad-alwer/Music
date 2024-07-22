@@ -1,6 +1,6 @@
 <template>
   <div id="parent">
-    <loader v-if="loader"/>
+    <loader v-if="loader" />
     <section v-else class="content container px-5 mt-4">
       <section class="d-flex justify-content-between">
         <span class="text-uppercase color-blue fw-semibold fs-5"
@@ -75,20 +75,21 @@ import loader from "../loader.vue";
 export default {
   beforeMount() {
     axios
-      .get(`${this.apiaddress}users/notification`, {
+      .get(`${this.apiaddress}users/readnotification`, {
         headers: {
           jwt: Register.methods.getcookies("jwt"),
         },
       })
       .then((res) => {
         if (res.data) {
-          this.data = res.data;
+          console.log(res.data);
+          this.data = res.data.reverse();
           this.loader = false;
         }
       });
   },
   name: "notification",
-  components: {loader},
+  components: { loader },
   data() {
     return {
       apiaddress: info.Api_ADDRESS,

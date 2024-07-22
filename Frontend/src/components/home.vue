@@ -1,7 +1,7 @@
 <template>
   <div id="parent ">
     <header class="d-flex align-items-center gap-1 mt-3">
-      <hmheader :reload="reloadheader" />
+      <hmheader :reload="reloadheader" @changecomponent="changecomponent" />
     </header>
     <main class="d-flex">
       <aside class="menu">

@@ -26,17 +26,17 @@
       <div class="d-flex justify-content-center gap-4">
         <span
           class="text-capitalize pointer links position-relative"
-          @click="goto('/explore/music')"
+          @click="goto('/explore#music')"
           >Music</span
         >
         <span
           class="text-capitalize pointer links position-relative"
-          @click="goto('/explore/podcast')"
+          @click="goto('/explore#podcast')"
           >Podcast</span
         >
         <span
           class="text-capitalize pointer links position-relative"
-          @click="goto('/explore/album')"
+          @click="goto('/explore#album')"
           >Album</span
         >
       </div>
@@ -75,7 +75,7 @@
     </div>
     <div class="d-flex align-items-center gap-3 px-4">
       <svg
-        @click="goto('laibrarytrack')"
+        @click="changecomponent('laibrarytrack')"
         width="20"
         height="20"
         viewBox="0 0 20 18"
@@ -93,8 +93,10 @@
       </svg>
       <div>
         <notificationpopup
+          @changecomponent="changecomponent"
+          @read="changeread"
           @close="popups.notifacation = false"
-          v-if="popups.notifacation"
+          v-show="popups.notifacation"
         />
 
         <svg
@@ -233,6 +235,12 @@ export default {
     },
     senduser: function () {
       this.$emit("getuser", this.user);
+    },
+    changecomponent: function (e) {
+      this.$emit("changecomponent", e);
+    },
+    changeread: function (e) {
+     this.unreadnofification = e
     },
   },
   beforeMount() {

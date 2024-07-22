@@ -7,34 +7,33 @@
         @click="close"
       ></i>
       <div
-        class="d-flex align-items-center gap-4 pointer notification-child p-1"
+        v-for="x in data"
+        :key="x"
+        class="d-flex align-items-center gap-4 pointer notification-child p-2"
       >
-        <img src="../../assets/icons/follow.png" alt="" />
+        <img
+          :src="
+            x.img === 'follow'
+              ? require('../../assets/icons/follow.png')
+              : x.img === 'welcome'
+              ? require('../../assets/icons/welcome.png')
+              : x.img === 'accept'
+              ? require('../../assets/icons/checknotif.png')
+              : x.img === 'reject'
+              ? require('../../assets/icons/X.png')
+              : x.img === 'like'
+              ? require('../../assets/icons/like-light.png')
+              : require('../../assets/icons/change-light.png')
+          "
+          alt=""
+        />
         <a
-          class="text-capitalize fw-semibold text-decoration-none fs-6 color-black"
-          >matin57 started follwing you</a
+          class="text-capitalize fw-semibold text-decoration-none fs-5 color-black trim"
+          >{{ x.text }}</a
         >
       </div>
       <div
-        class="d-flex align-items-center gap-4 pointer notification-child p-1"
-      >
-        <img src="../../assets/icons/like-light.png" alt="" />
-        <a
-          class="text-capitalize fw-semibold text-decoration-none fs-6 color-black"
-          >matin56 liked your music</a
-        >
-      </div>
-      <div
-        class="d-flex align-items-center gap-4 pointer notification-child p-1"
-      >
-        <img src="../../assets/icons/welcome.png" alt="" />
-        <a
-          class="text-capitalize fw-semibold text-decoration-none fs-6 color-black"
-          >welcome to our site</a
-        >
-      </div>
-      <div
-        @click="goto('/notification')"
+        @click="changecomponent('notification')"
         class="d-flex align-items-center gap-4 justify-content-center pointer notification-child more-parent"
       >
         <a
@@ -47,10 +46,40 @@
 </template>
 
 <script>
+import axios from "axios";
+import info from "../../../default";
+import Register from "../Register.vue";
+
 export default {
   name: "notificationpopup",
+  beforeMount() {
+    axios
+      .get(`${this.apiaddress}users/notification`, {
+        headers: {
+          jwt: Register.methods.getcookies("jwt"),
+        },
+      })
+      .then((res) => {
+        if (res.data) {
+          res.data.forEach((e) => {
+            if (!e.seen) {
+              this.unread = true;
+              this.$emit("read", this.unread);
+            }
+          });
+          this.data = res.data.reverse().slice(0, 3);
+        }
+      });
+  },
   mounted() {
     document.addEventListener("keydown", this.esc);
+  },
+  data() {
+    return {
+      apiaddress: info.Api_ADDRESS,
+      data: [],
+      unread: false,
+    };
   },
   methods: {
     goto: function (e) {
@@ -61,10 +90,13 @@ export default {
       this.$emit("close", "closed");
     },
     esc(event) {
-      console.log('x');
+      console.log("x");
       if (event.key === "Escape") {
         this.close();
       }
+    },
+    changecomponent: function (e) {
+      this.$emit("changecomponent", e);
     },
   },
 };
@@ -103,5 +135,12 @@ export default {
 }
 img {
   width: 24px;
+}
+
+.trim {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
 }
 </style>

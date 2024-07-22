@@ -261,4 +261,8 @@ Router.get("/toptracks", (req, res) => {
 Router.get("/notification", (req, res) => {
   usersDB.getnotification(req.headers.jwt).then((data) => res.send(data));
 });
+
+Router.get("/readnotification", (req, res) => {
+  usersDB.readnotification(req.headers.jwt).then((data) => res.send(data));
+});
 module.exports = Router;

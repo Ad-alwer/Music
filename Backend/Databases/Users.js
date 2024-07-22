@@ -92,7 +92,12 @@ async function register(username, email, password) {
   });
   await user.save();
   token = jwt.sign({ _id: user.id }, process.env.REGISTER_JWT);
-  await notification({ _id: user.id},"/profile",'welcome to our site','welcome')
+  await notification(
+    { _id: user.id },
+    "/profile",
+    "welcome to our site",
+    "welcome"
+  );
   return {
     token: token,
   };
@@ -543,7 +548,7 @@ async function changeusername(token, newusername) {
       status: true,
       msg: "Username successfully changed",
     };
-  } catch  {
+  } catch {
     return {
       status: false,
       msg: "Please try again",
@@ -2198,6 +2203,28 @@ async function getnotification(token) {
   }
 }
 
+async function readnotification(token) {
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
+    const user = await User.findById(decode._id);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    user.notification.forEach((e) => {
+      e.seen = true;
+    });
+
+    user.markModified("notification");
+
+    const newdata = await user.save();
+    return newdata.notification;
+  } catch  {
+    return false;
+  }
+}
+
 module.exports = {
   checkusername,
   checkemail,
@@ -2269,4 +2296,7 @@ module.exports = {
   discover,
   toptracks,
   getnotification,
+  readnotification,
 };
+
+//TODO check img home loaded
