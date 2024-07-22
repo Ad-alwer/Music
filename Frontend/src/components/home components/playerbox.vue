@@ -244,6 +244,7 @@ export default {
       music: [],
       library: [],
       loader: true,
+      imgload:false
     };
   },
   watch: {
@@ -376,19 +377,17 @@ export default {
         music.album ? (this.show.album = music.album) : null;
         this.show.type = music.type;
 
-        if (this.music.artist.lastplay.id == this.show.id) {
-          this.$refs.audio.currentTime = music.artist.lastplay.time;
-
-          this.show.currentTime = music.artist.lastplay.time;
-        } else {
-          this.$refs.audio.currentTime = 0;
-          this.show.currentTime = 0;
-        }
         this.$nextTick(() => {
+          if (this.music.artist.lastplay.id == this.show.id) {
+            this.$refs.audio.currentTime = music.artist.lastplay.time;
+
+            this.show.currentTime = music.artist.lastplay.time;
+          } else {
+            this.$refs.audio.currentTime = 0;
+            this.show.currentTime = 0;
+          }
           this.$refs.range.value = this.show.currentTime;
         });
-
-        this.$refs.range.value = this.show.currentTime;
 
         setTimeout(() => {
           this.checklike();

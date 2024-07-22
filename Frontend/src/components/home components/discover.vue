@@ -11,6 +11,7 @@
             class="slider-img rounded-4 img-fluid w-100"
             :src="x.banner.url"
             alt=""
+            @load="imageLoaded"
           />
         </div>
 
@@ -122,9 +123,7 @@ import {
   Autoplay,
 } from "swiper/modules";
 
-
 import { Swiper, SwiperSlide } from "swiper/vue";
-
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -147,6 +146,9 @@ export default {
       }
     });
   },
+  mounted() {
+    this.totalImages = this.banner.length;
+  },
 
   data() {
     return {
@@ -162,6 +164,8 @@ export default {
       responsive: false,
       banner: [],
       timeinterval: null,
+      loadedImages: 0,
+      totalImages: 0,
     };
   },
   methods: {
@@ -222,6 +226,12 @@ export default {
     },
     goto: function (loc) {
       location.href = `${loc}`;
+    },
+    imageLoaded: function () {
+      this.loadedImages++;
+      if (this.banner.length > 0 && this.loadedImages === this.totalImages) {
+        this.loader = false;
+      }
     },
   },
   components: {
