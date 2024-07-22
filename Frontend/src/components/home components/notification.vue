@@ -34,33 +34,6 @@
             >{{ x.text }}</a
           >
         </div>
-        <!-- <div
-          class="d-flex align-items-center gap-4 pointer notification-child p-2"
-        >
-          <img src="../../assets/icons/like-light.png" alt="" />
-          <a
-            class="text-capitalize fw-semibold text-decoration-none fs-5 color-black"
-            >matin56 liked your music</a
-          >
-        </div>
-        <div
-          class="d-flex align-items-center gap-4 pointer notification-child p-2"
-        >
-          <img src="../../assets/icons/welcome.png" alt="" />
-          <a
-            class="text-capitalize fw-semibold text-decoration-none fs-5 color-black"
-            >welcome to our site</a
-          >
-        </div>
-        <div
-          class="d-flex align-items-center gap-4 pointer notification-child p-2"
-        >
-          <img src="../../assets/icons/change-light.png" alt="" />
-          <a
-            class="text-capitalize fw-semibold text-decoration-none fs-5 color-black"
-            >your username was chaged to abdf34</a
-          >
-        </div> -->
       </section>
     </section>
   </div>
@@ -82,7 +55,6 @@ export default {
       })
       .then((res) => {
         if (res.data) {
-          console.log(res.data);
           this.data = res.data.reverse();
           this.loader = false;
         }
@@ -101,7 +73,7 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
 * {
   overflow: hidden;
 }

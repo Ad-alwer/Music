@@ -383,13 +383,12 @@ li {
 }
 #parent {
   overflow: hidden;
-  /* max-height: 90vh; */
+  
 }
 .menu-title {
   margin-top: 2%;
   font-weight: 600;
   text-transform: uppercase;
-  /* margin-left: -35%; */
 }
 
 a {

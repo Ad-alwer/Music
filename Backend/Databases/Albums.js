@@ -6,9 +6,7 @@ const userDB = require("./Users");
 
 require("dotenv").config();
 
-mongoose.connect(process.env.DB_ADRESS).then(() => {
-  console.log("conect");
-});
+mongoose.connect(process.env.DB_ADRESS);
 
 const musicschema = new mongoose.Schema({
   name: {
@@ -65,8 +63,7 @@ async function addalbum(
     });
     useralbum.save();
     return useralbum;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -109,8 +106,7 @@ async function editalbum(
       status: true,
       msg: "Album edited successfully",
     };
-  } catch (err) {
-    console.log(err);
+  } catch {
     return {
       status: false,
       msg: "Please try again",
@@ -173,8 +169,7 @@ async function play(albumid, trackid) {
       },
     });
     return true;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }

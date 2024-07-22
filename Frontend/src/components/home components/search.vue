@@ -371,12 +371,8 @@ export default {
     loader,
   },
   setup() {
-    const onSwiper = (swiper) => {
-      console.log(swiper);
-    };
-    const onSlideChange = () => {
-      console.log("slide change");
-    };
+    const onSwiper = () => {};
+    const onSlideChange = () => {};
     return {
       onSwiper,
       onSlideChange,
@@ -403,9 +399,6 @@ export default {
   border: 1px solid var(--gray-main);
 }
 
-/* .swiper-members-child img{
-    height: 120px;
-} */
 .swiper-members-child span {
   font-size: 12px;
 }

@@ -222,11 +222,6 @@ export default {
   beforeMount() {
     this.getuser();
     this.getbase();
-
-    // if (this.data) {
-    //   this.tracks = this.data.tracks;
-    //   this.lasttracks = this.data.tracks;
-    // }
   },
   mounted() {
     document.addEventListener("keydown", this.esc);
@@ -329,7 +324,6 @@ export default {
       this.$refs.searchinput ? (this.$refs.searchinput.value = null) : null;
     },
     reset: function () {
-      console.log("reset");
       this.$refs.nameinput.value = this.data.name;
       this.$refs.descinput.value = this.data.description;
       this.$refs.statusinput.value = this.data.status;
@@ -354,7 +348,6 @@ export default {
             `${this.apiaddress}users/checktrackandalbumname/${e}&&${this.data.name}`
           )
           .then((res) => {
-            console.log(res.data);
             if (res.data) {
               this.verifyname.value = true;
               this.verifyname.show = true;
@@ -524,8 +517,6 @@ export default {
 }
 
 /* Uploader */
-
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 
 ::selection {
   color: #fff;

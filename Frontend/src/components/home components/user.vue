@@ -1198,7 +1198,6 @@ export default {
 
           if (selectsecondata.length == 24) {
             index = this.selecteddata.tracks.findIndex((e) => {
-              console.log(e._id);
               return e._id == selectsecondata;
             });
           } else {

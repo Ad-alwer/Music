@@ -283,12 +283,8 @@ export default {
     loader,
   },
   setup() {
-    const onSwiper = (swiper) => {
-      console.log(swiper);
-    };
-    const onSlideChange = () => {
-      console.log("slide change");
-    };
+    const onSwiper = () => {};
+    const onSlideChange = () => {};
     return {
       onSwiper,
       onSlideChange,
@@ -317,11 +313,7 @@ export default {
   color: white;
   bottom: 2%;
 }
-/* .swiper-img {
-  width: 180px !important;
-  height: 180px !important;
-  object-fit: cover;
-} */
+
 
 .swiper-newmusic-child span {
   font-size: 12px;

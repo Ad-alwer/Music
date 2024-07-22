@@ -276,7 +276,6 @@ export default {
   background: #fff;
   cursor: pointer;
   border-radius: 5px;
-  /* padding: 30px; */
   box-shadow: 7px 7px 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -285,7 +284,6 @@ export default {
   height: 167px;
   display: flex;
   cursor: pointer;
-  /* margin: 30px 0; */
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -384,8 +382,6 @@ textarea {
 }
 .search-input {
   caret-color: var(--blue-main);
-  /* width: 350px; */
-
   color: var(--gray-main);
 }
 .search-parent {

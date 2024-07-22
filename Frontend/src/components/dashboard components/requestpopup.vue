@@ -349,7 +349,6 @@ export default {
       axios
         .put(`${this.apiaddress}users/verifytrack/${jwt}/${this.data.name}`)
         .then((res) => {
-          console.log(res.data);
           this.$emit("compelet", res.data);
         });
     },
@@ -361,7 +360,7 @@ export default {
             msg: this.$refs.msg.value,
           })
           .then((res) => {
-            console.log(res.data);
+
             this.$emit("compelet", res.data);
           });
       } else {
@@ -376,7 +375,6 @@ export default {
       this.tracksshow.forEach((e) => {
         e.show = false;
       });
-      console.log(val);
       !val ? (this.tracksshow[i].show = true) : null;
     },
     acceptalbum: function () {
@@ -392,7 +390,6 @@ export default {
           }
         )
         .then((res) => {
-          console.log(res.data);
           this.$emit("compelet", res.data);
         });
     },
@@ -413,7 +410,7 @@ export default {
             }
           )
           .then((res) => {
-            console.log(res.data);
+
             this.$emit("compelet", res.data);
           });
       } else {
@@ -466,7 +463,6 @@ input[type="range"] {
   overflow: hidden;
   border-radius: 5px;
   cursor: pointer;
-  /* box-shadow:inset 0 0 5px  rgba(0, 0, 0, 1); */
 }
 
 input[type="range"]::-webkit-slider-thumb {

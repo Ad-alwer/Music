@@ -5,7 +5,7 @@ const trackDB = require("./Tracks");
 const albumDB = require("./Albums");
 
 require("dotenv").config();
-mongoose.connect(process.env.DB_ADRESS).then(() => console.log("conect"));
+mongoose.connect(process.env.DB_ADRESS)
 
 const musicschema = new mongoose.Schema({
   genres: [],
@@ -102,8 +102,7 @@ async function removegenre(id) {
       status: true,
       msg: "Deleted successfully",
     };
-  } catch (error) {
-    console.log(error);
+  } catch {
     return {
       status: false,
       msg: "Please try again",
@@ -151,8 +150,7 @@ async function removesocialicon(id) {
       status: true,
       msg: "Deleted successfully",
     };
-  } catch (error) {
-    console.log(error);
+  } catch {
     return {
       status: false,
       msg: "Please try again",
@@ -256,8 +254,7 @@ async function removeresbanner(id) {
       status: true,
       msg: "Deleted successfully",
     };
-  } catch (error) {
-    console.log(error);
+  } catch {
     return {
       status: false,
       msg: "Please try again",
@@ -322,8 +319,8 @@ try {
     });
 });
   return resault; 
-} catch (err)  {
-  console.log(err);
+} catch {
+  return false
 }
 }
 

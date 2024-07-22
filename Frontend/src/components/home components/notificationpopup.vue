@@ -90,7 +90,6 @@ export default {
       this.$emit("close", "closed");
     },
     esc(event) {
-      console.log("x");
       if (event.key === "Escape") {
         this.close();
       }

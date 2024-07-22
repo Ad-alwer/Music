@@ -194,7 +194,6 @@ export default {
 }
 .artist-box {
   width: 22vw;
-  /* height: 38vw; */
 }
 .img-detail {
   width: 140px;

@@ -118,7 +118,6 @@
             : 'py-2 text-capitalize d-flex justify-content-start align-items-center gap-3'
         "
       >
-        <!-- <img class="podcast-img" src="../../assets/icons/podcast.png" alt="" /> -->
         <img
           v-if="component == 'analyzeTopPodcast'"
           class="podcast-img"
@@ -238,20 +237,18 @@ export default {
 };
 </script>
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
 li {
   cursor: pointer;
   margin-left: 32%;
 }
 #parent {
   overflow: hidden;
-  /* max-height: 90vh; */
 }
 .menu-title {
   margin-top: 2%;
   font-weight: 600;
   text-transform: uppercase;
-  /* margin-left: -35%; */
 }
 
 a {

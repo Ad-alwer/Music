@@ -7,7 +7,7 @@ const AlbumDB = require("./Albums");
 
 require("dotenv").config();
 
-mongoose.connect(process.env.DB_ADRESS).then(() => console.log("conect"));
+mongoose.connect(process.env.DB_ADRESS);
 
 const musicschema = new mongoose.Schema({
   name: {
@@ -76,8 +76,7 @@ async function editplaylist(id, name, visibility, cover, tracks) {
       status: true,
       msg: "Playlist edited successfully",
     };
-  } catch (err) {
-    console.log(err);
+  } catch {
     return {
       status: false,
       msg: "Please try again",
@@ -220,14 +219,12 @@ async function playplaylist(id) {
     });
 
     return true;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
 
-
-async function searchbyusername(name){
+async function searchbyusername(name) {
   const playlists = await Playlist.find({
     name: { $regex: name, $options: "i" },
   });
@@ -247,5 +244,5 @@ module.exports = {
   findplaylistbyid,
   topplaylist,
   playplaylist,
-  searchbyusername
+  searchbyusername,
 };

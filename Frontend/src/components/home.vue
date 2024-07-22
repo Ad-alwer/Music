@@ -249,6 +249,5 @@ aside.menu {
 }
 aside.player {
   width: 25%;
-  /* background-color: aqua; */
 }
 </style>

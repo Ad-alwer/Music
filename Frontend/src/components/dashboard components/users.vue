@@ -201,7 +201,6 @@ export default {
 
 <style scoped>
 
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 
 .table-header th {
   background-color: #4343ef !important;
@@ -236,7 +235,6 @@ tr {
   width: 18px;
   height: 18px;
   border-radius: 18px;
-  /* background-color: rgba(0, 0, 0, 0.25); */
   background: var(--blue-main);
 
   top: 1px;
@@ -256,9 +254,7 @@ input[type="checkbox"]:checked + .switch {
 .fa-address-card {
   font-size: 22px;
 }
-img {
-  width: 350px;
-}
+
 .search-icon {
   width: 18px;
   height: 18px;

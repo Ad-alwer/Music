@@ -233,7 +233,7 @@ export default {
 </script>
 
 <style scoped>
-@import "../../node_modules/izitoast/dist/css/iziToast.min.css";
+
 .svg {
   scale: 2;
   z-index: 999;

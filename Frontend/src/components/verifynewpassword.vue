@@ -225,7 +225,7 @@ export default {
         },
       })
       .then((res) => {
-        res.data ? (this.id = res.data) : console.log("invalid");
+        res.data ? (this.id = res.data) : null;
       });
   },
   data() {

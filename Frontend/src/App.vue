@@ -10,7 +10,7 @@ export default {
 
 <style>
 @import "../node_modules/izitoast/dist/css/iziToast.min.css";
-
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 :root {
   --blue-main: #4343ef;
   --gray-main: #787887;

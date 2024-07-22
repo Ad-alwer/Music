@@ -389,8 +389,6 @@ export default {
   height: 160px;
 }
 .track-body-text-parent {
-  /* position: absolute;
-  bottom: -5%; */
   font-weight: bold;
   width: 100%;
 }

@@ -340,7 +340,6 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 .btn-add {
   background-color: var(--blue-main);
   color: white;
@@ -391,7 +390,6 @@ export default {
   width: 18px;
   height: 18px;
   border-radius: 18px;
-  /* background-color: rgba(0, 0, 0, 0.25); */
   background: var(--blue-main);
 
   top: 1px;

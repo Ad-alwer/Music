@@ -257,7 +257,6 @@ export default {
           }
         )
         .then((res) => {
-          // res.data ? this.getdata() : null;
           if (res.data) {
             this.getdata();
             this.$emit("check", {
@@ -322,9 +321,6 @@ export default {
   overflow: hidden !important;
 }
 
-.child {
-  /* background: blue; */
-}
 .tumbnail {
   width: 70px;
   height: 70px;

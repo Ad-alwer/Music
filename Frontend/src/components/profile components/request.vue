@@ -114,7 +114,6 @@ aside.menu {
 }
 aside.player {
   width: 25%;
-  /* background-color: aqua; */
 }
 tr {
   border-bottom: 2px solid #4343ef;

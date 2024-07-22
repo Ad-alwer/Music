@@ -435,7 +435,6 @@ export default {
 }
 .input-parent {
   border: 2px solid var(--blue-main);
-  /* width: 450px; */
 }
 .input-parent input {
   width: 450px;

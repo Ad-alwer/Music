@@ -266,7 +266,6 @@ export default {
 <style scoped>
 .svg {
   width: 280px;
-  /* margin-top: -5px !important; */
 }
 .div-icon {
   width: 350px;

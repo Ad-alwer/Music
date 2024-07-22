@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
 const trackDB = require("./Tracks");
 const albumDB = require("./Albums");
@@ -9,9 +10,7 @@ const baseDB = require("./Base");
 
 require("dotenv").config();
 
-mongoose.connect(process.env.DB_ADRESS).then(() => {
-  console.log("conect");
-});
+mongoose.connect(process.env.DB_ADRESS);
 
 const musicschema = new mongoose.Schema({
   username: {
@@ -640,7 +639,6 @@ async function checktrackandalbumname(name, edit) {
     const search = library.findIndex((e) => {
       return e.toLowerCase() === name.toLowerCase();
     });
-    console.log(search);
     return search >= 0 ? false : true;
   } catch (error) {
     console.error(error);
@@ -718,11 +716,12 @@ async function addrequesttrack(
         },
         { new: true }
       );
-      console.log("in");
+
       return user;
-    } catch (errr) {
-      console.log(errr);
+    } catch {
+      return false
     }
+    
   }
 }
 
@@ -831,8 +830,7 @@ async function subscribe(token, id) {
     );
 
     return true;
-  } catch (error) {
-    console.log(error);
+  } catch {
     return false;
   }
 }
@@ -859,8 +857,7 @@ async function unsubscribe(token, id) {
       { new: true }
     );
     return true;
-  } catch (error) {
-    console.log(error);
+  } catch {
     return false;
   }
 }
@@ -928,7 +925,7 @@ async function savealbum(token, albumid) {
 async function removesavealbum(token, albumid) {
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
-    console.log(albumid);
+
     await User.findByIdAndUpdate(decode._id, {
       $pull: {
         saveAlbums: albumid,
@@ -1037,8 +1034,7 @@ async function deletsocial(token, title) {
       status: true,
       msg: "Deleted successfully",
     };
-  } catch (err) {
-    console.log(err);
+  } catch {
     return {
       status: false,
       msg: "Please try again",
@@ -1067,7 +1063,7 @@ async function verifytrack(token, name) {
             request.track,
             request.visibility
           );
-          console.log(res);
+
           await User.findByIdAndUpdate(userId, {
             $push: {
               tracks: {
@@ -1097,8 +1093,7 @@ async function verifytrack(token, name) {
       "accept"
     );
     return true;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -1274,8 +1269,7 @@ async function lastplay(token, value) {
       },
     });
     return true;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -1578,8 +1572,7 @@ async function verifyalbum(token, name) {
     );
 
     return true;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -1652,8 +1645,7 @@ async function deletealbum(token, id) {
       },
     });
     return true;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -1726,7 +1718,6 @@ async function getrequests() {
 }
 
 async function like(token, id) {
-  console.log(id);
   const decode = jwt.verify(token, process.env.REGISTER_JWT);
 
   try {
@@ -1790,8 +1781,7 @@ async function gettracks(type, id) {
       library.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       return library;
     }
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -1869,8 +1859,7 @@ async function changeidtouser(arr, type) {
 
       return arr;
     }
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -1997,8 +1986,7 @@ async function artist(token) {
     );
 
     return library;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -2046,8 +2034,7 @@ async function fullsearch(val) {
     };
 
     return resault;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -2186,8 +2173,7 @@ async function toptracks() {
 
     tracks.sort((a, b) => b.plays - a.plays).slice(0, 30);
     return tracks;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return false;
   }
 }
@@ -2220,7 +2206,7 @@ async function readnotification(token) {
 
     const newdata = await user.save();
     return newdata.notification;
-  } catch  {
+  } catch {
     return false;
   }
 }
@@ -2299,4 +2285,4 @@ module.exports = {
   readnotification,
 };
 
-//TODO check img home loaded
+

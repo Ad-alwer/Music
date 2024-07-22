@@ -572,7 +572,6 @@ input[type="range"] {
   overflow: hidden;
   border-radius: 5px;
   cursor: pointer;
-  /* box-shadow:inset 0 0 5px  rgba(0, 0, 0, 1); */
 }
 
 input[type="range"]::-webkit-slider-thumb {

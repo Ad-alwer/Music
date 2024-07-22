@@ -112,7 +112,6 @@ export default {
         axios.get(`${this.apiaddress}album/topalbum`).then((res) => {
           if (res.data) {
             this.data = res.data;
-
             const monthNames = [
               "January",
               "February",
@@ -129,49 +128,50 @@ export default {
             ];
             const date = new Date();
             let lastMonthNumber = date.getMonth();
-
             this.data.forEach((album) => {
               let view = 0;
               album.tracks.forEach((track) => {
                 const lastmonth =
                   track.monthlyListener[track.monthlyListener.length - 1];
-
                 if (!lastmonth) {
-                  return (album.lastmonth = {
+                  album.lastmonth = {
                     name: monthNames[lastMonthNumber],
                     view: 0,
-                  });
+                  };
+                  return;
                 }
                 const monthnum = lastmonth.date.split(" - ")[1];
                 if (lastMonthNumber === Number(monthnum)) {
-                  view = view + lastmonth.view;
+                  view += lastmonth.view;
                 }
               });
               album.lastmonth = {
                 name: monthNames[lastMonthNumber],
                 view,
               };
-              this.loader = false;
             });
+            this.loader = false; // Move this line outside the forEach loop
           }
         });
       } else {
-        axios.get(`${this.apiaddress}playlist/topplaylist`).then((res) => {
-          if (res.data) {
-            this.data = res.data;
-
-            this.data.forEach((e) => {
-              axios
-                .get(`${this.apiaddress}users/getusername/${e.creator}`)
-                .then((res) => {
-                  if (res.data) {
-                    e.artist = res.data;
+        axios
+          .get(`${this.apiaddress}playlist/topplaylist`)
+          .then(async (res) => {
+            if (res.data) {
+              this.data = res.data;
+              await Promise.all(
+                this.data.map(async (e) => {
+                  const response = await axios.get(
+                    `${this.apiaddress}users/getusername/${e.creator}`
+                  );
+                  if (response.data) {
+                    e.artist = response.data;
                   }
-                });
-            });
-            this.loader = false;
-          }
-        });
+                })
+              );
+              this.loader = false;
+            }
+          });
       }
     },
   },

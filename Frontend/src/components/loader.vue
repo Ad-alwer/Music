@@ -39,8 +39,6 @@ export default {
   justify-content: center;
 
   .popup-inner {
-    /* background-color: white; */
-    
     color: black;
     position: relative;
     padding: 20px;

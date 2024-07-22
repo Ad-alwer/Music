@@ -13,19 +13,8 @@
 </template>
 
 <script>
-//   import axios from "axios";
-import info from "../../../default";
-
 export default {
   name: "verify",
-  beforeMount() {
-    // const code = location.pathname.split("/VP/")[1];
-  },
-  data() {
-    return {
-      apiaddress: info.Api_ADDRESS,
-    };
-  },
   methods: {
     gotohome: function () {
       location.href = "/";

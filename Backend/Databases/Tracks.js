@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
-const schedule = require("node-schedule");
+
 const jwt = require("jsonwebtoken");
 
 const userDB = require("../Databases/Users");
@@ -9,12 +9,7 @@ const albumDB = require("../Databases/Albums");
 const { getusernamebyid } = require("../Databases/Users");
 require("dotenv").config();
 
-mongoose.connect(process.env.DB_ADRESS).then(() => {
-  console.log("conect");
-  schedule.scheduleJob("00 02 * * *", () => {
-    schduletrack();
-  });
-});
+mongoose.connect(process.env.DB_ADRESS);
 
 const musicschema = new mongoose.Schema({
   name: {
@@ -46,29 +41,6 @@ const musicschema = new mongoose.Schema({
 musicschema.plugin(timestamp);
 
 const Track = mongoose.models.Track || mongoose.model("Track", musicschema);
-
-async function schduletrack() {
-  const currentDate = new Date();
-  const year = currentDate.getFullYear();
-  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-  const day = String(currentDate.getDate()).padStart(2, "0");
-  const today = `${year}-${month}-${day}`;
-
-  const pendingtracks = await Track.find({ releaseDate: { $ne: null } });
-  pendingtracks.forEach(async (e) => {
-    const date = new Date(e.createdAt);
-    const extractedDate = date.toISOString().split("T")[0];
-    if (today.getTime() >= extractedDate.getTime()) {
-      await Track.findByIdAndUpdate(e.id, {
-        $set: {
-          status: "public",
-          releaseDate: currentDate,
-          schedule: null,
-        },
-      });
-    }
-  });
-}
 
 async function addtrack(
   name,
@@ -105,10 +77,9 @@ async function addtrack(
 }
 
 async function like(token, id, status) {
-  console.log(token);
   try {
     if (status === "add") {
-      const updatedTrack = await Track.findByIdAndUpdate(
+      await Track.findByIdAndUpdate(
         id,
         {
           $inc: {
@@ -126,11 +97,8 @@ async function like(token, id, status) {
         },
       });
       return true;
-    } else {
-      throw new Error("Invalid status provided");
     }
-  } catch (error) {
-    console.error("Error in like function:", error);
+  } catch {
     return false;
   }
 }
@@ -190,8 +158,7 @@ async function deletetrack(id) {
       msg: "Deleted successfully",
       status: true,
     };
-  } catch (err){
-    console.log(err);
+  } catch {
     return {
       msg: "Please try again",
       status: false,
@@ -286,7 +253,7 @@ async function changealbum(trackid, albumid) {
       msg: "Please try again",
       status: false,
     };
-}
+  }
 }
 
 async function deletedaccounttracks(id) {
@@ -364,11 +331,8 @@ async function toptrack(type) {
   let tracks = await Track.find({});
   let resault;
   if (type === "podcast") {
-    let podcast = tracks.filter((e) => {
-      e.type.toLowerCase() === "podcast";
-    });
+    let podcast = tracks.filter((e) => e.type.toLowerCase() === "podcast");
     podcast.sort((a, b) => b.plays - a.plays);
-
     resault = podcast.slice(0, 20);
   } else {
     let library = tracks.filter((e) => {

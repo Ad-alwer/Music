@@ -198,9 +198,11 @@ export default {
       this.changescrollbytime();
     },
     changescrollbytime: function () {
-      this.$nextTick(() => {
+      const scrollContainer = this.$refs.sliderparent;
+      if(scrollContainer){
+        this.$nextTick(() => {
         this.timeinterval = setInterval(() => {
-          const scrollContainer = this.$refs.sliderparent;
+          
           const computedStyles = window.getComputedStyle(scrollContainer);
           const maxWidth = parseFloat(
             computedStyles.getPropertyValue("max-width")
@@ -223,6 +225,7 @@ export default {
           });
         }, 8000);
       });
+      }
     },
     goto: function (loc) {
       location.href = `${loc}`;

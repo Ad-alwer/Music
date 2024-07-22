@@ -131,7 +131,6 @@ aside.menu {
 }
 aside.player {
   width: 25%;
-  /* background-color: aqua; */
 }
 .loader-parent {
   min-width: 62% !important;

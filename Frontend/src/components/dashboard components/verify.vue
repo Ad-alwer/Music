@@ -119,7 +119,6 @@ export default {
           this.verify = res.data.filter((e) => {
             return e.isverify === true;
           });
-          console.log(this.verify);
           const index = this.verify.findIndex((e) => {
             return e._id == this.user._id;
           });
@@ -137,8 +136,6 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
-
 .table-header th {
   background-color: #4343ef !important;
   color: white;
@@ -172,7 +169,6 @@ tr {
   width: 18px;
   height: 18px;
   border-radius: 18px;
-  /* background-color: rgba(0, 0, 0, 0.25); */
   background: var(--blue-main);
 
   top: 1px;
@@ -211,7 +207,6 @@ input[type="checkbox"]:checked + .switch {
   width: 18px;
   height: 18px;
   border-radius: 18px;
-  /* background-color: rgba(0, 0, 0, 0.25); */
   background: var(--blue-main);
 
   top: 1px;
@@ -243,7 +238,5 @@ input[type="checkbox"]:checked + .switch {
   height: 45px;
   border: 1px solid var(--gray-main);
 }
-img {
-  width: 350px;
-}
+
 </style>

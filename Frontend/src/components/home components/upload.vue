@@ -594,8 +594,7 @@ export default {
         this.tracks.forEach((e) => {
           formData.append("objectKey", e.track);
         });
-        console.log(this.$refs.genreselect.value);
-
+       
         axios
           .post(`${this.apiaddress}upload/album`, formData, {
             headers: {
@@ -652,8 +651,6 @@ export default {
 
 /* Uploader */
 
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
-
 ::selection {
   color: #fff;
   background: var(--blue-main);
@@ -663,7 +660,6 @@ export default {
   background: #fff;
   cursor: pointer;
   border-radius: 5px;
-  /* padding: 30px; */
   box-shadow: 7px 7px 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -672,7 +668,6 @@ export default {
   height: 167px;
   display: flex;
   cursor: pointer;
-  /* margin: 30px 0; */
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -772,8 +767,6 @@ textarea {
 }
 .search-input {
   caret-color: var(--blue-main);
-  /* width: 350px; */
-
   color: var(--gray-main);
 }
 .search-parent {
@@ -808,4 +801,3 @@ textarea {
 }
 </style>
 
-//TODO fix progress

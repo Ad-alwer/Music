@@ -104,5 +104,4 @@ Router.get("/getusertrack", (req, res) => {
   trackDB.getusertrack(req.headers.jwt).then((data) => res.send(data));
 });
 
-
 module.exports = Router;
