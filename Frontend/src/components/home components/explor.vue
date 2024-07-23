@@ -50,7 +50,7 @@
         <Swiper
           class="py-4"
           :modules="modules"
-          :slides-per-view="3"
+          :slides-per-view="responsive ? 2 : 3"
           :space-between="20"
           :scrollbar="{ draggable: true }"
           loop="true"
@@ -93,7 +93,7 @@
         <Swiper
           class="py-4"
           :modules="modules"
-          :slides-per-view="5"
+          :slides-per-view="responsive ? 3 : 5"
           :space-between="20"
           :scrollbar="{ draggable: true }"
           loop="true"
@@ -132,7 +132,7 @@
         <Swiper
           class="py-4"
           :modules="modules"
-          :slides-per-view="5"
+          :slides-per-view="responsive ? 3 : 5"
           :space-between="20"
           :scrollbar="{ draggable: true }"
           loop="true"
@@ -205,6 +205,10 @@ export default {
       }
     });
   },
+  mounted() {
+    this.checkScreenSize();
+    window.addEventListener("resize", this.checkScreenSize);
+  },
   data() {
     return {
       apiaddress: info.Api_ADDRESS,
@@ -217,6 +221,7 @@ export default {
       data: [],
       seemore: null,
       loader: true,
+      responsive: false,
     };
   },
   methods: {
@@ -276,6 +281,9 @@ export default {
     gotoartist: function (username) {
       location.href = `/user/${username}`;
     },
+    checkScreenSize: function () {
+      this.responsive = window.matchMedia("(max-width: 768px)").matches;
+    },
   },
   components: {
     Swiper,
@@ -314,7 +322,6 @@ export default {
   bottom: 2%;
 }
 
-
 .swiper-newmusic-child span {
   font-size: 12px;
 }
@@ -352,5 +359,25 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 140px;
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 66px;
+  }
+
+  .newalbum-img {
+    width: 170px;
+    height: 170px;
+  }
+
+  .newtrack-img {
+    width: 120px;
+    height: 120px;
+  }
+  .seemore {
+    width: 120px;
+    height: 120px;
+  }
 }
 </style>
