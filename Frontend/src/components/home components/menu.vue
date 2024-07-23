@@ -1,6 +1,13 @@
 <template>
   <div id="parent">
-    <ul class="d-flex flex-column justify-content-start mt-3">
+    <ul class="d-flex flex-column justify-content-start mt-1">
+      <li class="menu-close mt-4 mb-3 ps- d-none">
+        <i
+          class="fas fa-solid fa-close text-secondary pointer fs-5"
+          @click="sidemenu"
+        ></i>
+      </li>
+
       <li class="menu-title d-flex justify-content-start">menu</li>
       <li
         @click.prevent="change('discover')"
@@ -339,7 +346,7 @@
 
       <li
         @click.prevent="logout"
-        class="py-2 text-capitalize d-flex justify-content-start align-items-center gap-3 "
+        class="py-2 text-capitalize d-flex justify-content-start align-items-center gap-3"
       >
         <svg
           width="16"
@@ -372,6 +379,9 @@ export default {
     logout: function () {
       location.href = "/login";
     },
+    sidemenu: function () {
+      this.$emit("sidemenu", false);
+    },
   },
   props: ["component"],
 };
@@ -383,7 +393,6 @@ li {
 }
 #parent {
   overflow: hidden;
-  
 }
 .menu-title {
   margin-top: 2%;
@@ -420,5 +429,25 @@ a {
 }
 li {
   align-items: center !important;
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    min-height: 100vh;
+  }
+  ul {
+    padding-left: 0rem;
+    background: white;
+  }
+  li {
+    margin-left: 15%;
+    padding: 5px 0px !important;
+  }
+  .menu-title {
+    margin-top: 1% !important;
+  }
+  .menu-close {
+    display: flex !important;
+  }
 }
 </style>

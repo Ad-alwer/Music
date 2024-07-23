@@ -1,11 +1,11 @@
 <template>
   <div id="parent ">
-    <header class="d-flex align-items-center gap-1 mt-3">
-      <hmheader />
+    <header class="d-flex align-items-center gap-1 mt-3"  >
+      <hmheader  @sidemenu="sidemenu"/>
     </header>
     <main class="d-flex">
-      <aside class="menu">
-        <dashmenu :component="component" @change="change" />
+      <aside class="menu" ref="aside">
+        <dashmenu :component="component" @change="change" @sidemenu="sidemenu" />
       </aside>
       <section class="content">
         <users v-if="component == 'users'" :user="user" />
@@ -100,6 +100,10 @@ export default {
           this.user = res.data;
         });
     },
+    sidemenu: function (e) {
+      console.log('e');
+      this.$refs.aside.classList.toggle("d-block", e);
+    },
   },
   components: {
     hmheader,
@@ -132,10 +136,30 @@ aside.menu {
 aside.player {
   width: 25%;
 }
-.loader-parent {
-  min-width: 62% !important;
-  min-height: 91vh !important;
-  background-color: black !important;
-  overflow: hidden !important;
+
+
+@media screen and (max-width: 767px) {
+  aside.menu {
+    display: none;
+    position: absolute;
+    top: 0;
+    width: 180px;
+    min-height: 100vh !important;
+    background: white;
+    z-index: 500;
+  }
+  aside.player{
+    position: absolute;
+    bottom: 0;
+    width: 100vw;
+    height: 65px;
+    z-index: 500;
+    background: white;
+    
+
+  }
+  .content{
+    width: 100%;
+  }
 }
 </style>

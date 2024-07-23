@@ -1,11 +1,20 @@
 <template>
   <div id="parent ">
     <header class="d-flex align-items-center gap-1 mt-3">
-      <hmheader :reload="reloadheader" @changecomponent="changecomponent" />
+      <hmheader
+      class="header"
+        :reload="reloadheader"
+        @changecomponent="changecomponent"
+        @sidemenu="sidemenu"
+      />
     </header>
     <main class="d-flex">
-      <aside class="menu">
-        <hmmenu @change="changecomponent" :component="component" />
+      <aside class="menu" ref="aside">
+        <hmmenu
+          @change="changecomponent"
+          :component="component"
+          @sidemenu="sidemenu"
+        />
       </aside>
       <section class="content">
         <discover v-if="component == 'discover'" class="active" />
@@ -206,6 +215,9 @@ export default {
     changelibrarysaveandlike: function (x) {
       this.librarycheck = x;
     },
+    sidemenu: function (e) {
+      this.$refs.aside.classList.toggle("d-block", e);
+    },
   },
   components: {
     hmheader,
@@ -249,5 +261,30 @@ aside.menu {
 }
 aside.player {
   width: 25%;
+}
+
+@media screen and (max-width: 767px) {
+  aside.menu {
+    display: none;
+    position: absolute;
+    top: 0;
+    width: 180px;
+    min-height: 100vh !important;
+    background: white;
+    z-index: 500;
+  }
+  aside.player{
+    position: absolute;
+    bottom: 0;
+    width: 100vw;
+    height: 65px;
+    z-index: 500;
+    background: white;
+    
+
+  }
+  .content{
+    width: 100%;
+  }
 }
 </style>

@@ -3,23 +3,25 @@
     <loader v-if="loader" />
     <section v-else class="">
       <section v-show="!show.lyricsshow">
-        <div class="d-flex flex-column align-items-center px-4">
+        <div class="d-flex flex-column align-items-center px-4 parent-box">
           <h4 class="text-center text-uppercase fw-semibold">now playing</h4>
           <img
             class="tumbnail rounded-4 img-fluid mt-1"
             :src="show.img"
             alt=""
           />
-          <span
-            class="text-capitalize color-dark mt-2 fs-5 fw-semibold"
-            ref="name"
-            >{{ show.name }}</span
-          >
-          <span
-            v-if="show.artist"
-            class="text-capitalize color-gray artistname pointer"
-            >{{ show.artist }}</span
-          >
+          <div class="d-flex flex-column text-box">
+            <span
+              class="text-capitalize color-dark mt-2 fs-5 fw-semibold trackname"
+              ref="name"
+              >{{ show.name }}</span
+            >
+            <span
+              v-if="show.artist"
+              class="text-capitalize color-gray artistname pointer"
+              >{{ show.artist }}</span
+            >
+          </div>
           <div class="w-100 timeline">
             <audio
               :src="show.audio"
@@ -40,8 +42,10 @@
               @change="timechange"
             />
           </div>
-          <div class="d-flex justify-content-between w-100">
+          <div class="d-flex justify-content-between w-100 dutraion-box">
             <span class="color-gray">{{ converttime(show.currentTime) }}</span>
+            <span class="color-gray px-1 d-none duration-slash">/</span>
+
             <span class="color-gray">{{ converttime(show.duration) }}</span>
           </div>
           <div class="d-flex align-items-center gap-5 mt-1">
@@ -65,7 +69,7 @@
                 alt=""
               />
             </div>
-            <div class="d-flex align-items-center gap-4">
+            <div class="d-flex align-items-center gap-4 playicon-box">
               <svg
                 width="13"
                 height="18"
@@ -150,7 +154,7 @@
             </div>
           </div>
           <div
-            class="mt-3 d-flex justify-content-center align-items-center flex-column gap-2 pointer"
+            class="mt-3 d-flex justify-content-center align-items-center flex-column gap-2 pointer lyric-box"
             @click="show.lyric ? (show.lyricsshow = true) : null"
           >
             <svg
@@ -169,6 +173,52 @@
             <p class="text-capitalize color-gray tex-center fw-semibold">
               lyrics
             </p>
+          </div>
+
+          <div
+            class="responsive-icons d-none align-items-center justify-content-center ms-5 ps-1"
+          >
+            <div class="pointer like-imgs">
+              <img
+                class="pointer opacity-25"
+                v-if="show.artist.toLowerCase() === user.username.toLowerCase()"
+                src="../../assets/icons/like.png"
+                alt=""
+              />
+              <img
+                v-else-if="show.liked"
+                src="../../assets/icons/like.png"
+                @click="like"
+                alt=""
+              />
+              <img
+                v-else
+                src="../../assets/icons/unlike.png"
+                @click="like"
+                alt=""
+              />
+            </div>
+            <div class="pointer bookmark-imgs">
+              <img
+                class="pointer opacity-25"
+                v-if="show.artist.toLowerCase() === user.username.toLowerCase()"
+                src="../../assets/icons/bookmark.png"
+                alt=""
+              />
+              <img
+                v-else-if="show.booked"
+                src="../../assets/icons/bookmark.png"
+                @click="booked"
+                alt=""
+              />
+              <img
+                v-else
+                src="../../assets/icons/unbookmark.png"
+                @click="booked"
+                alt=""
+              />
+            </div>
+            <div></div>
           </div>
         </div>
       </section>
@@ -244,7 +294,7 @@ export default {
       music: [],
       library: [],
       loader: true,
-      imgload:false
+      imgload: false,
     };
   },
   watch: {
@@ -614,5 +664,77 @@ input[type="range"]::-webkit-slider-thumb {
 .closer {
   transform: rotate(180deg);
   cursor: pointer;
+}
+
+@media screen and (max-width: 767px) {
+  h4,
+  .input-range,
+  .lyric-box,
+  .like-imgs,
+  .bookmark-imgs,
+  .timeline {
+    display: none !important;
+  }
+  .parent-box {
+    display: flex;
+    flex-direction: row !important;
+    /* background: red; */
+    background: white;
+    margin-top: 0 !important;
+    padding: 5px !important;
+    padding-left: 8px !important;
+
+    flex-wrap: nowrap !important;
+    margin-top: -5px !important;
+    gap: 10px !important;
+  }
+  .tumbnail {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px !important;
+  }
+  .text-box {
+    position: relative;
+    top: -2px;
+  }
+  .trackname {
+    font-size: 18px !important;
+  }
+  .artistname {
+    font-size: 14px !important;
+    margin-top: -3px;
+  }
+  .dutraion-box {
+    font-size: 14px;
+    margin-left: 5%;
+    width: 90px !important;
+  }
+  .duration-slash {
+    display: block !important;
+  }
+  .playicon-box {
+    margin-left: 30%;
+    scale: 0.7;
+  }
+
+  .backandskip {
+    scale: 1.2;
+  }
+
+  .responsive-icons {
+    display: flex !important;
+    scale: 0.9;
+
+    gap: 8px;
+  }
+
+  .responsive-icons .like-imgs,
+  .responsive-icons .bookmark-imgs {
+    display: block !important;
+  }
+}
+
+.responsive-icons .like-imgs {
+  margin-top: 5px !important;
 }
 </style>

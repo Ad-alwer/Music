@@ -28,7 +28,7 @@
           alt=""
         />
         <a
-          class="text-capitalize fw-semibold text-decoration-none fs-5 color-black trim"
+          class="text-capitalize fw-semibold text-decoration-none fs-5 color-black trim "
           >{{ x.text }}</a
         >
       </div>
@@ -141,5 +141,31 @@ img {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 260px;
+}
+
+@media screen and (max-width: 767px) {
+  #popup {
+    z-index: 500;
+  }
+  .popup-inner {
+    right: -18%;
+    top: -30%;
+  }
+  li {
+    gap: 8px !important;
+  }
+  .notification-child {
+    gap: 8px !important;
+  }
+  img {
+    width: 18px;
+  }
+  .trim {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+  font-size: 13px !important;
+}
 }
 </style>

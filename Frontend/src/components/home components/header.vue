@@ -1,6 +1,6 @@
 <template>
   <nav class="d-flex align-items-center">
-    <div class="div-icon d-flex justify-content-center align-items-center">
+    <div class="div-icon  d-flex justify-content-center align-items-center">
       <svg
         width="131"
         height="25"
@@ -23,7 +23,7 @@
     <div
       class="div-main d-flex ms-3 align-items-center justify-content-between me-4"
     >
-      <div class="d-flex justify-content-center gap-4">
+      <div class="d-flex justify-content-center gap-4 quick-access">
         <span
           class="text-capitalize pointer links position-relative"
           @click="goto('/explore#music')"
@@ -40,7 +40,9 @@
           >Album</span
         >
       </div>
-
+      <div class="iconbar d-none ms-3" @click="sidemenu">
+        <i class="fa-solid fa-bars text-secondary pointer"></i>
+      </div>
       <div
         class="search-parent d-flex rounded-3 px-2 py-1 justify-content-between mt-1 ms-3 align-items-center"
       >
@@ -81,7 +83,7 @@
         viewBox="0 0 20 18"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        class="pointer"
+        class="pointer like-svg"
       >
         <path
           d="M5.5 1C3.0151 1 1 2.98817 1 5.44107C1 7.42116 1.7875 12.1206 9.5392 16.8712C9.67805 16.9555 9.83746 17 10 17C10.1625 17 10.3219 16.9555 10.4608 16.8712C18.2125 12.1206 19 7.42116 19 5.44107C19 2.98817 16.9849 1 14.5 1C12.0151 1 10 3.69156 10 3.69156C10 3.69156 7.9849 1 5.5 1Z"
@@ -91,12 +93,13 @@
           stroke-linejoin="round"
         />
       </svg>
-      <div>
+      <div class="position-relative">
         <notificationpopup
           @changecomponent="changecomponent"
           @read="changeread"
           @close="popups.notifacation = false"
           v-show="popups.notifacation"
+         
         />
 
         <svg
@@ -151,11 +154,12 @@
           <circle cx="16" cy="3" r="3" fill="#4343EF" />
         </svg>
       </div>
-      <div class="d-flex gap-2 ms-2 align-items-center">
+      <div class="d-flex gap-2 ms-2 align-items-center ">
         <profilepopup
           v-if="popups.profile"
           :admin="user.isadmin"
           @close="popups.profile = false"
+          class="profilepopup"
         />
         <img
           v-if="user.profile"
@@ -169,7 +173,9 @@
           src="../../assets/img/icon.jpg"
           alt=""
         />
-        <span class="text-capitalize fw-bold">{{ user.username }}</span>
+        <span class="text-capitalize fw-bold username">{{
+          user.username
+        }}</span>
         <svg
           class="pointer"
           @click="popups.profile = true"
@@ -240,7 +246,10 @@ export default {
       this.$emit("changecomponent", e);
     },
     changeread: function (e) {
-     this.unreadnofification = e
+      this.unreadnofification = e;
+    },
+    sidemenu: function () {
+      this.$emit("sidemenu", true);
     },
   },
   beforeMount() {
@@ -312,5 +321,25 @@ export default {
 img {
   width: 45px;
   height: 45px;
+}
+
+@media screen and (max-width: 767px) {
+  .quick-access,
+  .search-parent,
+  .div-icon,
+  .username,
+  .like-svg {
+    display: none !important;
+  }
+  .div-main {
+    display: flex;
+    justify-content: start;
+  }
+  .iconbar {
+    display: block !important;
+  }
+ 
+
+  
 }
 </style>

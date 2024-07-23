@@ -1,6 +1,6 @@
 <template>
   <div id="parent" class="d-flex flex-column mt-1">
-    <section v-if="!laoder" class="px-3">
+    <section v-if="!laoder" class="px-3 top-tracks">
       <div class="d-flex justify-content-between align-items-center">
         <span class="text-uppercase color-black fs-5 fw-semibold">Top tracks </span>
         <span class="text-capitalize color-gray pointer fw-semibold" @click="gototoptracks">More List</span>
@@ -173,4 +173,11 @@ export default {
 .duration-box {
   width: 80px;
 }
+
+@media screen and (max-width: 767px) {
+  .top-tracks,hr{
+    display: none !important;
+  }
+}
+
 </style>

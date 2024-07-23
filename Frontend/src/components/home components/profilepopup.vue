@@ -183,5 +183,17 @@ svg {
   height: 16px;
 }
 
-
+@media screen and (max-width: 767px) {
+  #popup {
+    z-index: 500;
+  }
+  .popup-inner {
+    right: -30%;
+    top: -25%;
+  }
+  li {
+    gap: 8px !important;
+  }
+ 
+}
 </style>
