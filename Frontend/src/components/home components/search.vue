@@ -7,7 +7,7 @@
         <input
           type="text"
           class="search-input"
-          maxlength="69"
+          maxlength="36"
           placeholder="Search ..."
           ref="searchinp"
         />
@@ -37,7 +37,7 @@
       ></i>
       <div
         v-if="seemore.val.length > 0"
-        class="d-flex align-items-center flex-wrap gap-3 mt-2"
+        class="d-flex align-items-center gap-3 flex-wrap gap-3 mt-2"
       >
         <div
           v-for="(x, i) in seemore.val"
@@ -60,10 +60,12 @@
             "
             alt=""
           />
-          <p class="text-center text-capitalize fw-semibold pointer">
+          <p class="text-center text-capitalize fw-semibold pointer ">
             {{ x.username ? x.username : x.name }}
           </p>
         </div>
+        
+        
       </div>
       <div v-else class="d-flex justify-content-center align-items-center">
         <img src="../../assets/img/empty.png" class="img-fluid" alt="" />
@@ -91,7 +93,7 @@
         <Swiper
           class="py-4"
           :modules="modules"
-          :slides-per-view="8"
+          :slides-per-view="responsive ? 5 : 8"
           :space-between="20"
           :scrollbar="{ draggable: true }"
           loop="true"
@@ -113,8 +115,9 @@
               class="img-thumbnail swiper-img rounded-circle user-img"
               alt=""
             />
-            <p class="color-black">{{ x.username }}</p>
+            <p class="color-black trim-text">{{ x.username }}</p>
           </swiper-slide>
+          
         </Swiper>
       </div>
       <div v-if="data.tracks.length > 0">
@@ -129,7 +132,7 @@
         <Swiper
           class="py-4"
           :modules="modules"
-          :slides-per-view="6"
+          :slides-per-view="responsive ? 3 : 6"
           :space-between="20"
           :scrollbar="{ draggable: true }"
           loop="true"
@@ -166,7 +169,7 @@
         <Swiper
           class="py-4"
           :modules="modules"
-          :slides-per-view="5"
+          :slides-per-view="responsive ? 3 : 5"
           :space-between="20"
           :scrollbar="{ draggable: true }"
           loop="true"
@@ -276,6 +279,10 @@ export default {
       this.search(search);
     }
   },
+  mounted() {
+    this.checkScreenSize();
+    window.addEventListener("resize", this.checkScreenSize);
+  },
   methods: {
     search: function (value) {
       if (value) {
@@ -351,6 +358,9 @@ export default {
           )
         : this.play(this.seemore.val[index]._id);
     },
+    checkScreenSize: function () {
+      this.responsive = window.matchMedia("(max-width: 768px)").matches;
+    },
   },
   data() {
     return {
@@ -363,6 +373,7 @@ export default {
       data: null,
       loader: false,
       seemore: null,
+      responsive: false,
     };
   },
   components: {
@@ -449,5 +460,57 @@ export default {
 .seemore-profile {
   width: 90px;
   height: 90px;
+}
+.trim-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 66px;
+    padding: 0 24px !important;
+  }
+
+  .search-parent {
+    width: 450px;
+    height: 35px;
+    padding: 10px 5px !important;
+  }
+  .search-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .user-img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .trim-text{
+  max-width: 80px;
+  font-size: 14px !important;
+
+  }
+
+  .swiper-members-child:first-child{
+    margin-left: 7px !important;
+  }
+
+  .albumandplaylist-img {
+  width: 120px;
+  height: 120px;
+}
+.seemore {
+  width: 120px;
+  height: 120px;
+}
+
+.seemore-profile {
+  width: 60px;
+  height: 60px;
+}
 }
 </style>
