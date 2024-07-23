@@ -11,7 +11,6 @@
             class="slider-img rounded-4 img-fluid w-100"
             :src="x.banner.url"
             alt=""
-            @load="imageLoaded"
           />
         </div>
 
@@ -33,7 +32,7 @@
         <Swiper
           class="py-4"
           :modules="modules"
-          :slides-per-view="8"
+          :slides-per-view="responsive ? 5 : 8"
           :space-between="20"
           :scrollbar="{ draggable: true }"
           loop="true"
@@ -52,17 +51,17 @@
               :src="
                 x.profile ? x.profile : require('../../assets/img/icon.jpg')
               "
-              class="img-thumbnail img-users swiper-img rounded-circle"
+              class="img-thumbnail img-users rounded-circle"
               alt=""
             />
-            <p class="color-black text-capitalize fw-semibold">
+            <p class="color-black text-capitalize fw-semibold trim-text">
               {{ x.username }}
             </p>
           </swiper-slide>
         </Swiper>
       </div>
-      <div class="d-flex gap-5 w-100 mt-3">
-        <div class="w-50" v-if="data.topplaylists.length">
+      <div class="d-flex gap-5 w-100 mt-3 togenreandtopplaylists-parent">
+        <div class="w-50 topcollactions-parent" v-if="data.topplaylists.length">
           <div
             class="mt-4 topcollactions d-flex align-items-center justify-content-between ps-4"
           >
@@ -70,7 +69,33 @@
               >Top Playlist</span
             >
           </div>
-          <div class="mt-4 d-flex gap-4 px-5">
+          <div class="mt-4 d-flex justify-content-between">
+            <div
+              class="col-4 d-flex flex-column align-items-center pointer"
+              v-for="x in data.topplaylists.slice(0, 3)"
+              :key="x"
+              @click="gotoplaylist(x.name, x.creator)"
+            >
+              <img
+                :src="x.cover.url"
+                class="w-100 img-topcollactions rounded-4"
+                alt=""
+              />
+              <span class="text-center fw-bold">{{ x.name }}</span>
+            </div>
+            <div
+              class="col-4 d-flex flex-column align-items-center pointer"
+              v-for="x in data.topplaylists.slice(0, 3)"
+              :key="x"
+              @click="gotoplaylist(x.name, x.creator)"
+            >
+              <img
+                :src="x.cover.url"
+                class="w-100 img-topcollactions rounded-4"
+                alt=""
+              />
+              <span class="text-center fw-bold">{{ x.name }}</span>
+            </div>
             <div
               class="col-4 d-flex flex-column align-items-center pointer"
               v-for="x in data.topplaylists.slice(0, 3)"
@@ -86,7 +111,7 @@
             </div>
           </div>
         </div>
-        <div class="w-50">
+        <div class="w-50 topgenre-parent">
           <div
             class="mt-4 topcollactions d-flex justify-content-between align-items-center"
           >
@@ -148,6 +173,8 @@ export default {
   },
   mounted() {
     this.totalImages = this.banner.length;
+    this.checkScreenSize();
+    window.addEventListener("resize", this.checkScreenSize);
   },
 
   data() {
@@ -164,8 +191,6 @@ export default {
       responsive: false,
       banner: [],
       timeinterval: null,
-      loadedImages: 0,
-      totalImages: 0,
     };
   },
   methods: {
@@ -187,53 +212,68 @@ export default {
     },
     changesliderbyclick(i) {
       const scrollContainer = this.$refs.sliderparent;
-      const computedStyles = window.getComputedStyle(scrollContainer);
-      const maxWidth = parseFloat(computedStyles.getPropertyValue("max-width"));
+      const containerWidth = scrollContainer.clientWidth;
+
+      const slideWidth = containerWidth + 8;
 
       scrollContainer.scrollTo({
-        left: i * maxWidth - 20,
+        left: i * slideWidth,
         behavior: "smooth",
       });
+
       clearInterval(this.timeinterval);
       this.changescrollbytime();
     },
     changescrollbytime: function () {
-      const scrollContainer = this.$refs.sliderparent;
-      if(scrollContainer){
-        this.$nextTick(() => {
+      this.$nextTick(() => {
         this.timeinterval = setInterval(() => {
-          
-          const computedStyles = window.getComputedStyle(scrollContainer);
-          const maxWidth = parseFloat(
-            computedStyles.getPropertyValue("max-width")
-          );
-          const totalSlides = this.banner.length;
-          const currentSlideIndex = Math.round(
-            scrollContainer.scrollLeft / maxWidth
-          );
+          const scrollContainer = this.$refs.sliderparent;
+          if (scrollContainer instanceof Element) {
+            const containerWidth = scrollContainer.clientWidth;
+            const slideWidth = containerWidth + 8;
 
-          let nextLocation;
-          if (currentSlideIndex === totalSlides - 1) {
-            nextLocation = 0;
-          } else {
-            nextLocation = currentSlideIndex + 1;
+            const totalSlides = this.banner.length;
+            const currentSlideIndex = Math.round(
+              scrollContainer.scrollLeft / slideWidth
+            );
+            let nextLocation;
+
+            if (currentSlideIndex === totalSlides - 1) {
+              nextLocation = 0;
+            } else {
+              nextLocation = currentSlideIndex + 1;
+            }
+
+            scrollContainer.scrollTo({
+              left: nextLocation * slideWidth,
+              behavior: "smooth",
+            });
           }
-
-          scrollContainer.scrollTo({
-            left: nextLocation * maxWidth - 20,
-            behavior: "smooth",
-          });
         }, 8000);
       });
-      }
     },
+
     goto: function (loc) {
       location.href = `${loc}`;
     },
-    imageLoaded: function () {
-      this.loadedImages++;
-      if (this.banner.length > 0 && this.loadedImages === this.totalImages) {
-        this.loader = false;
+    checkScreenSize: function () {
+      clearInterval(this.timeinterval);
+
+      this.responsive = window.matchMedia("(max-width: 768px)").matches;
+      if (this.responsive) {
+        this.banner = this.data.resbanner;
+      } else {
+        this.banner = this.data.banner;
+      }
+      const scrollContainer = this.$refs.sliderparent;
+      if (scrollContainer) {
+        this.$nextTick(() => {
+          scrollContainer.scrollTo({
+            left: 0,
+            behavior: "smooth",
+          });
+          this.changescrollbytime();
+        });
       }
     },
   },
@@ -286,7 +326,7 @@ export default {
   cursor: pointer;
 }
 .parent-box {
-  z-index: 999;
+  z-index: 100;
   position: absolute;
   top: 0;
   right: 8%;
@@ -298,7 +338,7 @@ export default {
   justify-content: center;
 }
 .circle-box {
-  z-index: 999;
+  z-index: 100;
   width: 10px;
   height: 10px;
   background-color: #d0d0fb;
@@ -325,6 +365,7 @@ export default {
 
 .img-topcollactions {
   height: 115px !important;
+  width: 115px !important;
   position: relative;
 }
 
@@ -339,5 +380,54 @@ export default {
 .img-parent::-webkit-scrollbar-thumb {
   background-color: transparent;
   border-radius: 10px;
+}
+
+.trim-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+
+@media screen and (max-width: 767px) {
+  .slider {
+    padding: 2px 8px !important;
+    margin: 0 !important;
+  }
+  .parent-box {
+    right: 6%;
+  }
+  .topartists {
+    margin-top: 10px !important;
+  }
+
+  .topartists img {
+    width: 60px;
+    height: 60px;
+  }
+  .topartists p {
+    font-size: 16px !important;
+  }
+  .topartists .swiper-child {
+    margin-left: 5px !important ;
+  }
+  .trim-text {
+    max-width: 90px;
+  }
+  .togenreandtopplaylists-parent {
+    flex-direction: column !important;
+  }
+
+  .topcollactions-parent,
+  .topgenre-parent {
+    width: 100% !important;
+  }
+  .topgenre-parent span {
+    margin-left: 24px;
+  }
+
+  #parent {
+    margin-bottom: 66px;
+  }
 }
 </style>

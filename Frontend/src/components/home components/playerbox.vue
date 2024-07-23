@@ -687,6 +687,7 @@ input[type="range"]::-webkit-slider-thumb {
     flex-wrap: nowrap !important;
     margin-top: -5px !important;
     gap: 10px !important;
+    justify-content: space-between;
   }
   .tumbnail {
     width: 50px;
