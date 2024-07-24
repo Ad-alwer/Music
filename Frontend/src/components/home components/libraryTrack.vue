@@ -23,12 +23,12 @@
               <div class="d-flex flex-column text-div gap-2">
                 <span
                   @click="play(x._id)"
-                  class="text-capitalize color-black fw-bold fs-5 pointer"
+                  class="text-capitalize color-black fw-bold fs-5 pointer trackname"
                   >{{ x.name }}</span
                 >
                 <span
                   @click="gotouser(x.artist.username)"
-                  class="text-capitalize color-gray pointer"
+                  class="text-capitalize color-gray pointer uswername"
                   >{{ x.artist.username }}</span
                 >
               </div>
@@ -37,7 +37,7 @@
               }}</span>
               <div>
                 <img
-                  class="pointer opacity-25"
+                  class="pointer opacity-25 img-like"
                   v-if="
                     x.artist.username.toLowerCase() ===
                     user.username.toLowerCase()
@@ -46,14 +46,14 @@
                   alt=""
                 />
                 <img
-                  class="pointer"
+                  class="pointer img-like"
                   v-else-if="x.checklike"
                   src="../../assets/icons/like.png"
                   alt=""
                   @click="like(x.checklike, x._id)"
                 />
                 <img
-                  class="pointer"
+                  class="pointer img-like"
                   v-else
                   src="../../assets/icons/unlike.png"
                   alt=""
@@ -81,7 +81,7 @@
                 </li>
 
                 <li
-                v-if="
+                  v-if="
                     x.artist.username.toLowerCase() ===
                     user.username.toLowerCase()
                   "
@@ -91,7 +91,7 @@
                   Unsave
                 </li>
                 <li
-                v-if="
+                  v-if="
                     x.artist.username.toLowerCase() ===
                     user.username.toLowerCase()
                   "
@@ -335,8 +335,8 @@ export default {
 
 .more-list {
   position: absolute;
-  right: 120px;
-  top: 60px;
+  right: 3%;
+  top: 75%;
   z-index: 5;
   border: 2px solid var(--blue-main);
 }
@@ -345,5 +345,36 @@ export default {
   border-bottom: 2px solid var(--blue-main);
   margin-left: -30px;
   cursor: pointer;
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 66px;
+  }
+  .tumbnail {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px !important;
+  }
+  .trackname {
+    font-size: 17px !important;
+  }
+  .username {
+    font-size: 14px;
+  }
+  .img-like {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  .more {
+    width: 40px !important;
+    height: 40 !important;
+  }
+ 
+
+  .li-child {
+    border-bottom: 1px solid var(--blue-main);
+    font-size: 14px !important;
+  }
 }
 </style>
