@@ -1,5 +1,5 @@
 <template>
-  <div id="parent" class="container mt-5 px-3 position-relative">
+  <div id="parent" class="mt-5 px-3 position-relative">
     <loader v-if="loader" />
     <section v-else>
       <div class="d-flex justify-content-between p">
@@ -25,21 +25,22 @@
                 class="img-profile rounded-circle"
                 alt=""
               />
-              <span class="color-black fw-semibold text-capitalize fs-5">{{
-                x.username
-              }}</span>
+              <span
+                class="color-black fw-semibold text-capitalize fs-5 username"
+                >{{ x.username }}</span
+              >
             </div>
           </div>
         </section>
-        <div class="d-flex flex-column">
+        <div class="d-flex flex-column showdetail">
           <div class="d-flex flex-column align-items-start">
             <p
               @click="gotoartist(data[select].username)"
-              class="fw-bold fs-5 color-black text-capitalize mb-1 pointer"
+              class="fw-bold fs-5 color-black text-capitalize mb-1 pointer username"
             >
               {{ data[select].username }}
             </p>
-            <span class="color-gray text-capitalize"
+            <span class="color-gray text-capitalize track-detail"
               >{{ data[select].albums.length }} Albums ,
               {{ data[select].tracklibrary.length }} Tracks</span
             >
@@ -65,14 +66,14 @@
             </div>
           </div>
           <div
-            class="d-flex justify-content-center align-items-center  pt-3 "
+            class="d-flex justify-content-center align-items-center pt-3"
             v-else
           >
             <img src="../../assets/img/empty.png" alt="" />
           </div>
           <p
             @click="gotoartist(data[select].username)"
-            class="text-center color-blue pointer fw-bold mt-2 text-capitalize"
+            class="text-center color-blue pointer fw-bold mt-2 text-capitalize username"
           >
             See More by {{ data[select].username }}
           </p>
@@ -192,16 +193,14 @@ export default {
   width: 60px;
   height: 60px;
 }
-.artist-box {
-  width: 22vw;
+.artist-body{
+  width: 40%;
 }
 .img-detail {
   width: 140px;
   height: 140px;
 }
-.tracks-parent {
-  width: 480px;
-}
+
 
 .artist-body {
   height: 600px;
@@ -211,5 +210,29 @@ export default {
 .selected {
   border-right: 4px solid var(--blue-main);
   border-radius: 2px;
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin: 10px 20px !important;
+    margin-bottom: 68px;
+  }
+
+  .img-profile {
+    width: 30px;
+    height: 30px;
+  }
+
+  .username {
+    font-size: 16px !important;
+  }
+  .track-detail {
+    font-size: 14px !important;
+    margin-top: -5px !important;
+  }
+  .img-detail {
+    width: 120px;
+    height: 120px;
+  }
 }
 </style>
