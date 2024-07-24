@@ -9,7 +9,7 @@
           >
         </div>
         <div v-if="data.length > 0">
-          <div>
+          <div class="track-parent">
             <div
               v-for="(x, i) in data"
               :key="x._id"
@@ -28,7 +28,7 @@
                 >
                 <span
                   @click="gotouser(x.artist.username)"
-                  class="text-capitalize color-gray pointer uswername"
+                  class="text-capitalize color-gray pointer username"
                   >{{ x.artist.username }}</span
                 >
               </div>
@@ -346,6 +346,11 @@ export default {
   margin-left: -30px;
   cursor: pointer;
 }
+.track-parent {
+  padding-bottom: 20% !important;
+  height: 80vh;
+  overflow-y: auto;
+}
 
 @media screen and (max-width: 767px) {
   #parent {
@@ -360,7 +365,7 @@ export default {
     font-size: 17px !important;
   }
   .username {
-    font-size: 14px;
+    margin-top: -12px;
   }
   .img-like {
     width: 20px !important;
@@ -370,11 +375,14 @@ export default {
     width: 40px !important;
     height: 40 !important;
   }
- 
 
   .li-child {
     border-bottom: 1px solid var(--blue-main);
     font-size: 14px !important;
+  }
+
+  .track-parent {
+    padding-bottom: 26% !important;
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div id="parent" class="container mt-5 px-3 position-relative">
-    <loader v-if="loader"/>
+    <loader v-if="loader" />
     <section v-else>
       <div>
         <div class="d-flex justify-content-between p">
@@ -10,12 +10,12 @@
         </div>
         <div
           v-if="data.length > 0"
-          class="d-flex justify-content-start mt-4 gap-3 flex-wrap"
+          class="d-flex justify-content-start mt-4 gap-3 flex-wrap album-parent ps-3"
         >
           <div
             v-for="x in data"
             :key="x._id"
-            class="track-body position-relative"
+            class="track-body position-relative mb-4"
           >
             <img
               :src="x.cover.url"
@@ -28,13 +28,526 @@
             >
               <p
                 @click="play(x._id)"
-                class="text-capitalize color-black fw-bold fs-5 pointer"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
               >
                 {{ x.name }}
               </p>
               <span
                 @click="gototracklist(x.tracks[0].artistid, x.name)"
-                class="text-capitalize color-gray pointer"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
+                >{{ x.tracks.length }} Tracks</span
+              >
+            </div>
+          </div>
+          <div
+            v-for="x in data"
+            :key="x._id"
+            class="track-body position-relative mb-4"
+          >
+            <img
+              :src="x.cover.url"
+              class="img-fluid rounded-4 tumbnail"
+              alt=""
+            />
+
+            <div
+              class="track-body-text-parent d-flex flex-column justify-content-center align-items-center"
+            >
+              <p
+                @click="play(x._id)"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
+              >
+                {{ x.name }}
+              </p>
+              <span
+                @click="gototracklist(x.tracks[0].artistid, x.name)"
+                class="text-capitalize color-gray pointer tracklenght"
                 >{{ x.tracks.length }} Tracks</span
               >
             </div>
@@ -110,7 +623,7 @@ export default {
         });
     },
   },
-  components: {loader},
+  components: { loader },
 };
 </script>
 
@@ -139,23 +652,43 @@ export default {
   text-transform: capitalize;
 }
 
-.pagination {
-  position: absolute;
-  bottom: 0%;
-  display: flex;
-  justify-content: center;
-}
-
-.tracklist li {
-  position: relative;
-  left: -32px;
-  width: 160px !important;
-}
-.track-body:hover .tracklist {
-  opacity: 0.9;
-}
 .tumbnail {
   width: 150px;
   height: 150px;
+}
+
+.album-parent {
+  height: 60vh;
+  overflow-y: auto;
+}
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 68px;
+    margin: 20px 60px !important;
+    padding: 0 !important;
+  }
+  .album-parent {
+    overflow-y: auto;
+    padding: 0 !important;
+    gap: 8px !important;
+  }
+  .tumbnail {
+    width: 120px;
+    height: 120px;
+  }
+  .track-body {
+    height: 170px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: -10px !important;
+  }
+
+  .trackname {
+    font-size: 17px !important;
+  }
+  .tracklenght {
+    margin-top: -3px;
+  }
 }
 </style>
