@@ -1,7 +1,7 @@
 <template>
   <div id="parent" class="container mt-5 px-3 position-relative">
     <loader v-if="loader" />
-    <section v-else >
+    <section v-else>
       <div>
         <div class="d-flex justify-content-between p">
           <span class="text-uppercase color-blue fw-semibold fs-5"
@@ -10,7 +10,7 @@
         </div>
         <div
           v-if="data.length > 0"
-          class="d-flex justify-content-start mt-4 gap-3 flex-wrap"
+          class="d-flex justify-content-start mt-2 gap-3 flex-wrap playlists-parent pb-3"
         >
           <div
             v-for="x in data"
@@ -116,8 +116,8 @@ export default {
 }
 .track-body {
   position: relative;
-  width: 180px;
-  height: 180px;
+  width: 170px;
+  height: 170px;
 }
 .pagination {
   position: absolute;
@@ -150,13 +150,32 @@ export default {
 }
 
 .tumbnail {
-  width: 180px;
-  height: 180px;
+  width: 170px;
+  height: 170px;
 }
 
 .info-box {
   width: 120px;
 }
+.playlists-parent {
+  height: 75vh;
+  overflow-y: auto;
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 68px;
+    padding: 0 !important;
+  }
+  .tumbnail,
+  .track-body {
+    width: 150px;
+    height: 150px;
+  }
+  .playlists-parent {
+    margin-left: 15px !important;
+    gap: 18px;
+    height: 62vh;
+  }
+}
 </style>
-
-
