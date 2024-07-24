@@ -119,12 +119,7 @@ export default {
   width: 170px;
   height: 170px;
 }
-.pagination {
-  position: absolute;
-  bottom: 0%;
-  display: flex;
-  justify-content: center;
-}
+
 .tracklist {
   background-color: rgba(0, 0, 0, 0.5);
   font-weight: bold;
