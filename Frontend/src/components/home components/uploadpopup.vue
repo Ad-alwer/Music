@@ -15,7 +15,7 @@
           ref="nameinput"
         />
       </section>
-      <section class="d-flex gap-3 mt-4">
+      <section class="d-flex gap-3 mt-4 uploadandfeet-box">
         <div class="wrapper">
           <form action="#">
             <input
@@ -148,7 +148,7 @@
           </form>
         </div>
       </section>
-      <section class="w-100 mt-3 d-flex gap-4">
+      <section class="w-100 mt-3 d-flex gap-4 btn-box">
         <button
           @click="save"
           class="btn fw-bold btn-save px-3 py-2 w-75 fs-5 text-center text-capitalize"
@@ -411,4 +411,27 @@ textarea {
   background-color: var(--blue-main);
   color: white;
 }
+
+@media screen and (max-width: 767px) {
+  
+  
+  .popup-inner {
+    padding: 6px;
+
+    max-width: 90%;
+    margin-bottom: 66px !important;
+    height: 90vh;
+    overflow-y: auto ;
+  }
+  .uploadandfeet-box{
+    flex-direction: column;
+    gap: 8px !important;
+  }
+  .btn-box{
+  scale: 0.9;
+  }
+ 
+ 
+}
+
 </style>

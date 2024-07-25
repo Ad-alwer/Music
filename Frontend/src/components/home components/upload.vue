@@ -1,12 +1,12 @@
 <template>
-  <div id="parent" class="container mt-5 px-3 position-relative">
+  <div id="parent" class="container-sm mt-5 px-3 position-relative">
     <section>
       <div class="d-flex justify-content-between">
         <span class="text-uppercase color-blue fw-semibold">upload</span>
       </div>
       <div class="mt-4">
         <p class="text-black fs-5 fw-bold">Details</p>
-        <div class="d-flex gap-3">
+        <div class="d-flex gap-3 detail-box">
           <input
             type="text"
             name=""
@@ -123,7 +123,7 @@
       </div>
       <div class="mt-4" v-if="typeselect == 'music' || typeselect == 'podcast'">
         <p class="text-black fs-5 fw-bold">Files</p>
-        <div class="d-flex justify-content-center gap-4">
+        <div class="d-flex justify-content-center gap-4 files-box">
           <div class="wrapper">
             <form action="#">
               <input
@@ -205,7 +205,7 @@
             </section>
           </div>
         </div>
-        <div class="d-flex justify-content-center gap-4 mt-3">
+        <div class="d-flex justify-content-center gap-4 mt-3 files-box">
           <div class="wrapper">
             <form
               action="#"
@@ -373,7 +373,7 @@
           </div>
         </div>
       </div>
-      <div class="w-100 mt-3 d-flex gap-4">
+      <div class="w-100 mt-3 d-flex gap-4 btn-box">
         <button
           @click="typeselect == 'album' ? savealbum() : savetrack()"
           class="btn fw-bold btn-save px-3 py-2 w-75 fs-5 text-center text-capitalize"
@@ -594,7 +594,7 @@ export default {
         this.tracks.forEach((e) => {
           formData.append("objectKey", e.track);
         });
-       
+
         axios
           .post(`${this.apiaddress}upload/album`, formData, {
             headers: {
@@ -799,5 +799,29 @@ textarea {
   border: 2px dashed var(--blue-main);
   min-height: 200px;
 }
-</style>
 
+@media screen and (max-width: 767px) {
+  #parent {
+    margin: 10px 20px 68px 20px !important;
+  }
+  .detail-box {
+    flex-direction: column !important;
+  }
+  select,
+  input,
+  textarea,
+  .album-track-wrapper,
+  .btn-box {
+    width: 95% !important;
+  }
+  .files-box {
+    flex-direction: column;
+    gap: 8px !important;
+    margin-top: 8px !important;
+    align-items: center;
+  }
+  .bar{
+    display: none  !important;
+  }
+}
+</style>
