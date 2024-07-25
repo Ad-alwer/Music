@@ -8,7 +8,7 @@
             type
           }}</span>
         </div>
-        <div v-if="data.length > 0">
+        <div v-if="data.length > 0" class="track-parent">
           <div
             v-for="(x, i) in data"
             :key="x._id"
@@ -22,10 +22,12 @@
             <div class="d-flex flex-column text-div gap-2 track-namebox">
               <span
                 @click="play(x._id)"
-                class="text-capitalize color-black fw-bold fs-5 trim-text pointer"
+                class="text-capitalize color-black fw-bold fs-5 trim-text pointer username"
                 >{{ x.name }}</span
               >
-              <span class="text-capitalize color-gray">{{ x.status }}</span>
+              <span class="text-capitalize color-gray status">{{
+                x.status
+              }}</span>
             </div>
             <span class="color-gray track-duration text-center">{{
               formattime(x.track.duration)
@@ -87,7 +89,6 @@
       v-if="popups.editpopup"
       :data="editdata"
     />
-    
   </div>
 </template>
 
@@ -308,5 +309,49 @@ export default {
   border-bottom: 2px solid var(--blue-main);
   margin-left: -30px;
   cursor: pointer;
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin: 10px 5px 68px 5px !important;
+    overflow: hidden;
+    height: 79vh;
+  }
+  .track-parent{
+    height: 74vh;
+    padding-bottom: 8px !important;
+    overflow: auto !important;
+  }
+  .tumbnail {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px !important;
+  }
+  .username {
+    font-size: 18px !important;
+  }
+  .status {
+    font-size: 15px !important;
+    margin-top: -6px;
+  }
+  .track-namebox {
+    gap: 4px !important;
+    width: 45% !important;
+  }
+  .track-duration {
+    width: 50px;
+    font-size: 15px !important;
+  }
+  .track-plays {
+    width: 70px;
+    font-size: 15px !important;
+  }
+  .more-list {
+    right: 2%;
+    top: 50px;
+  }
+  .li-child {
+    font-size: 15px !important;
+  }
 }
 </style>

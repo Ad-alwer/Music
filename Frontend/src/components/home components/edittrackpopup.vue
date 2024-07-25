@@ -562,4 +562,13 @@ textarea {
 .alert-div {
   max-height: 50px;
 }
+
+@media screen and (max-width: 767px) {
+  #popup {
+    margin-bottom: 68px;
+  }
+  .popup-inner {
+    max-height: 95%;
+  }
+}
 </style>
