@@ -130,7 +130,7 @@
                   :key="x"
                   class="search-child d-flex justify-content-between w-100 align-items-center gap-3"
                 >
-                  <img :src="x.cover.url" class="img-fluid rounded-3" alt="" />
+                  <img :src="x.cover.url" class="img-fluid rounded-3 img-select" alt="" />
                   <div class="d-flex flex-column detail-box">
                     <span class="text-capitalize fw-semibold trim-text fs-5">{{
                       x.name
@@ -483,6 +483,6 @@ export default {
 
 .img-select{
   width: 60px;
-  height: 40px;
+  height: 60px;
 }
 </style>

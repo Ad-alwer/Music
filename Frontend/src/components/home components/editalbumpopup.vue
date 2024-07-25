@@ -202,6 +202,7 @@
         :user="user"
         :tracks="tracks"
         @addtrack="addtrack"
+        
       />
       <loader v-if="popups.loader" />
     </div>
@@ -397,7 +398,7 @@ export default {
             this.popups.loader = false;
             if (res.data.status === "success") {
               iziToast.success({
-                message: "Files uploaded",
+                message: res.data.msg,
                 position: "topRight",
               });
               this.clear();
@@ -459,7 +460,7 @@ export default {
             this.popups.loader = false;
             if (res.data.status) {
               iziToast.success({
-                message: "Files uploaded",
+                message: res.data.msg,
                 position: "topRight",
               });
               this.clear();
@@ -681,5 +682,13 @@ textarea {
 
 .alert-div {
   max-height: 50px;
+}
+@media screen and (max-width: 767px) {
+  #popup {
+    margin-bottom: 68px;
+  }
+  .popup-inner {
+    max-height: 95%;
+  }
 }
 </style>

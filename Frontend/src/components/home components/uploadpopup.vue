@@ -417,11 +417,11 @@ textarea {
   
   .popup-inner {
     padding: 6px;
-
     max-width: 90%;
     margin-bottom: 66px !important;
     height: 90vh;
     overflow-y: auto ;
+    max-height: 90%;
   }
   .uploadandfeet-box{
     flex-direction: column;

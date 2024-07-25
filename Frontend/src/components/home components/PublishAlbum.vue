@@ -7,7 +7,9 @@
             type
           }}</span>
         </div>
-        <div class="d-flex justify-content-start mt-4 gap-3 flex-wrap">
+        <div
+          class="d-flex justify-content-start mt-4 gap-3 flex-wrap album-parent"
+        >
           <div
             v-if="type == 'playlists'"
             class="track-body position-relative pointer"
@@ -22,7 +24,7 @@
           <div
             v-for="(x, i) in data"
             :key="x"
-            class="track-body position-relative"
+            class="track-body position-relative mb-5"
           >
             <img
               :src="x.cover.url"
@@ -393,7 +395,7 @@ export default {
   width: 100%;
 }
 .track-body-text-parent p {
-  color: var(--main-blavk);
+  color: var(--main-black);
   font-weight: bold;
   margin-bottom: 0 !important;
   font-size: 18px;
@@ -422,5 +424,33 @@ export default {
   border-bottom: 2px solid var(--blue-main);
   margin-left: -30px;
   cursor: pointer;
+}
+@media screen and (max-width: 767px) {
+  #parent {
+    margin: 10px 20px 68px 20px !important;
+  }
+
+  .track-body {
+    width: 120px;
+    height: 120px;
+  }
+  .track-body-text-parent p {
+    font-size: 17px;
+  }
+  .track-body-text-parent span {
+    font-size: 12px;
+    text-transform: capitalize;
+  }
+  .album-parent {
+    gap: 5px !important;
+  }
+
+  .more-list {
+    right: 2%;
+    top: 50px;
+  }
+  .li-child {
+    font-size: 12px !important;
+  }
 }
 </style>
