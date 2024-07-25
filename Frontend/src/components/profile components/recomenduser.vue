@@ -280,4 +280,18 @@ export default {
 .search-resault-child:not(:nth-last-child()) {
   border-bottom: 2px solid var(--blue-main);
 }
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 68px;
+  }
+  .search-resault,.search-parent{
+    width: 70%;
+  }
+  .recommend{
+    width: 80%;
+  }
+
+  
+  
+}
 </style>
