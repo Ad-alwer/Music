@@ -205,7 +205,6 @@ import loader from "../loader.vue";
 export default {
   name: "popupaddplaylist",
   beforeMount() {
-    this.getuser();
     this.getbase();
   },
   mounted() {

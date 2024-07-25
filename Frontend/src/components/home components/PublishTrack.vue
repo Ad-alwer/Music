@@ -87,11 +87,7 @@
       v-if="popups.editpopup"
       :data="editdata"
     />
-    <albumpopp
-      @close="editpopucloser"
-      v-if="popups.albumpopp"
-      :data="albumdata"
-    />
+    
   </div>
 </template>
 
@@ -227,7 +223,6 @@ export default {
       this.popups.editpopup = true;
     },
     editpopucloser: function () {
-      this.popups.albumpopp = false;
       this.popups.editpopup = false;
       this.editdata = null;
     },
@@ -260,6 +255,7 @@ export default {
   props: ["type"],
   watch: {
     type: function () {
+      this.popups.loader = true;
       this.getdata();
     },
   },
