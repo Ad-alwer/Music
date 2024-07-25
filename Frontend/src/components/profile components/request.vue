@@ -118,4 +118,9 @@ aside.player {
 tr {
   border-bottom: 2px solid #4343ef;
 }
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 68px;
+  }
+}
 </style>
