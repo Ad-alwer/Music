@@ -55,7 +55,7 @@
           maxlength="500"
           placeholder="bio"
           ref="bio"
-         :value="bio"
+          :value="bio"
         ></textarea>
         <div class="d-flex justify-content-center">
           <button
@@ -168,7 +168,7 @@
         </table>
       </section>
       <section class="mt-4">
-        <div class="d-flex justify-content-center gap-5">
+        <div class="d-flex justify-content-center gap-5 select-box">
           <span
             @click="whichcomponent = 'request'"
             :class="
@@ -214,7 +214,7 @@
               <th class="text-center text-capitalize fw-semibold">status</th>
               <th class="text-center text-capitalize fw-semibold">message</th>
             </tr>
-            <tr v-for="x in user.requests" :key="x">
+            <tr v-for="x in user.requests" :key="x" class="request-parent">
               <th class="text-center text-capitalize">{{ x.name }}</th>
               <th class="text-center text-capitalize">
                 <div>
@@ -234,12 +234,17 @@
               <th class="text-center text-capitalize">
                 <img
                   v-if="x.status == 'reject'"
-                  class="pointer"
+                  class="pointer message-img"
                   @click="messageshowopener(x.msg)"
                   src="../../assets/icons/message.png"
                   alt=""
                 />
-                <img v-else src="../../assets/icons/nomessage.png" alt="" />
+                <img
+                  v-else
+                  class="message-img"
+                  src="../../assets/icons/nomessage.png"
+                  alt=""
+                />
               </th>
             </tr>
             <messageshowpopup
@@ -1015,7 +1020,6 @@ export default {
 </script>
 
 <style scoped>
-
 * {
   overflow: hidden;
 }
@@ -1133,5 +1137,62 @@ hr {
 textarea {
   resize: none;
   height: 200px;
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 68px;
+  }
+  .profile-parent img {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+  }
+  .follow-parent {
+    gap: 60px;
+  }
+  textarea {
+    height: 100px;
+  }
+  .btn-save {
+    padding: 4px 12px !important;
+  }
+  .table {
+    width: 100% !important;
+  }
+  .table th {
+    gap: 10px !important;
+    font-size: 13px !important;
+  }
+  .table img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .select-box {
+    font-size: 14px !important;
+    gap: 10px !important;
+  }
+  .request-parent img {
+    width: 24px;
+    height: 24px;
+  }
+  .message-img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .search-parent {
+    width: 95%;
+  }
+  .search-resault,
+  .recommend-child {
+    width: 70% !important;
+    /* background: red; */
+  }
+  .search-resault-child img,
+  .recommend img {
+    width: 50px;
+    height: 50px;
+  }
 }
 </style>
