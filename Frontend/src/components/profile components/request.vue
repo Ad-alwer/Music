@@ -12,7 +12,7 @@
           <th class="text-center text-capitalize fw-semibold">message</th>
         </tr>
         <tr v-for="x in user.requests" :key="x">
-          <th class="text-center text-capitalize">track1</th>
+          <th class="text-center text-capitalize">{{ x.name }}</th>
           <th class="text-center text-capitalize">
             <div>
               <img

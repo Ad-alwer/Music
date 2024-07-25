@@ -259,9 +259,9 @@
               >
                 <div
                   class="d-flex justify-content-center align-items-center gap-1 btn-save"
-                  @click="goto('/profile/requests')"
+                  @click="goto('/profile/request') "
                 >
-                  <span class="text-white" @click="goto('/profile/requests')"
+                  <span class="text-white"
                     >see more</span
                   >
                   <svg
