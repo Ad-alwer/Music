@@ -326,4 +326,19 @@ tr {
 .socialmedia-icon {
   width: 45px;
 }
+
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 68px;
+  }
+
+  table{
+    margin: 5px 8px !important;
+  }
+  table th {
+    font-size: 14px !important;
+  }
+  
+}
 </style>

@@ -1,9 +1,12 @@
 <template>
   <div id="popup">
     <div class="popup-inner gap-2 rounded-4">
-      <i class="fas fa-solid fa-x fs-5 text-danger ms-2 pointer" @click="close"></i>
+      <i
+        class="fas fa-solid fa-x fs-5 text-danger ms-2 pointer"
+        @click="close"
+      ></i>
       <form action="" class="mt-3 d-flex flex-column gap-3 py-3">
-        <div class="d-flex gap-4 flex">
+        <div class="d-flex gap-4 flex nameandlink-parent">
           <div
             class="d-flex align-items-center justify-content-between px-3 input-parent rounded-3 w-75"
           >
@@ -90,21 +93,21 @@ export default {
       }
     },
     save: function () {
-        let newdata = this.data
+      let newdata = this.data;
       newdata.link != this.$refs.socialmedialink.value
         ? (newdata.link = this.$refs.socialmedialink.value)
         : null;
 
-        newdata.title != this.$refs.socialmediatitle.value
+      newdata.title != this.$refs.socialmediatitle.value
         ? (newdata.title = this.$refs.socialmediatitle.value)
         : null;
 
-        newdata.icon != this.$refs.socialmediaicon.value
+      newdata.icon != this.$refs.socialmediaicon.value
         ? (newdata.icon = this.$refs.socialmediaicon.value)
         : null;
 
-        this.$emit('save',newdata)
-        this.close()
+      this.$emit("save", newdata);
+      this.close();
     },
   },
 
@@ -158,5 +161,17 @@ export default {
 .form-select:focus {
   outline: none;
   box-shadow: none;
+}
+
+@media screen and (max-width: 767px) {
+  .popup-inner {
+    max-width: 98%;
+  }
+  .nameandlink-parent {
+    flex-direction: column;
+  }
+  .input-parent {
+    width: 400px !important;
+  }
 }
 </style>

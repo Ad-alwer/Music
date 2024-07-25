@@ -1187,7 +1187,6 @@ textarea {
   .search-resault,
   .recommend-child {
     width: 70% !important;
-    /* background: red; */
   }
   .search-resault-child img,
   .recommend img {
