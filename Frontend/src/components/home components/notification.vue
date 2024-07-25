@@ -73,12 +73,28 @@ export default {
 </script>
 
 <style scoped>
-
 * {
   overflow: hidden;
 }
 
 .notification-child {
   border-bottom: 2px solid var(--blue-main);
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 68px;
+  }
+
+  .notification-child img {
+    width: 28px;
+    height: 28px;
+  }
+  .notification-child a {
+    font-size: 15px !important;
+  }
+  .content {
+    padding: 10px 15px !important ;
+  }
 }
 </style>
