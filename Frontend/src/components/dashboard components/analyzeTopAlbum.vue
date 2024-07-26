@@ -12,7 +12,7 @@
           v-for="(x, i) in data"
           :key="x"
         >
-          <div class="d-flex gap-5 align-items-center">
+          <div class="d-flex gap-5 align-items-center detail-parent">
             <div
               class="monthly-num d-flex justify-content-center align-items-center"
             >
@@ -31,7 +31,7 @@
                     x.name
                   )
                 "
-                class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer"
+                class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer trackname"
               >
                 {{ x.name }}
               </p>
@@ -39,7 +39,7 @@
                 @click="
                   gotouser(x.artist ? x.artist : x.tracks[0].artist.username)
                 "
-                class="text-capitalize color-gray pointer"
+                class="text-capitalize color-gray pointer username"
                 >{{ x.artist ? x.artist : x.tracks[0].artist.username }}</span
               >
             </div>
@@ -216,5 +216,50 @@ export default {
 }
 .plays-span {
   width: 80px;
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin: 5px 10px 68px 10px !important;
+  }
+  .monthly-num {
+    width: 25px;
+    height: 35px;
+  }
+  .monthly-num span {
+    font-size: 24px !important;
+  }
+  .monthly-img {
+    width: 50px;
+    height: 50px;
+  }
+  .trackname {
+    font-size: 16px !important;
+  }
+  .username {
+    font-size: 14px !important;
+  }
+  .monthplay-span {
+    font-size: 14px !important;
+    width: 130px;
+  }
+  .plays-span {
+    font-size: 14px !important;
+    width: 70px;
+  }
+  .detail-parent {
+    gap: 16px !important;
+  }
+
+  .monthly-box {
+    gap: 8px !important;
+  }
+  .monthly-text {
+    width: 140px;
+  }
+  .trackshow-span {
+    font-size: 14px !important;
+    width: 75px;
+  }
 }
 </style>
