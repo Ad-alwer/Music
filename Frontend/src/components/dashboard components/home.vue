@@ -26,7 +26,7 @@
       </div>
       <div class="d-flex justify-content-center gap-2 align-items-center ms-5">
         <i class="fas fa-circle-info text-info"></i>
-        <span class="text-capitalize fw-semibold"
+        <span class="text-capitalize fw-semibold info"
           >You can remove banner with double click on it</span
         >
       </div>
@@ -55,7 +55,7 @@
       </div>
       <div class="d-flex justify-content-center gap-2 align-items-center ms-5">
         <i class="fas fa-circle-info text-info"></i>
-        <span class="text-capitalize fw-semibold"
+        <span class="text-capitalize fw-semibold info"
           >You can remove banner with double click on it</span
         >
       </div>
@@ -63,13 +63,13 @@
     <hr class="mx-5" />
 
     <section
-      class="mt-4 d-flex justify-content-center flex-column align-items-start gap-4"
+      class="mt-4 d-flex justify-content-center flex-column align-items-start gap-4 px-4"
     >
       <h3 class="text-center fw-semibold text-capitalize">genres</h3>
 
       <div class="d-flex text-align justify-content-start gap-4 flex-wrap">
         <button
-          class="btn-add btn px-3 py-2 text-capitalize ms-4"
+          class="btn-add btn px-3 py-2 text-capitalize"
           @click="openselect('genre')"
         >
           Add genre
@@ -94,9 +94,9 @@
     >
       <h3 class="text-center fw-semibold text-capitalize">icons</h3>
 
-      <div class="d-flex gap-4 flex-wrap">
+      <div class="d-flex gap-4 flex-wrap px-4">
         <button
-          class="btn-add btn px-3 py-2 text-capitalize ms-4"
+          class="btn-add btn px-3 py-2 text-capitalize"
           @click="openselect('icon')"
         >
           Add icons
@@ -124,7 +124,7 @@
       <h3 class="text-center fw-semibold text-capitalize">show</h3>
       <div class="d-flex flex-wrap showparent ms-4">
         <div class="col-4 d-flex mt-2 align-items-center gap-2">
-          <span class="text-capitalize fw-semibold fs-5">new music</span>
+          <span class="text-capitalize fw-semibold fs-5 showname">new music</span>
           <input
             type="checkbox"
             class="offscreen"
@@ -136,7 +136,7 @@
           <label class="switch" for="newmusic"></label>
         </div>
         <div class="col-4 d-flex mt-2 align-items-center gap-2">
-          <span class="text-capitalize fw-semibold fs-5">trend music</span>
+          <span class="text-capitalize fw-semibold fs-5 showname">trend music</span>
           <input
             type="checkbox"
             class="offscreen"
@@ -148,7 +148,7 @@
           <label class="switch" for="trendmusic"></label>
         </div>
         <div class="col-4 d-flex mt-2 align-items-center gap-2">
-          <span class="text-capitalize fw-semibold fs-5">trend podcast</span>
+          <span class="text-capitalize fw-semibold fs-5 showname">trend podcast</span>
           <input
             type="checkbox"
             class="offscreen"
@@ -160,7 +160,7 @@
           <label class="switch" for="trendpodcast"></label>
         </div>
         <div class="col-4 d-flex mt-2 align-items-center gap-2">
-          <span class="text-capitalize fw-semibold fs-5">top Artists</span>
+          <span class="text-capitalize fw-semibold fs-5 showname">top Artists</span>
           <input
             type="checkbox"
             class="offscreen"
@@ -172,7 +172,7 @@
           <label class="switch" for="topArtists"></label>
         </div>
         <div class="col-4 d-flex mt-2 align-items-center gap-3">
-          <span class="text-capitalize fw-semibold fs-5">top Playlist</span>
+          <span class="text-capitalize fw-semibold fs-5 showname">top Playlist</span>
           <input
             type="checkbox"
             class="offscreen"
@@ -186,7 +186,7 @@
       </div>
     </section>
     <hr class="mx-5" />
-  
+
     <sliderPopups
       v-if="popups.slider"
       @close="popupcloser"
@@ -334,7 +334,6 @@ export default {
           }
         });
     },
-   
   },
 };
 </script>
@@ -422,5 +421,32 @@ input[type="checkbox"]:checked + .switch {
 }
 .img-favicon {
   width: 32px;
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 68px;
+  }
+  .info {
+    font-size: 14px !important;
+  }
+
+  .icon-parent {
+    padding: 4px 8px !important;
+  }
+  .img-social {
+    width: 24px;
+  }
+  .img-social + span {
+    font-size: 14px !important;
+  }
+  .showparent{
+    flex-direction: column;
+    width: 100%;
+  }
+  .showname{
+    width:120px;
+    font-size: 15px !important;
+  }
 }
 </style>
