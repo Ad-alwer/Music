@@ -112,4 +112,19 @@ export default {
   width: 35px;
   height: 45px;
 }
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 68px;
+  }
+  .monthly-box {
+    width: 100%;
+    font-size: 16px !important;
+  }
+  .monthly-img {
+  width: 50px;
+  height: 50px;
+}
+ 
+}
 </style>
