@@ -21,7 +21,7 @@
       </svg>
     </header>
     <section class="d-flex justify-content-between gap-4 mt-5">
-      <main class="">
+      <main class="main">
         <form v-show="!signupsaved">
           <div class="form-group">
             <input
@@ -337,7 +337,7 @@
         </div>
         <loader v-if="loader" />
       </main>
-      <aside>
+      <aside class="aside">
         <img
           src="../assets/img/AdobeStock-xm3SRQniUf.jpg"
           class="img-fluid"
@@ -604,5 +604,21 @@ input.form-control {
 }
 .div-verify {
   margin-top: 20%;
+}
+
+@media screen and (max-width: 767px) {
+  .aside {
+    display: none;
+  }
+  .main {
+    display: flex;
+    justify-content: center;
+    margin: 15px auto !important;
+  }
+  .container {
+    padding: 0 0 !important;
+    margin: 48px 0 0 0 !important;
+    
+  }
 }
 </style>
