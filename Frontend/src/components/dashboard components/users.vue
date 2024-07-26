@@ -31,12 +31,12 @@
         </svg>
       </div>
     </section>
-    <section class="mt-4">
+    <section class="mt-4 table-section">
       <loader v-if="popups.loader" />
       <table class="table" v-else-if="!popups.loader && users.length > 0">
         <tr class="table-header align-middle">
           <th class="text-center text-capitalize fw-bold fs-5">username</th>
-          <th class="text-center text-capitalize fw-bold fs-5">email</th>
+          <th class="text-center text-capitalize fw-bold fs-5 trim-text">email</th>
           <th class="text-center text-capitalize fw-bold fs-5">admin</th>
           <th class="text-center text-capitalize fw-bold fs-5">ban upload</th>
           <th class="text-center text-capitalize fw-bold fs-5">verify</th>
@@ -44,7 +44,7 @@
         </tr>
         <tr v-for="(x,i) in users" class="align-middle" :key="x._id">
           <th class="text-center text-capitalize p-2">{{ x.username }}</th>
-          <th class="text-center text-capitalize p-2">{{ x.email }}</th>
+          <th class="text-center text-capitalize p-2 trim-text">{{ x.email }}</th>
           <th class="text-center text-capitalize p-2">
             <input
               type="checkbox"
@@ -269,5 +269,32 @@ input[type="checkbox"]:checked + .switch {
   width: 800px;
   height: 45px;
   border: 1px solid var(--gray-main);
+}
+
+@media screen and (max-width: 767px) {
+  table{
+    scale: 0.9;
+  }
+  
+ table th{
+  font-size: 15px !important;
+  /* padding: 5px !important; */
+
+ }
+ .switch{
+  scale: 0.7;
+ }
+ .trim-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+.table-section{
+  display: flex;
+  justify-content: center;
+}
+
+  
 }
 </style>

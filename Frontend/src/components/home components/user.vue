@@ -8,7 +8,7 @@
             <img
               v-if="otheruser.profile"
               :src="otheruser.profile"
-              class="img-fluid rounded-circle"
+              class="img-fluid rounded-circle profile-img"
               alt=""
             />
             <div v-else class="d-flex justify-content-center w-100">
@@ -23,7 +23,7 @@
         <div
           class="mt-2 d-flex align-center py-4 flex-column align-items-center gap-2"
         >
-          <span class="fw-semibold fs-5 text-capitalize">{{
+          <span class="fw-semibold fs-5 text-capitalize username">{{
             otheruser.username
           }}</span>
           <div class="d-flex gap-4 follow-parent">
@@ -42,7 +42,7 @@
           </div>
         </div>
         <div
-          class="d-flex align-items-center"
+          class="d-flex align-items-center follow-button-parent"
           v-if="otheruser._id !== thisuser._id"
         >
           <button
@@ -61,7 +61,7 @@
         <p class="mt-2 color-gray bio">{{ otheruser.bio }}</p>
       </div>
       <div class="px-2">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between select-parent">
           <span
             @click="changecomponent('music')"
             :class="
@@ -115,6 +115,16 @@
                 : 'text-capitalize p-2 pointer fw-semibold'
             "
             >followers</span
+          >
+          <span
+            v-if="responsive"
+            @click="changecomponent('more')"
+            :class="
+              component == 'more'
+                ? 'text-capitalize p-2 pointer fw-semibold active'
+                : 'text-capitalize p-2 pointer fw-semibold'
+            "
+            >more</span
           >
         </div>
         <div v-if="detail" class="px-4">
@@ -269,7 +279,8 @@
           "
           class="d-flex flex-column gap-2 data-parent"
         >
-          <div v-if="data.length > 0" class="">
+      
+          <div v-if="data.length > 0 " class="">
             <div
               v-for="x in data"
               :key="x"
@@ -291,7 +302,7 @@
 
                 <span
                   @click="whatchprofile(x.username)"
-                  class="text-capitalize fw-bold fs-5 pointer"
+                  class="text-capitalize fw-bold fs-5 pointer follow-username"
                   >{{ x.username }}</span
                 >
               </div>
@@ -329,7 +340,61 @@
           </div>
         </div>
         <div v-else class="data-parent">
-          <div v-if="data.length > 0">
+          <div v-if=" component == 'more'">
+          <section>
+        <p class="fw-bold fs-5 text-capitalize mt-4 mb- pe-3">Social media</p>
+        <ul class="" v-if="otheruser.socialmedia.length > 0">
+          <li
+            v-for="x in otheruser.socialmedia"
+            @click="goto(x.link)"
+            :key="x"
+            class="d-flex gap-3 align-items-center justify-content-start socialmedia-li mt-2"
+          >
+            <img :src="x.iconlink" class="img-fluid img-socialmedia" alt="" />
+            <span class="text-capitalize pointer socilamedia-title">{{
+              x.title
+            }}</span>
+          </li>
+        </ul>
+        <div v-else class="d-flex justify-content-center">
+          <img
+            src="../../assets/img/empty.png"
+            class="img-fluid img-aside"
+            alt=""
+          />
+        </div>
+      </section>
+      <section>
+        <p class="fw-bold fs-5 text-capitalize mt-4 mb-0 pe-3">recomended</p>
+        <ul
+          class="d-flex flex-column gap-3 mt-2"
+          v-if="otheruser.recommendUser.length > 0"
+        >
+          <li
+            v-for="x in otheruser.recommendUser"
+            @click="gotouser(x.username)"
+            :key="x"
+            class="d-flex gap-3 align-items-center"
+          >
+            <img
+              src="../../assets/img/icon.jpg"
+              class="img-fluid recomended-img rounded-circle"
+              alt=""
+            />
+            <span class="text-capitalize pointer recomeded-title fs-5">{{
+              x.username
+            }}</span>
+          </li>
+        </ul>
+        <div v-else class="d-flex justify-content-center align-items-center">
+          <img
+            src="../../assets/img/empty.png"
+            class="img-fluid img-aside"
+            alt=""
+          />
+        </div>
+      </section></div>
+          <div v-else-if="data.length > 0">
             <div
               class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3"
               v-for="(x, i) in data"
@@ -452,7 +517,7 @@
               class="img-fluid recomended-img rounded-circle"
               alt=""
             />
-            <span class="text-capitalize pointer recomeded-title fs-5">{{
+            <span class="text-capitalize pointer recomeded-title fw-semibold fs-5">{{
               x.username
             }}</span>
           </li>
@@ -482,6 +547,8 @@ export default {
     this.getuser();
   },
   mounted() {
+    this.checkScreenSize();
+    window.addEventListener("resize", this.checkScreenSize);
     document.addEventListener("click", (e) => {
       e.target.classList.contains("li-child") ||
       e.target.classList.contains("svg-more")
@@ -503,6 +570,7 @@ export default {
       thisuser: {},
       selecteddata: null,
       selectindex: null,
+      responsive: false,
     };
   },
   methods: {
@@ -1212,6 +1280,9 @@ export default {
         }
       }
     },
+    checkScreenSize: function () {
+      this.responsive = window.matchMedia("(max-width: 768px)").matches;
+    },
   },
   watch: {
     component: function () {
@@ -1249,6 +1320,7 @@ export default {
 
 .recomended-img {
   width: 50px;
+  height: 50px;
 }
 .main {
   height: 650px;
@@ -1351,5 +1423,44 @@ export default {
 
 .socialmedia-li {
   margin-left: -25px;
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin: 10px 15px 68px 10px !important;
+    padding: 0 !important;
+  }
+  .aside {
+    display: none;
+  }
+  .main {
+    width: 100% !important;
+  }
+  .profile-img {
+    width: 70px !important;
+    height: 70px !important;
+  }
+  .username {
+    font-size: 18px !important;
+  }
+  .follow-parent {
+    gap: 16px !important;
+  }
+  .follow-button-parent button {
+    font-size: 15px !important;
+    padding: 6px 8px !important;
+  }
+
+  .select-parent {
+    font-size: 14px;
+  }
+  .img-follow,  .recomended-img{
+    width: 40px;
+    height: 40px;
+  }
+  .follow-username,.recomeded-title{
+    font-size: 15px !important;
+  }
+  
 }
 </style>
