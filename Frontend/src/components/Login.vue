@@ -21,7 +21,7 @@
       </svg>
     </header>
     <section class="d-flex justify-content-between gap-4 mt-5">
-      <main class="">
+      <main class="main">
         <form>
           <div class="form-group">
             <input
@@ -91,9 +91,16 @@
             </label>
           </div>
 
-          <div class="form-check form-switch d-flex ">
-            <input class="form-check-input pointer" type="checkbox" ref="switch" cla />
-            <label class="form-check-label  text-capitalize" for="flexSwitchCheckDefault"
+          <div class="form-check form-switch d-flex">
+            <input
+              class="form-check-input pointer"
+              type="checkbox"
+              ref="switch"
+              cla
+            />
+            <label
+              class="form-check-label text-capitalize"
+              for="flexSwitchCheckDefault"
               >remember me</label
             >
           </div>
@@ -113,7 +120,7 @@
 
         <loader v-if="loader" />
       </main>
-      <aside>
+      <aside class="aside">
         <img
           src="../assets/img/AdobeStock-yek9HZ8ofF.jpg"
           class="img-fluid"
@@ -233,7 +240,6 @@ export default {
 </script>
 
 <style scoped>
-
 .svg {
   scale: 2;
   z-index: 999;
@@ -323,5 +329,21 @@ input.form-control {
   color: #999;
   margin-top: -3px;
   margin-left: 20px;
+}
+
+@media screen and (max-width: 767px) {
+  .aside {
+    display: none;
+  }
+  .main {
+    display: flex;
+    justify-content: center;
+    margin: 15px auto !important;
+  }
+  .container {
+    padding: 0 0 !important;
+    margin: 48px 0 0 0 !important;
+    
+  }
 }
 </style>
