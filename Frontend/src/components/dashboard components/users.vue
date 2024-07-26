@@ -82,7 +82,7 @@
           <th class="text-center text-capitalize p-2">
             <i
               class="fa-solid fa-address-card text-secondary pointer"
-              @click="openprofilepopup(x)"
+              @click="goto(x.username)"
             ></i>
           </th>
         </tr>
@@ -94,11 +94,6 @@
         <img src="../../assets/img/empty.png" class="img-fluid" alt="" />
       </div>
     </section>
-    <profilepopup
-      v-if="popups.profile"
-      @close="closeprofilepopup"
-      :user="selectuser"
-    />
   </div>
 </template>
 
@@ -109,7 +104,6 @@ import iziToast from "izitoast";
 
 import loader from "../loader.vue";
 
-import profilepopup from "./profilepopup.vue";
 export default {
   name: "users",
   beforeMount() {
@@ -137,14 +131,8 @@ export default {
         index >= 0 ? this.users.splice(index, 1) : null;
       });
     },
-    openprofilepopup: function (e) {
-      this.selectuser = e;
-      this.popups.profile = true;
-    },
-    closeprofilepopup: function () {
-      this.popups.profile = false;
-
-      this.selectuser = null;
+    goto:function(username){
+      location.href=`/user/${username}`
     },
     changeverify: function (id) {
       axios.get(`${this.apiaddress}users/changeverify/${id}`).then((res) => {
@@ -193,7 +181,6 @@ export default {
 
   props: ["user"],
   components: {
-    profilepopup,
     loader,
   },
 };
