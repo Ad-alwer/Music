@@ -38,7 +38,7 @@
           <th class="text-center text-capitalize fw-bold fs-5">username</th>
           <th class="text-center text-capitalize fw-bold fs-5">verify</th>
         </tr>
-        <tr class="align-middle" v-for="(x,i) in verify" :key="x._id">
+        <tr class="align-middle" v-for="(x, i) in verify" :key="x._id">
           <th class="text-center text-capitalize p-2">{{ x.username }}</th>
           <th class="text-center text-capitalize p-2">
             <input
@@ -49,7 +49,7 @@
               :checked="x.isverify"
               @click="changeverify(x._id)"
             />
-            <label class="switch" :for="'input' +  i"></label>
+            <label class="switch" :for="'input' + i"></label>
           </th>
         </tr>
       </table>
@@ -239,4 +239,13 @@ input[type="checkbox"]:checked + .switch {
   border: 1px solid var(--gray-main);
 }
 
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 68px;
+  }
+  
+  table th {
+    font-size: 15px !important;
+  }
+}
 </style>

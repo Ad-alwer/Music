@@ -85,14 +85,14 @@ export default {
       }
     },
     compelet: function (e) {
-      this.popups.detail =false
+      this.popups.detail = false;
       if (e) {
         iziToast.success({
-                message: "Your Answer Saved Successfully",
-                position: "topRight",
-              });
-              this.getdata()
-      }else{
+          message: "Your Answer Saved Successfully",
+          position: "topRight",
+        });
+        this.getdata();
+      } else {
         iziToast.error({
           title: "Please Try Again",
           position: "topRight",
@@ -161,4 +161,12 @@ input[type="checkbox"]:checked + .switch {
   font-size: 22px;
 }
 
+@media screen and (max-width: 767px) {
+  #parent {
+    margin-bottom: 68px;
+  }
+}
+table th {
+  font-size: 15px !important ;
+}
 </style>

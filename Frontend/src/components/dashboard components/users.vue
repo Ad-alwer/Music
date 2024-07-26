@@ -36,26 +36,30 @@
       <table class="table" v-else-if="!popups.loader && users.length > 0">
         <tr class="table-header align-middle">
           <th class="text-center text-capitalize fw-bold fs-5">username</th>
-          <th class="text-center text-capitalize fw-bold fs-5 trim-text">email</th>
+          <th class="text-center text-capitalize fw-bold fs-5 trim-text">
+            email
+          </th>
           <th class="text-center text-capitalize fw-bold fs-5">admin</th>
           <th class="text-center text-capitalize fw-bold fs-5">ban upload</th>
           <th class="text-center text-capitalize fw-bold fs-5">verify</th>
           <th class="text-center text-capitalize fw-bold fs-5">profile</th>
         </tr>
-        <tr v-for="(x,i) in users" class="align-middle" :key="x._id">
+        <tr v-for="(x, i) in users" class="align-middle" :key="x._id">
           <th class="text-center text-capitalize p-2">{{ x.username }}</th>
-          <th class="text-center text-capitalize p-2 trim-text">{{ x.email }}</th>
+          <th class="text-center text-capitalize p-2 trim-text">
+            {{ x.email }}
+          </th>
           <th class="text-center text-capitalize p-2">
             <input
               type="checkbox"
               class="offscreen"
               name="x.username"
-              :id="'admin'+ i"
+              :id="'admin' + i"
               :checked="x.isadmin"
               :disabled="!user.ismaster"
               @click="changeadmin(x._id)"
             />
-            <label class="switch" :for="'admin'+ i"></label>
+            <label class="switch" :for="'admin' + i"></label>
           </th>
           <th class="text-center text-capitalize p-2">
             <input
@@ -131,8 +135,8 @@ export default {
         index >= 0 ? this.users.splice(index, 1) : null;
       });
     },
-    goto:function(username){
-      location.href=`/user/${username}`
+    goto: function (username) {
+      location.href = `/user/${username}`;
     },
     changeverify: function (id) {
       axios.get(`${this.apiaddress}users/changeverify/${id}`).then((res) => {
@@ -187,8 +191,6 @@ export default {
 </script>
 
 <style scoped>
-
-
 .table-header th {
   background-color: #4343ef !important;
   color: white;
@@ -259,29 +261,28 @@ input[type="checkbox"]:checked + .switch {
 }
 
 @media screen and (max-width: 767px) {
-  table{
+  #parent {
+    margin-bottom: 68px;
+  }
+  table {
     scale: 0.9;
   }
-  
- table th{
-  font-size: 15px !important;
-  /* padding: 5px !important; */
 
- }
- .switch{
-  scale: 0.7;
- }
- .trim-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 160px;
-}
-.table-section{
-  display: flex;
-  justify-content: center;
-}
-
-  
+  table th {
+    font-size: 15px !important;
+  }
+  .switch {
+    scale: 0.7;
+  }
+  .trim-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+  }
+  .table-section {
+    display: flex;
+    justify-content: center;
+  }
 }
 </style>
