@@ -12,7 +12,7 @@
           :key="x"
           class="monthly-box d-flex gap-4 align-items-center justify-content-between"
         >
-          <div class="d-flex gap-5 align-items-center">
+          <div class="d-flex gap-5 align-items-center detail-parent">
             <div
               class="monthly-num d-flex justify-content-center align-items-center"
             >
@@ -25,14 +25,14 @@
             />
             <div class="d-flex flex-column monthly-text">
               <p
-                class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer"
+                class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer trackname"
                 @click="gotottrack(x.artist.username, x.name)"
               >
                 {{ x.name }}
               </p>
               <span
                 @click="gotouser(x.artist.username)"
-                class="text-capitalize color-gray pointer"
+                class="text-capitalize color-gray pointer username"
                 >{{ x.artist.username }}</span
               >
             </div>
@@ -182,5 +182,46 @@ export default {
 }
 .monthplay-box {
   width: 150px;
+}
+
+@media screen and (max-width: 767px) {
+  #parent {
+    margin: 5px 10px 68px 10px !important;
+  }
+  .monthly-num {
+    width: 25px;
+    height: 35px;
+  }
+  .monthly-num span {
+    font-size: 24px !important;
+  }
+  .monthly-img {
+    width: 50px;
+    height: 50px;
+  }
+  .trackname {
+    font-size: 16px !important;
+  }
+  .username {
+    font-size: 14px !important;
+  }
+  .monthplay-box {
+    font-size: 14px !important;
+    width: 130px;
+  }
+  .plays-box {
+    font-size: 14px !important;
+    width: 70px;
+  }
+  .detail-parent {
+    gap: 12px !important;
+  }
+
+  .monthly-box {
+    gap: 12px !important;
+  }
+  .monthly-text {
+    width: 200px;
+  }
 }
 </style>
