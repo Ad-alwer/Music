@@ -1,4 +1,6 @@
-{
+{ "scripts": {
+  "start": "nodemon Api.js"
+},
   "dependencies": {
     "aws-sdk": "^2.1532.0",
     "cors": "^2.8.5",
