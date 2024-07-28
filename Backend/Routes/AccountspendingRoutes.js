@@ -1,8 +1,8 @@
 const express = require("express");
 const Router = express.Router();
 
-const accountspendingDB = require("../Databases/AccountsPending");
-const usersDB = require("../Databases/Users");
+const accountspendingDB = require("../Databases/AccountsPending.js");
+const usersDB = require("../Databases/Users.js");
 Router.get("/checkmail/:value", (req, res) => {
   usersDB.checkemail(req.params.value).then((data) => res.send(data));
 });

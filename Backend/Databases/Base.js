@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 
-const trackDB = require("./Tracks");
-const albumDB = require("./Albums");
+const trackDB = require("./Tracks.js");
+const albumDB = require("./Albums.js");
 
 require("dotenv").config();
-mongoose.connect(process.env.DB_ADRESS)
+mongoose.connect(process.env.DB_ADRESS).then(() => {
+  console.log("conect");})
+
 
 const musicschema = new mongoose.Schema({
   genres: [],

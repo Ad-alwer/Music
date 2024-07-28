@@ -3,9 +3,11 @@ const nodemailer = require("nodemailer");
 const timestamp = require("mongoose-timestamp");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const userDB = require("./Users");
+const userDB = require("./Users.js");
 
-mongoose.connect(process.env.DB_ADRESS)
+mongoose.connect(process.env.DB_ADRESS).then(() => {
+  console.log("conect");})
+
 
 const musicschema = new mongoose.Schema({
   username: {

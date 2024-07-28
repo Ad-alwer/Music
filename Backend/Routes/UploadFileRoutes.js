@@ -5,14 +5,14 @@ const multerS3 = require("multer-s3");
 
 require("dotenv").config();
 
-const usersDB = require("../Databases/users");
-const playlistDB = require("../Databases/Playlists");
-const { addbanner, addresbanner, addsocialicon } = require("../Databases/Base");
-const trackDB = require('../Databases/Tracks')
+const usersDB = require("../Databases/Users.js");
+const playlistDB = require("../Databases/Playlists.js");
+const { addbanner, addresbanner, addsocialicon } = require("../Databases/Base.js");
+const trackDB = require('../Databases/Tracks.js')
 
 const ffmpeg = require("fluent-ffmpeg");
 const { default: mongoose } = require("mongoose");
-const { editalbum } = require("../Databases/Albums");
+const { editalbum } = require("../Databases/Albums.js");
 const ffprobePath = require("ffprobe-static").path;
 ffmpeg.setFfprobePath(ffprobePath);
 

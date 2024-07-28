@@ -3,8 +3,8 @@ const Router = express.Router();
 
 require("dotenv").config();
 
-const trackDB = require("../Databases/Tracks");
-const userDB = require("../Databases/Users");
+const trackDB = require("../Databases/Tracks.js");
+const userDB = require("../Databases/Users.js");
 
 Router.put("/update/:trackid", (req, res) => {
   userDB.edittrack(req.headers.jwt, req.body.id, req.body.name).then((data) => {

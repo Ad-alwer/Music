@@ -5,14 +5,14 @@ const app = express();
 require("dotenv").config();
 
 
-const accountpendeingRoutes = require("./Routes/AccountspendingRoutes");
-const usersRoutes = require("./Routes/UsersRoutes");
-const uploadRoutes = require("./Routes/UploadFileRoutes");
-const trackRoutes = require("./Routes/TracksRoutes");
-const albumRoutes = require("./Routes/AlbumRoutes");
-const deletedaccountRoutes = require("./Routes/DeleteaccountRoutes");
-const playlistRoutes = require("./Routes/PlaylistRoutes");
-const baseRoutes = require("./Routes/BaseRoutes")
+const accountpendeingRoutes = require("./Routes/AccountspendingRoutes.js");
+const usersRoutes = require("./Routes/UsersRoutes.js");
+const uploadRoutes = require("./Routes/UploadFileRoutes.js");
+const trackRoutes = require("./Routes/TracksRoutes.js");
+const albumRoutes = require("./Routes/AlbumRoutes.js");
+const deletedaccountRoutes = require("./Routes/DeleteaccountRoutes.js");
+const playlistRoutes = require("./Routes/PlaylistRoutes.js");
+const baseRoutes = require("./Routes/BaseRoutes.js")
 
 app.use(express.json());
 app.use(cors());

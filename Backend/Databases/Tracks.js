@@ -3,13 +3,15 @@ const timestamp = require("mongoose-timestamp");
 
 const jwt = require("jsonwebtoken");
 
-const userDB = require("../Databases/Users");
-const albumDB = require("../Databases/Albums");
+const userDB = require("../Databases/Users.js");
+const albumDB = require("../Databases/Albums.js");
 
-const { getusernamebyid } = require("../Databases/Users");
+const { getusernamebyid } = require("../Databases/Users.js");
 require("dotenv").config();
 
-mongoose.connect(process.env.DB_ADRESS);
+mongoose.connect(process.env.DB_ADRESS).then(() => {
+  console.log("conect");})
+
 
 const musicschema = new mongoose.Schema({
   name: {

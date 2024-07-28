@@ -3,14 +3,16 @@ const timestamp = require("mongoose-timestamp");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
-const trackDB = require("./Tracks");
-const albumDB = require("./Albums");
-const playlistDB = require("./Playlists");
-const baseDB = require("./Base");
+const trackDB = require("./Tracks.js");
+const albumDB = require("./Albums.js");
+const playlistDB = require("./Playlists.js");
+const baseDB = require("./Base.js");
 
 require("dotenv").config();
 
-mongoose.connect(process.env.DB_ADRESS);
+mongoose.connect(process.env.DB_ADRESS).then(() => {
+  console.log("conect");})
+
 
 const musicschema = new mongoose.Schema({
   username: {

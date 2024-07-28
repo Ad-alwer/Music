@@ -4,9 +4,9 @@ const mongoose = require("mongoose");
 
 require("dotenv").config();
 
-const usersDB = require("../Databases/users");
-const trackDB = require("../Databases/Tracks");
-const { loginback } = require("../Databases/DeletedAccounts");
+const usersDB = require("../Databases/Users.js");
+const trackDB = require("../Databases/Tracks.js");
+const { loginback } = require("../Databases/DeletedAccounts.js");
 
 Router.post("/login", (req, res) => {
   usersDB.login(...Object.values(req.body)).then(async (data) => {

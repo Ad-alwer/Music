@@ -1,8 +1,8 @@
 const express = require("express");
 const Router = express.Router();
 
-const playlistDB = require("../Databases/Playlists");
-const userDB = require("../Databases/Users");
+const playlistDB = ("../Databases/Playlists.js");
+const userDB = require("../Databases/Users.js");
 
 require("dotenv").config();
 

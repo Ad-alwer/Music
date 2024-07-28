@@ -2,12 +2,14 @@ const mongoose = require("mongoose");
 const timestamp = require("mongoose-timestamp");
 const jwt = require("jsonwebtoken");
 
-const trackDB = require("./Tracks");
-const AlbumDB = require("./Albums");
+const trackDB = require("./Tracks.js");
+const AlbumDB = require("./Albums.js");
 
 require("dotenv").config();
 
-mongoose.connect(process.env.DB_ADRESS);
+mongoose.connect(process.env.DB_ADRESS).then(() => {
+  console.log("conect");})
+
 
 const musicschema = new mongoose.Schema({
   name: {

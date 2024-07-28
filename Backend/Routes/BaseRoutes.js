@@ -1,7 +1,7 @@
 const express = require("express");
 const Router = express.Router();
 
-const baseDB = require("../Databases/Base");
+const baseDB = require("../Databases/Base.js");
 
 require("dotenv").config();
 

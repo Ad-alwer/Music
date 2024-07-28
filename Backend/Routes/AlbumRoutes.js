@@ -1,8 +1,8 @@
 const express = require("express");
 const Router = express.Router();
 
-const albumDB = require("../Databases/Albums");
-const userDB = require("../Databases/Users");
+const albumDB = require("../Databases/Albums.js");
+const userDB = require("../Databases/Users.js");
 
 Router.delete("/delete/:albumid", (req, res) => {
   userDB.deletealbum(req.headers.jwt, req.params.albumid).then((data) => {
