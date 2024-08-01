@@ -135,7 +135,6 @@
 import axios from "axios";
 import iziToast from "izitoast";
 
-import info from "../../default";
 import Register from "./Register.vue";
 
 import loader from "./loader.vue";
@@ -164,7 +163,7 @@ export default {
       eyeshow: {
         password: false,
       },
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
       loader: false,
     };
   },

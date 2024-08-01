@@ -119,7 +119,6 @@
 <script>
 import Register from "../Register.vue";
 import axios from "axios";
-import info from "../../../default";
 import iziToast from "izitoast";
 
 import editsocialmediapopup from "../profile components/editsocialmediapopup.vue";
@@ -132,7 +131,7 @@ export default {
   },
   data() {
     return {
-      apiaddress: info.Api_ADDRESS,
+      apiaddress:process.env.VUE_APP_Api_ADDRESS,
       popups: {
         editsocialmedia: false,
         loader: true,

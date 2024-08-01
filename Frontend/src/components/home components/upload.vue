@@ -406,7 +406,6 @@ import iziToast from "izitoast";
 import loader from "../loader.vue";
 
 import axios from "axios";
-import info from "../../../default";
 import Register from "../Register.vue";
 
 export default {
@@ -416,7 +415,7 @@ export default {
   },
   data() {
     return {
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
       typeselect: "album",
       tracks: [],
       popups: {

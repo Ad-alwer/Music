@@ -168,7 +168,6 @@
 
 <script>
 import axios from "axios";
-import info from "../../../default";
 import iziToast from "izitoast";
 
 export default {
@@ -176,7 +175,7 @@ export default {
   data() {
     return {
       arr: [],
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
       detailshower: {
         feat: false,
         track: false,

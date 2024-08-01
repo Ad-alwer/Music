@@ -629,7 +629,6 @@
 <script>
 import Register from "../Register.vue";
 import axios from "axios";
-import info from "../../../default";
 import iziToast from "izitoast";
 
 import messageshowpopup from "../profile components/messageshowpopup.vue";
@@ -643,7 +642,7 @@ export default {
   },
   data() {
     return {
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
       whichcomponent: "request",
       user: [],
       base: [],

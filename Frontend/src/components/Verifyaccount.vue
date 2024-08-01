@@ -15,7 +15,6 @@
 <script>
 import axios from "axios";
 import Register from "./Register.vue";
-import info from "../../default";
 
 export default {
   name: "verify",
@@ -39,7 +38,7 @@ export default {
   },
   data() {
     return {
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
     };
   },
   methods: {

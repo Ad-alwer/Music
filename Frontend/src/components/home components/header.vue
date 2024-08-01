@@ -201,15 +201,14 @@
 import notificationpopup from "./notificationpopup.vue";
 import profilepopup from "./profilepopup.vue";
 import Register from "../Register.vue";
-import info from "../../../default";
 import axios from "axios";
 
 export default {
   name: "header",
   data() {
     return {
-      url: info.Url,
-      apiaddress: info.Api_ADDRESS,
+      url: process.env.VUE_APP_Url,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
       user: {},
       unreadnofification: false,
       popups: {

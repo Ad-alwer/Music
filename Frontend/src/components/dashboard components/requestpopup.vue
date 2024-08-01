@@ -260,7 +260,6 @@
 
 <script>
 import axios from "axios";
-import info from "../../../default";
 import Register from "../Register.vue";
 import iziToast from "izitoast";
 
@@ -268,7 +267,7 @@ export default {
   name: "requestpopup",
   data() {
     return {
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
       isplay: false,
       timeline: {
         max: 100,

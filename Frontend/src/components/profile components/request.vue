@@ -52,7 +52,6 @@
 <script>
 import Register from "../Register.vue";
 import axios from "axios";
-import info from "../../../default";
 
 import messageshowpopup from "../profile components/messageshowpopup.vue";
 import loader from "../loader.vue";
@@ -64,7 +63,7 @@ export default {
   },
   data() {
     return {
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
       user: [],
 
       popups: {

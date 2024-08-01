@@ -532,7 +532,6 @@
 <script>
 import axios from "axios";
 import loader from "../loader.vue";
-import info from "../../../default";
 import Register from "../Register.vue";
 import iziToast from "izitoast";
 
@@ -554,7 +553,8 @@ export default {
   data() {
     return {
       component: "music",
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
+      url:process.env.VUE_APP_Url.at,
       detail: false,
       popups: {
         loader: true,
@@ -1202,7 +1202,7 @@ export default {
       location.href = `https://${x}`;
     },
     gotouser: function (username) {
-      location.href = `${info.Url}user/${username}`;
+      location.href = `${this.url}user/${username}`;
     },
     routing: function () {
       const component = location.pathname.split("/")[3];

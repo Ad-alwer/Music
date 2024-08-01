@@ -178,7 +178,6 @@ import "swiper/css/scrollbar";
 import "swiper/css/grid";
 
 import axios from "axios";
-import info from "../../../default";
 import loader from "../loader.vue";
 import Register from "../Register.vue";
 
@@ -211,7 +210,7 @@ export default {
   },
   data() {
     return {
-      apiaddress: info.Api_ADDRESS,
+      apiaddress:process.env.VUE_APP_Api_ADDRESS,
       pagination: true,
       draggable: true,
 

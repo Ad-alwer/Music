@@ -252,7 +252,6 @@
 </template>
 
 <script>
-import info from "../../../default";
 import axios from "axios";
 
 import Register from "../Register.vue";
@@ -266,7 +265,7 @@ export default {
 
   data() {
     return {
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
 
       show: {
         name: null,

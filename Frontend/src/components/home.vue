@@ -108,7 +108,6 @@ import notification from "./home components/notification.vue";
 
 import Register from "./Register.vue";
 import axios from "axios";
-import info from "../../default";
 
 export default {
   name: "home",
@@ -121,7 +120,7 @@ export default {
   },
   data() {
     return {
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
       component: "discover",
       reloadheader: true,
       user: {},

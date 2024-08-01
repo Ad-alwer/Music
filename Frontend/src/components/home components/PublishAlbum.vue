@@ -135,7 +135,6 @@ import loader from "../loader.vue";
 
 import Register from "../Register.vue";
 import axios from "axios";
-import info from "../../../default";
 import iziToast from "izitoast";
 
 export default {
@@ -157,8 +156,8 @@ export default {
   },
   data() {
     return {
-      apiaddress: info.Api_ADDRESS,
-      url: info.Url,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
+      url: process.env.VUE_APP_Url,
       popups: {
         addpopups: false,
         editalbum: false,

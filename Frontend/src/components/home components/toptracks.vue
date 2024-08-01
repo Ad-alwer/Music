@@ -102,7 +102,6 @@
 
 <script>
 import axios from "axios";
-import info from "../../../default";
 import Register from "../Register.vue";
 import iziToast from "izitoast";
 
@@ -122,7 +121,7 @@ export default {
   },
   data() {
     return {
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
       data: [],
       user: [],
       loader: true,

@@ -35,7 +35,6 @@
 
 <script>
 import axios from "axios";
-import info from "../../default";
 import Register from "./Register.vue";
 import hmheader from "./home components/header";
 import dashmenu from "./dashboard components/menu.vue";
@@ -81,7 +80,7 @@ export default {
       component: "users",
       user: {},
       loader: true,
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
     };
   },
   methods: {

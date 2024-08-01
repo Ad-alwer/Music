@@ -206,7 +206,6 @@
 import sliderPopups from "./homeSliderPopups.vue";
 import selectPopup from "./homeSelectPopup.vue";
 
-import info from "../../../default";
 import axios from "axios";
 import iziToast from "izitoast";
 
@@ -217,7 +216,7 @@ export default {
   },
   data() {
     return {
-      apiaddress: info.Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
       popups: {
         slider: false,
         select: false,
