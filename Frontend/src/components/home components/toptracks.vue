@@ -2,15 +2,17 @@
   <loader v-if="loader" />
   <section v-else class="parent px-3">
     <h4 class="text-capitalize fw-bold title mt-5">Top tracks</h4>
-    <div class="mt-4">
+    <div class="mt-4 track-parent">
       <div
         class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3"
         v-for="(x, i) in data"
         :key="x"
       >
-     
-        <div class="d-flex gap-4 align-items-center" @click="play(x._id)">
-            <div
+        <div
+          class="d-flex gap-4 align-items-center imgandnum-parent"
+          @click="play(x._id)"
+        >
+          <div
             class="monthly-num d-flex justify-content-center align-items-center"
           >
             <span class="color-gray fs-3">{{ formatNumber(i + 1) }}</span>
@@ -113,7 +115,7 @@ export default {
   mounted() {
     document.addEventListener("click", (e) => {
       e.target.classList.contains("li-child") ||
-      e.target.classList.contains("more")
+      e.target.classList.contains("svg-more")
         ? null
         : this.closeallmore();
     });
@@ -138,7 +140,7 @@ export default {
           this.user = res.data;
           axios.get(`${this.apiaddress}users/toptracks`).then((res) => {
             if (res.data) {
-              this.data = res.data;
+              this.data = res.data.splice(0, 20);
               this.checklike();
               this.checksave();
               this.loader = false;
@@ -352,7 +354,7 @@ export default {
   height: 45px;
 }
 .monthly-text {
-  width: 220px;
+  width: 420px;
   text-align: left !important;
 }
 .monthly-play {
@@ -384,5 +386,65 @@ export default {
 }
 .title {
   color: var(--blue-main);
+}
+
+@media screen and (max-width: 767px) {
+  .parent {
+    margin-bottom: 0x !important;
+    padding: 0 !important;
+    max-height: 80vh;
+    overflow: hidden;
+  }
+  .track-parent {
+    padding-bottom: 72px;
+    width: 99vw;
+    height: 82vh;
+    overflow: auto;
+  }
+  .title {
+    margin: 5px 0 0 15px !important;
+  }
+  .monthly-box {
+    margin-top: 8px !important;
+    gap: 2px !important;
+    justify-content: space-between;
+  }
+
+  .imgandnum-parent {
+    gap: 12px !important;
+    padding-left: 8px;
+  }
+  .monthly-num {
+    width: 25px;
+    height: 25px;
+  }
+
+  .monthly-img {
+    width: 50px;
+    height: 50px;
+  }
+  .monthly-text {
+    width: 120px;
+    text-align: left !important;
+  }
+
+  .monthly-text p {
+    font-size: 14px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+  }
+
+  .monthly-time {
+    width: 50px;
+    font-size: 13px !important;
+    margin: 0 0 0 20px !important;
+  }
+  .monthly-play {
+    width: 100px;
+    font-size: 13px !important;
+    margin: 0 !important;
+  }
 }
 </style>

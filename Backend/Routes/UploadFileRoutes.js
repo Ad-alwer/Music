@@ -11,10 +11,10 @@ const { addbanner, addresbanner, addsocialicon } = require("../Databases/Base.js
 const trackDB = require('../Databases/Tracks.js')
 
 const ffmpeg = require("fluent-ffmpeg");
-const { default: mongoose } = require("mongoose");
-const { editalbum } = require("../Databases/Albums.js");
-const ffprobePath = require("ffprobe-static").path;
-ffmpeg.setFfprobePath(ffprobePath);
+   const { default: mongoose } = require("mongoose");
+   const { editalbum } = require("../Databases/Albums.js");
+   const ffmpegPath = require("ffmpeg-static").path;
+   ffmpeg.setFfmpegPath(ffmpegPath);
 
 const config = {
   endpoint: process.env.LIARA_ENDPOINT,

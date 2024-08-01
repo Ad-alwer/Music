@@ -114,8 +114,21 @@
             class="text-capitalize form-select"
             ref="statusinput"
           >
-            <option value="private" class="text-capitalize">Private</option>
-            <option value="public" class="text-capitalize">Public</option>
+            <option
+              :selected="
+                data.status.toLowerCase() === 'private' ? 'selected' : ''
+              "
+              value="private"
+              class="text-capitalize"
+            >
+              Private
+            </option>
+            <option
+            :selected="data.status.toLowerCase() === 'public' ? 'selected' : ''" 
+              class="text-capitalize"
+            >
+              Public
+            </option>
           </select>
         </div>
 

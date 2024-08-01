@@ -78,8 +78,9 @@ export default {
       .then((res) => {
         if (res.data) {
           this.data = res.data;
-          this.loader = false;
         }
+        this.loader = false;
+
       });
   },
   data() {

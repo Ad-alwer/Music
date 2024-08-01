@@ -129,6 +129,7 @@ export default {
             const date = new Date();
             let lastMonthNumber = date.getMonth();
             this.data.forEach((album) => {
+              album.artist = album.tracks[0].artist.username
               let view = 0;
               album.tracks.forEach((track) => {
                 const lastmonth =
@@ -150,7 +151,7 @@ export default {
                 view,
               };
             });
-            this.loader = false; // Move this line outside the forEach loop
+            this.loader = false; 
           }
         });
       } else {

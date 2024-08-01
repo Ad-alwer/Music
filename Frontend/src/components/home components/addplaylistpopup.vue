@@ -130,7 +130,11 @@
                   :key="x"
                   class="search-child d-flex justify-content-between w-100 align-items-center gap-3"
                 >
-                  <img :src="x.cover.url" class="img-fluid rounded-3 img-select" alt="" />
+                  <img
+                    :src="x.cover.url"
+                    class="img-fluid rounded-3 img-select"
+                    alt=""
+                  />
                   <div class="d-flex flex-column detail-box">
                     <span class="text-capitalize fw-semibold trim-text fs-5">{{
                       x.name
@@ -166,7 +170,11 @@
                   :key="x"
                   class="d-flex justify-content-between w-100 align-items-center gap-3"
                 >
-                  <img :src="x.cover.url" class="img-fluid rounded-3 img-select" alt="" />
+                  <img
+                    :src="x.cover.url"
+                    class="img-fluid rounded-3 img-select"
+                    alt=""
+                  />
                   <div class="d-flex flex-column detail-box">
                     <span class="text-capitalize fw-semibold trim-text fs-5">{{
                       x.name
@@ -253,9 +261,11 @@ export default {
   },
   methods: {
     namecheker: function (e) {
-      axios
-        .get(`${this.apiaddress}playlist/checkname/${e}`)
-        .then((res) => (this.namecheck = res.data));
+      if (e.length > 0) {
+        axios
+          .get(`${this.apiaddress}playlist/checkname/${e}`)
+          .then((res) => (this.namecheck = res.data));
+      }
     },
     chagetumbnail: function () {
       this.$refs.tumbnail.src = URL.createObjectURL(
@@ -481,7 +491,7 @@ export default {
   max-width: 160px;
 }
 
-.img-select{
+.img-select {
   width: 60px;
   height: 60px;
 }

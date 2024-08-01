@@ -259,11 +259,9 @@
               >
                 <div
                   class="d-flex justify-content-center align-items-center gap-1 btn-save"
-                  @click="goto('/profile/request') "
+                  @click="goto('/profile/request')"
                 >
-                  <span class="text-white"
-                    >see more</span
-                  >
+                  <span class="text-white">see more</span>
                   <svg
                     class="pointer ms-2 mt-1"
                     width="18"
@@ -355,7 +353,6 @@
                   type="text"
                   name=""
                   class="form-control text-capitalize"
-                  maxlength="25"
                   id=""
                   placeholder="enter link"
                 />
@@ -710,7 +707,7 @@ export default {
             position: "topRight",
           });
           this.popups.reloadheader = !this.popups.reloadheader;
-
+          this.$emit("reloaddata", "reload");
           this.getdata();
         }
       });

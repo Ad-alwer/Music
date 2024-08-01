@@ -7,12 +7,13 @@ const trackDB = require("./Tracks.js");
 const albumDB = require("./Albums.js");
 const playlistDB = require("./Playlists.js");
 const baseDB = require("./Base.js");
+const { use } = require("../Routes/AccountspendingRoutes.js");
 
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
-  console.log("conect");})
-
+  console.log("conect");
+});
 
 const musicschema = new mongoose.Schema({
   username: {
@@ -41,14 +42,14 @@ const musicschema = new mongoose.Schema({
   isverify: { type: Boolean, default: false },
   banupload: { type: Boolean, default: false },
   requests: [],
-  bio: { type: String, maxlength: 500, trim: true },
+  bio: { type: String, maxlength: 500, trim: true, default: null },
   socialmedia: [],
   subscribe: [],
   artists: [],
   saveAlbums: [],
   saveTracks: [],
   savePlaylists: [],
-  lastplay: {},
+  lastplay: { type: Object, default: null },
   notification: [],
   profile: { type: String, default: null },
   favouriteGenre: { type: String, default: null },
@@ -457,6 +458,13 @@ async function getuserbyid(id) {
         return await User.findById(e);
       })
     );
+
+    await Promise.all(
+      user.socialmedia.map(async (e) => {
+        e.iconlink = await baseDB.findsocialmedia(e.icon);
+        return e;
+      })
+    );
     return user;
   } catch {
     return false;
@@ -525,6 +533,12 @@ async function getuserbyusername(username) {
       })
     );
 
+    await Promise.all(
+      user.socialmedia.map(async (e) => {
+        e.iconlink = await baseDB.findsocialmedia(e.icon);
+        return e;
+      })
+    );
     return user;
   } catch {
     return false;
@@ -642,8 +656,8 @@ async function checktrackandalbumname(name, edit) {
       return e.toLowerCase() === name.toLowerCase();
     });
     return search >= 0 ? false : true;
-  } catch (error) {
-    console.error(error);
+  } catch {
+    return false
   }
 }
 
@@ -721,9 +735,8 @@ async function addrequesttrack(
 
       return user;
     } catch {
-      return false
+      return false;
     }
-    
   }
 }
 
@@ -1044,10 +1057,8 @@ async function deletsocial(token, title) {
   }
 }
 
-async function verifytrack(token, name) {
+async function verifytrack(userId, name) {
   try {
-    const decode = jwt.verify(token, process.env.REGISTER_JWT);
-    const userId = decode._id;
     const user = await User.findById(userId);
     const requests = user.requests;
     const updatedRequests = await Promise.all(
@@ -1057,7 +1068,7 @@ async function verifytrack(token, name) {
             request.name,
             request.type,
             request.genre,
-            request.artist,
+            userId,
             request.description,
             request.lyric,
             request.cover,
@@ -1100,11 +1111,8 @@ async function verifytrack(token, name) {
   }
 }
 
-async function rejectrack(token, name, msg) {
+async function rejectrack(userId, name, msg) {
   try {
-    const decode = jwt.verify(token, process.env.REGISTER_JWT);
-    const userId = decode._id;
-
     let user = await User.findById(userId);
     let requests = user.requests;
 
@@ -1288,6 +1296,7 @@ async function getlastplay(token) {
       albums.forEach((album) => {
         album.tracks.forEach((track) => {
           if (track.status.toLowerCase() == "public") {
+            track.albumid = album._id;
             track.cover = album.cover;
             library.push(track);
           }
@@ -1393,6 +1402,10 @@ async function getLibrary(token) {
   try {
     const decode = jwt.verify(token, process.env.REGISTER_JWT);
     const user = await User.findById(decode._id);
+    if (!user.lastplay) {
+      return false;
+    }
+
     if (user.lastplay.type == "track") {
       let library = [];
       let albums = await Promise.all(
@@ -1420,7 +1433,7 @@ async function getLibrary(token) {
       );
 
       for (const track of tracks) {
-        if (track.status.toLowerCase() === "public") {
+        if (track && track.status.toLowerCase() === "public") {
           track.artist = await User.findById(track.artist);
           library.push(track);
         }
@@ -1495,8 +1508,7 @@ async function getLibrary(token) {
 
       return playlist.tracks;
     }
-  } catch (error) {
-    console.error(error);
+  } catch {
     return false;
   }
 }
@@ -1517,16 +1529,14 @@ async function notification(query, link, text, img) {
   }
 }
 
-async function verifyalbum(token, name) {
+async function verifyalbum(userId, name) {
   try {
-    const decode = jwt.verify(token, process.env.REGISTER_JWT);
-    const userId = decode._id;
     const user = await User.findById(userId);
     const requests = user.requests;
 
     const updatedRequests = await Promise.all(
       requests.map(async (request) => {
-        if (request.name === name) {
+        if (request.name.trim().toLowerCase() === name.trim().toLowerCase()) {
           await albumDB
             .addalbum(
               request.name,
@@ -1574,21 +1584,17 @@ async function verifyalbum(token, name) {
     );
 
     return true;
-  } catch {
+  } catch  {
     return false;
   }
 }
-async function rejectalbum(token, name, msg) {
+async function rejectalbum(userId, name, msg) {
   try {
-    const decode = jwt.verify(token, process.env.REGISTER_JWT);
-    const userId = decode._id;
-
     const user = await User.findById(userId);
     const requests = user.requests;
-
     const updatedRequests = await Promise.all(
       requests.map(async (request) => {
-        if (request.name === name) {
+        if (name.trim().toLowerCase() === request.name.trim().toLowerCase()) {
           request.status = "reject";
           return {
             ...request,
@@ -1598,7 +1604,6 @@ async function rejectalbum(token, name, msg) {
         return request;
       })
     );
-
     await User.findByIdAndUpdate(userId, {
       $set: {
         requests: updatedRequests,
@@ -1840,7 +1845,7 @@ async function changeidtouser(arr, type) {
       );
       return arr;
     } else if (type === "album") {
-      await Promise.all(
+      let resault = await Promise.all(
         arr.map(async (album) => {
           await Promise.all(
             album.tracks.map(async (track) => {
@@ -1851,7 +1856,7 @@ async function changeidtouser(arr, type) {
         })
       );
 
-      return arr;
+      return resault;
     } else {
       arr.forEach(async (e) => {
         e.creator = new mongoose.Types.ObjectId(e.creator);
@@ -2286,5 +2291,3 @@ module.exports = {
   getnotification,
   readnotification,
 };
-
-

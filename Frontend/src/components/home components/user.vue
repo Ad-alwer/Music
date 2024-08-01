@@ -1,6 +1,6 @@
 <template>
   <loader v-if="popups.loader" />
-  <div v-else id="parent" class="container mt-4 mx-3 d-flex">
+  <div v-else id="parent" class="container mt-4 mx-3 gap-5 d-flex">
     <div class="w-75 px-2 main">
       <div class="info d-flex justify-content-center gap-5">
         <div class="profile-parent d-flex gap-3 align-items-center">
@@ -127,17 +127,17 @@
             >more</span
           >
         </div>
-        <div v-if="detail" class="px-4">
+        <div v-if="detail" class="px-4 detail-parent">
           <section>
             <div
-              class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3"
+              class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3 detail-box"
             >
               <i
                 class="fa fa-arrow-left text-danger fs-5 pointer"
                 @click="closetracklist"
               ></i>
               <div
-                class="d-flex gap-5 align-items-center"
+                class="d-flex gap-5 align-items-center imgandnamebox"
                 @click="play(selecteddata._id)"
               >
                 <img
@@ -146,14 +146,14 @@
                   alt=""
                 />
                 <div class="d-flex flex-column monthly-text">
-                  <p
-                    class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer"
-                  >
+                  <p class="text-capitalize fw-bold m-0 p-0 color-dark pointer">
                     {{ selecteddata.name }}
                   </p>
                 </div>
               </div>
-              <div class="d-flex gap-4 align-items-center position-relative">
+              <div
+                class="d-flex gap-4 align-items-center position-relative palysandtimebox"
+              >
                 <span class="me-3 text-capitalize monthly-time"
                   >{{ formattime(selecteddata.duration) }}
                 </span>
@@ -205,12 +205,12 @@
           <hr class="bar" />
           <section class="data-parent">
             <div
-              class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3"
+              class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3 detail-box"
               v-for="(x, i) in selecteddata.tracks"
               :key="x"
             >
               <div
-                class="d-flex gap-5 align-items-center"
+                class="d-flex gap-5 align-items-center imgandnamebox"
                 @click="playdetail(x._id, selecteddata._id)"
               >
                 <img
@@ -219,14 +219,14 @@
                   alt=""
                 />
                 <div class="d-flex flex-column monthly-text">
-                  <p
-                    class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer"
-                  >
+                  <p class="text-capitalize fw-bold m-0 p-0 color-dark pointer">
                     {{ x.name }}
                   </p>
                 </div>
               </div>
-              <div class="d-flex gap-4 align-items-center position-relative">
+              <div
+                class="d-flex gap-4 align-items-center position-relative palysandtimebox"
+              >
                 <span class="me-3 text-capitalize monthly-time"
                   >{{ formattime(x.duration) }}
                 </span>
@@ -279,8 +279,7 @@
           "
           class="d-flex flex-column gap-2 data-parent"
         >
-      
-          <div v-if="data.length > 0 " class="">
+          <div v-if="data.length > 0" class="">
             <div
               v-for="x in data"
               :key="x"
@@ -340,81 +339,85 @@
           </div>
         </div>
         <div v-else class="data-parent">
-          <div v-if=" component == 'more'">
-          <section>
-        <p class="fw-bold fs-5 text-capitalize mt-4 mb- pe-3">Social media</p>
-        <ul class="" v-if="otheruser.socialmedia.length > 0">
-          <li
-            v-for="x in otheruser.socialmedia"
-            @click="goto(x.link)"
-            :key="x"
-            class="d-flex gap-3 align-items-center justify-content-start socialmedia-li mt-2"
-          >
-            <img :src="x.iconlink" class="img-fluid img-socialmedia" alt="" />
-            <span class="text-capitalize pointer socilamedia-title">{{
-              x.title
-            }}</span>
-          </li>
-        </ul>
-        <div v-else class="d-flex justify-content-center">
-          <img
-            src="../../assets/img/empty.png"
-            class="img-fluid img-aside"
-            alt=""
-          />
-        </div>
-      </section>
-      <section>
-        <p class="fw-bold fs-5 text-capitalize mt-4 mb-0 pe-3">recomended</p>
-        <ul
-          class="d-flex flex-column gap-3 mt-2"
-          v-if="otheruser.recommendUser.length > 0"
-        >
-          <li
-            v-for="x in otheruser.recommendUser"
-            @click="gotouser(x.username)"
-            :key="x"
-            class="d-flex gap-3 align-items-center"
-          >
-            <img
-              src="../../assets/img/icon.jpg"
-              class="img-fluid recomended-img rounded-circle"
-              alt=""
-            />
-            <span class="text-capitalize pointer recomeded-title fs-5">{{
-              x.username
-            }}</span>
-          </li>
-        </ul>
-        <div v-else class="d-flex justify-content-center align-items-center">
-          <img
-            src="../../assets/img/empty.png"
-            class="img-fluid img-aside"
-            alt=""
-          />
-        </div>
-      </section></div>
-          <div v-else-if="data.length > 0">
+          <div v-if="component == 'more'">
+            <section v-if="otheruser.socialmedia.length > 0" >
+              <p class="fw-bold fs-5 text-capitalize mt-4 mb- pe-3">
+                Social media
+              </p>
+              <ul class="" >
+                <li
+                  v-for="x in otheruser.socialmedia"
+                  @click="goto(x.link)"
+                  :key="x"
+                  class="d-flex gap-3 align-items-center justify-content-start socialmedia-li mt-2"
+                >
+                  <img
+                    :src="x.iconlink"
+                    class="img-fluid img-socialmedia"
+                    alt=""
+                  />
+                  <span class="text-capitalize pointer socilamedia-title">{{
+                    x.title
+                  }}</span>
+                </li>
+              </ul>
+              
+            </section>
+            <section v-if="otheruser.recommendUser.length > 0">
+              <p class="fw-bold fs-5 text-capitalize mt-4 mb-0 pe-3">
+                recomended
+              </p>
+              <ul
+                class="d-flex flex-column gap-3 mt-2"
+                
+              >
+                <li
+                  v-for="x in otheruser.recommendUser"
+                  @click="gotouser(x.username)"
+                  :key="x"
+                  class="d-flex gap-3 align-items-center"
+                >
+                  <img
+                    :src="
+                      x.profile
+                        ? x.profile
+                        : require('../../assets/img/icon.jpg')
+                    "
+                    class="img-fluid recomended-img rounded-circle"
+                    alt=""
+                  />
+                  <span class="text-capitalize pointer recomeded-title fs-5">{{
+                    x.username
+                  }}</span>
+                </li>
+              </ul>
+              
+            </section>
+          </div>
+          <div v-else-if="data.length > 0" class="tracks-parent">
             <div
-              class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3"
+              class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3 track-parent"
               v-for="(x, i) in data"
               :key="x"
             >
-              <div class="d-flex gap-5 align-items-center" @click="play(x._id)">
+              <div
+                class="d-flex gap-5 align-items-center imgandnamebox"
+                @click="play(x._id)"
+              >
                 <img
                   class="monthly-img img-fluid rounded-3"
                   :src="x.cover.url"
                   alt=""
                 />
                 <div class="d-flex flex-column monthly-text">
-                  <p
-                    class="text-capitalize fs-5 fw-bold m-0 p-0 color-dark pointer"
-                  >
+                  <p class="text-capitalize fw-bold m-0 p-0 color-dark pointer">
                     {{ x.name }}
                   </p>
                 </div>
               </div>
-              <div class="d-flex gap-4 align-items-center position-relative">
+              <div
+                class="d-flex gap-4 align-items-center position-relative timeandplat-parent"
+              >
                 <span class="me-3 text-capitalize monthly-time"
                   >{{ formattime(x.duration) }}
                 </span>
@@ -477,9 +480,9 @@
       </div>
     </div>
     <div class="w-25 px-1 aside">
-      <section>
+      <section v-if="otheruser.socialmedia.length > 0">
         <p class="fw-bold fs-5 text-capitalize mt-4 mb- pe-3">Social media</p>
-        <ul class="" v-if="otheruser.socialmedia.length > 0">
+        <ul class="" >
           <li
             v-for="x in otheruser.socialmedia"
             @click="goto(x.link)"
@@ -492,19 +495,14 @@
             }}</span>
           </li>
         </ul>
-        <div v-else class="d-flex justify-content-center">
-          <img
-            src="../../assets/img/empty.png"
-            class="img-fluid img-aside"
-            alt=""
-          />
-        </div>
+       
+   
       </section>
-      <section>
+      <section  v-if="otheruser.recommendUser.length > 0">
         <p class="fw-bold fs-5 text-capitalize mt-4 mb-0 pe-3">recomended</p>
         <ul
           class="d-flex flex-column gap-3 mt-2"
-          v-if="otheruser.recommendUser.length > 0"
+         
         >
           <li
             v-for="x in otheruser.recommendUser"
@@ -513,22 +511,19 @@
             class="d-flex gap-3 align-items-center"
           >
             <img
-              src="../../assets/img/icon.jpg"
+              :src="
+                x.profile ? x.profile : require('../../assets/img/icon.jpg')
+              "
               class="img-fluid recomended-img rounded-circle"
               alt=""
             />
-            <span class="text-capitalize pointer recomeded-title fw-semibold fs-5">{{
-              x.username
-            }}</span>
+            <span
+              class="text-capitalize pointer recomeded-title fw-semibold fs-5"
+              >{{ x.username }}</span
+            >
           </li>
         </ul>
-        <div v-else class="d-flex justify-content-center align-items-center">
-          <img
-            src="../../assets/img/empty.png"
-            class="img-fluid img-aside"
-            alt=""
-          />
-        </div>
+        
       </section>
     </div>
   </div>
@@ -679,17 +674,20 @@ export default {
       if (this.otheruser) {
         if (this.component === "podcast") {
           this.data = this.otheruser.tracks.filter((e) => {
-            return e.type == "podcast" && e.status == "public";
+            return (
+              e.type.toLowerCase() == "podcast" &&
+              e.status.toLowerCase() == "public"
+            );
           });
           this.checksave();
           this.checklike();
         } else if (this.component === "music") {
           this.data = [];
+
           this.otheruser.tracks.length > 0
             ? this.otheruser.tracks.forEach((track) => {
-                if (track.status == "public") {
+                if (track && track.status.toLowerCase() == "public") {
                   track.duration = track.track.duration;
-
                   this.data.push(track);
                 }
               })
@@ -697,9 +695,11 @@ export default {
 
           this.otheruser.albums.forEach((album) => {
             album.tracks.forEach((track) => {
-              track.cover = album.cover;
-              track.createdAt = album.createdAt;
-              this.data.push(track);
+              if (track.status.toLowerCase() === "public") {
+                track.cover = album.cover;
+                track.createdAt = album.createdAt;
+                this.data.push(track);
+              }
             });
           });
 
@@ -1322,8 +1322,16 @@ export default {
   width: 50px;
   height: 50px;
 }
+
+.monthly-time,
+.monthly-play {
+  margin: 0 !important;
+  font-size: 14px !important;
+}
 .main {
-  height: 650px;
+  widows: 100% !important;
+  padding: 0 !important;
+  margin-left: -2%;
 }
 .aside {
   overflow: hidden;
@@ -1336,7 +1344,7 @@ export default {
   height: 50px;
 }
 .monthly-text {
-  width: 220px;
+  width: 280px;
   text-align: left !important;
 }
 .monthly-play {
@@ -1427,11 +1435,39 @@ export default {
 
 @media screen and (max-width: 767px) {
   #parent {
-    margin: 10px 15px 68px 10px !important;
+    margin: 10px 0px 68px 10px !important;
     padding: 0 !important;
+    height: 80vh;
+    overflow: hidden;
+  }
+  .monthly-text {
+    width: 240px;
+    text-align: left !important;
+  }
+  .monthly-text p {
+    font-size: 14px !important;
   }
   .aside {
     display: none;
+  }
+
+  .timeandplat-parent {
+    gap: 8px !important;
+  }
+  .imgandnamebox {
+    gap: 8px !important;
+  }
+  .tracks-parent {
+    width: 100%;
+  }
+
+  .svg-more{
+    margin-left: -10px !important;
+  }
+  .track-parent {
+
+    justify-content: space-between !important;
+    gap: 8px !important;
   }
   .main {
     width: 100% !important;
@@ -1454,13 +1490,57 @@ export default {
   .select-parent {
     font-size: 14px;
   }
-  .img-follow,  .recomended-img{
+  .img-follow,
+  .recomended-img {
     width: 40px;
     height: 40px;
   }
-  .follow-username,.recomeded-title{
+  .follow-username,
+  .recomeded-title {
     font-size: 15px !important;
   }
-  
+
+  .li-child {
+    border-bottom: 2px solid var(--blue-main);
+    margin-left: -30px;
+    cursor: pointer;
+    font-size: 14px !important;
+  }
+  .detail-parent {
+    overflow: auto;
+    height: 60vh;
+  }
+  .detail-box {
+    gap: 8px !important;
+  }
+  .detail-box .imgandnamebox {
+    gap: 8px !important;
+  }
+
+  .detail-box .monthly-text {
+    font-size: 14px !important;
+    width: 230px;
+    text-align: center;
+  }
+  .detail-box .monthly-play {
+    font-size: 13px !important;
+    width: 50px;
+  }
+  .detail-box .monthly-time {
+    font-size: 13px !important;
+  }
+  .detail-box .svg-more {
+    transform: rotate(90deg);
+    width: 30px;
+  }
+
+  .detail-box .palysandtimebox {
+    gap: 0 !important;
+    justify-content: space-between !important;
+    max-width: 180px;
+  }
+  .div.px-4 {
+    padding: 0 10px !important;
+  }
 }
 </style>

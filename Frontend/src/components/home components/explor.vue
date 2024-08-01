@@ -20,7 +20,7 @@
             alt=""
           />
           <span
-            class="color-black text-capitalize text-center fw-bold fs-6 seemore-name pointer"
+            class="color-black text-capitalize text-center fw-bold fs-6 seemore-name pointer "
             >{{ x.name }}</span
           >
           <span
@@ -113,7 +113,7 @@
               class="img-fluid swiper-img rounded-4 newtrack-img"
               alt=""
             />
-            <p class="color-black">{{ x.name }}</p>
+            <p class="color-black text-capitalize">{{ x.name }}</p>
             <span>{{ formatview(x.plays) }} palys</span>
           </swiper-slide>
         </Swiper>
@@ -151,7 +151,7 @@
               class="img-fluid swiper-img rounded-4 newtrack-img"
               alt=""
             />
-            <p class="color-black">{{ x.name }}</p>
+            <p class="color-black text-capitalize">{{ x.name }}</p>
             <span>{{ formatview(x.plays) }} palys</span>
           </swiper-slide>
         </Swiper>

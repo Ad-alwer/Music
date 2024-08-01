@@ -158,6 +158,7 @@ export default {
   data() {
     return {
       apiaddress: info.Api_ADDRESS,
+      url: info.Url,
       popups: {
         addpopups: false,
         editalbum: false,
@@ -174,6 +175,12 @@ export default {
       this.editdata = null;
     },
     getplaylists: function () {
+      if (this.data.length > 0) {
+        this.data.forEach((e) => {
+          e.showmore = false;
+        });
+      }
+      this.popups.loader = true;
       axios
         .get(`${this.apiaddress}playlist/getplaylists`, {
           headers: {
@@ -246,7 +253,7 @@ export default {
         });
     },
     playlisttracklist: function (playlistname) {
-      location.href = `user/${this.user.username}/playlist/${playlistname}`;
+      location.href = `${this.url}user/${this.user.username}/playlist/${playlistname}`;
     },
 
     listenPlaylist: function (playlistid) {
@@ -274,6 +281,12 @@ export default {
         });
     },
     getalbums: function () {
+      if (this.data.length > 0) {
+        this.data.forEach((e) => {
+          e.showmore = false;
+        });
+      }
+      this.popups.loader = true;
       axios
         .get(`${this.apiaddress}album/finduseralbum`, {
           headers: {
@@ -341,7 +354,7 @@ export default {
         });
     },
     albumtracklist: function (albumname) {
-      location.href = `user/${this.user.username}/playlist/${albumname}`;
+      location.href = `${this.url}user/${this.user.username}/album/${albumname}`;
     },
     deletealbum: function (id) {
       axios

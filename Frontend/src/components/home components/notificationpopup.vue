@@ -34,10 +34,10 @@
       </div>
       <div
         @click="changecomponent('notification')"
-        class="d-flex align-items-center gap-4 justify-content-center pointer notification-child more-parent"
+        class="d-flex align-items-center gap-4 justify-content-center pointer notification-child more-parent border-0"
       >
         <a
-          class="text-capitalize fw-semibold text-decoration-none fs-6 color-blue"
+          class="text-capitalize fw-semibold text-decoration-none fs-6 color-blue "
           >more</a
         >
       </div>

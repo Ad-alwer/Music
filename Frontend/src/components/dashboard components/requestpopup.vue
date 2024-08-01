@@ -12,7 +12,11 @@
           <input type="file" hidden id="profile" />
           <label for="profile">
             <img
-              src="../../assets/img/test/eminem.jpg"
+              :src="
+                data.artist.profile
+                  ? data.artist.profile
+                  : require('../../assets/img/icon.jpg')
+              "
               class="img-thumbnail rounded-circle"
               alt=""
           /></label>
@@ -345,27 +349,29 @@ export default {
       }, 500);
     },
     acceptmusic: function () {
-      const jwt = Register.methods.getcookies("jwt");
       axios
-        .put(`${this.apiaddress}users/verifytrack/${jwt}/${this.data.name}`)
+        .put(
+          `${this.apiaddress}users/verifytrack/${this.data.artistid}/${this.data.name}`
+        )
         .then((res) => {
           this.$emit("compelet", res.data);
         });
     },
     rejectmusic: function () {
-      const jwt = Register.methods.getcookies("jwt");
       if (this.$refs.msg.value) {
         axios
-          .put(`${this.apiaddress}users/rejectrack/${jwt}/${this.data.name}`, {
-            msg: this.$refs.msg.value,
-          })
+          .put(
+            `${this.apiaddress}users/rejectrack/${this.data.artistid}/${this.data.name}`,
+            {
+              msg: this.$refs.msg.value,
+            }
+          )
           .then((res) => {
-
             this.$emit("compelet", res.data);
           });
       } else {
         iziToast.error({
-          title: "Please Try Again",
+          title: "Please write message",
           position: "topRight",
         });
       }
@@ -378,16 +384,9 @@ export default {
       !val ? (this.tracksshow[i].show = true) : null;
     },
     acceptalbum: function () {
-      const jwt = Register.methods.getcookies("jwt");
       axios
         .put(
-          `${this.apiaddress}users/verifyalbum/${this.data.name}`,
-          {},
-          {
-            headers: {
-              jwt: jwt,
-            },
-          }
+          `${this.apiaddress}users/verifyalbum/${this.data.artistid}/${this.data.name}`
         )
         .then((res) => {
           this.$emit("compelet", res.data);
@@ -399,7 +398,7 @@ export default {
       if (this.$refs.msg.value) {
         axios
           .put(
-            `${this.apiaddress}users/rejectalbum/${this.data.name}`,
+            `${this.apiaddress}users/rejectalbum/${this.data.artistid}/${this.data.name}`,
             {
               msg: this.$refs.msg.value,
             },
@@ -410,12 +409,11 @@ export default {
             }
           )
           .then((res) => {
-
             this.$emit("compelet", res.data);
           });
       } else {
         iziToast.error({
-          title: "Please Try Again",
+          title: "Please write message",
           position: "topRight",
         });
       }

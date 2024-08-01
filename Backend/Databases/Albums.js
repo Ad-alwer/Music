@@ -3,11 +3,13 @@ const timestamp = require("mongoose-timestamp");
 const jwt = require("jsonwebtoken");
 
 const userDB = require("./Users.js");
+const e = require("express");
 
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
-  console.log("conect");})
+  console.log("conect");
+});
 
 const musicschema = new mongoose.Schema({
   name: {
@@ -47,7 +49,8 @@ async function addalbum(
 ) {
   try {
     tracks.forEach((track) => {
-      track._id = artist;
+      const newid = new mongoose.Types.ObjectId();
+      track._id = newid;
     });
     status = status.toLowerCase();
     artist = new mongoose.Types.ObjectId(artist);
@@ -79,6 +82,7 @@ async function editalbum(
   totalduaration
 ) {
   try {
+    tracks.forEach((e) => (e.status = status));
     if (cover) {
       await Album.findByIdAndUpdate(id, {
         $set: {
@@ -132,8 +136,15 @@ async function deletealbum(id) {
 
 async function changestatus(id, newstatus) {
   try {
+    const album = await Album.findById(id);
+    let updatedTracks = album.tracks.map((e) => {
+      e.status = newstatus;
+      return e;
+    });
+
     await Album.findByIdAndUpdate(id, {
       $set: {
+        tracks: updatedTracks,
         status: newstatus,
       },
     });
@@ -178,8 +189,9 @@ async function play(albumid, trackid) {
 async function monthlyListener(albumid, trackid) {
   const album = await Album.findById(albumid);
   let tracks = album.tracks;
-  const index = tracks.findIndex((track) => track._id == trackid);
-
+  const index = tracks.findIndex(
+    (track) => track._id.toString() == trackid.toString()
+  );
   let monthlylisteners = tracks[index].monthlyListener;
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -197,7 +209,7 @@ async function monthlyListener(albumid, trackid) {
       view: 1,
     });
   }
-
+  tracks[index].plays++;
   await Album.findByIdAndUpdate(albumid, {
     $set: {
       tracks,

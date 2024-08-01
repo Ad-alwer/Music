@@ -43,7 +43,7 @@
           v-for="(x, i) in seemore.val"
           :key="x"
           @click="seemoreclick(i)"
-          class="d-flex justify-content-center flex-column gap-1"
+          class="d-flex justify-content-center flex-column gap-1 align-items-center"
         >
           <img
             :src="
@@ -60,12 +60,10 @@
             "
             alt=""
           />
-          <p class="text-center text-capitalize fw-semibold pointer ">
+          <p class="text-center text-capitalize fw-semibold pointer trackname">
             {{ x.username ? x.username : x.name }}
           </p>
         </div>
-        
-        
       </div>
       <div v-else class="d-flex justify-content-center align-items-center">
         <img src="../../assets/img/empty.png" class="img-fluid" alt="" />
@@ -115,9 +113,10 @@
               class="img-thumbnail swiper-img rounded-circle user-img"
               alt=""
             />
-            <p class="color-black trim-text">{{ x.username }}</p>
+            <p class="color-black trim-text text-capitalize">
+              {{ x.username }}
+            </p>
           </swiper-slide>
-          
         </Swiper>
       </div>
       <div v-if="data.tracks.length > 0">
@@ -152,7 +151,7 @@
               class="img-fluid swiper-img rounded-4 tracks-img"
               alt=""
             />
-            <p class="color-black">{{ x.name }}</p>
+            <p class="color-black trackname">{{ x.name }}</p>
             <span>{{ x.artist.username }}</span>
           </swiper-slide>
         </Swiper>
@@ -191,9 +190,7 @@
             />
             <div
               class="swiper-albums-text d-flex flex-column align-items-center"
-            >
-              <p class="text-capitalize">{{ x.name }}</p>
-            </div>
+            ></div>
           </swiper-slide>
         </Swiper>
       </div>
@@ -232,7 +229,7 @@
             <div
               class="swiper-albums-text d-flex flex-column align-items-center"
             >
-              <p class="text-capitalize">{{ x.name }}</p>
+              <p class="text-capitalize trackname">{{ x.name }}</p>
             </div>
           </swiper-slide>
         </Swiper>
@@ -273,9 +270,10 @@ import loader from "../loader.vue";
 export default {
   name: "search",
   beforeMount() {
+    const address = location.pathname.split("/")[1];
     const search = location.pathname.split("/")[2];
 
-    if (search) {
+    if (address === "search" && search) {
       this.search(search);
     }
   },
@@ -452,6 +450,7 @@ export default {
   width: 158px;
   height: 158px;
 }
+
 .seemore {
   width: 120px;
   height: 120px;
@@ -489,28 +488,34 @@ export default {
     height: 60px;
   }
 
-  .trim-text{
-  max-width: 80px;
-  font-size: 14px !important;
-
+  .trim-text {
+    max-width: 80px;
+    font-size: 14px !important;
   }
 
-  .swiper-members-child:first-child{
+  .swiper-members-child:first-child {
     margin-left: 7px !important;
   }
 
   .albumandplaylist-img {
-  width: 120px;
-  height: 120px;
-}
-.seemore {
-  width: 120px;
-  height: 120px;
+    width: 120px;
+    height: 120px;
+  }
+  .seemore {
+    width: 120px;
+    height: 120px;
+  }
+
+  .seemore-profile {
+    width: 60px;
+    height: 60px;
+  }
 }
 
-.seemore-profile {
-  width: 60px;
-  height: 60px;
-}
+.trackname {
+  font-size: 12px !important;
+  text-transform: capitalize;
+  text-wrap: nowrap;
+  text-align: center;
 }
 </style>

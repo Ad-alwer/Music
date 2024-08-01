@@ -2,7 +2,7 @@
   <div id="parent ">
     <header class="d-flex align-items-center gap-1 mt-3">
       <hmheader
-      class="header"
+        class="header"
         :reload="reloadheader"
         @changecomponent="changecomponent"
         @sidemenu="sidemenu"
@@ -53,7 +53,10 @@
           @reload="changeusername"
         />
         <user v-if="component == 'user'" @changemusic="changemusic" />
-        <profile v-if="component == 'profile'" />
+        <profile
+          v-if="component == 'profile'"
+          @reloaddata="reloadheader = !reloadheader"
+        />
         <socialmedia v-if="component == 'socialmedia'" />
         <request v-if="component == 'request'" />
         <recomenduser v-if="component == 'recomenduser'" />
@@ -273,17 +276,15 @@ aside.player {
     background: white;
     z-index: 500;
   }
-  aside.player{
+  aside.player {
     position: absolute;
     bottom: 0;
     width: 100vw;
     height: 65px;
     z-index: 500;
     background: white;
-    
-
   }
-  .content{
+  .content {
     width: 100%;
   }
 }

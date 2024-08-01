@@ -10,7 +10,7 @@
             :src="show.img"
             alt=""
           />
-          <div class="d-flex flex-column text-box">
+          <div class="d-flex flex-column text-box align-items-center">
             <span
               class="text-capitalize color-dark mt-2 fs-5 fw-semibold trackname"
               ref="name"
@@ -48,7 +48,7 @@
 
             <span class="color-gray">{{ converttime(show.duration) }}</span>
           </div>
-          <div class="d-flex align-items-center gap-5 mt-1">
+          <div class="d-flex align-items-center gap-5 mt-1" v-if="show.artist">
             <div class="pointer like-imgs">
               <img
                 class="pointer opacity-25"
@@ -176,6 +176,7 @@
           </div>
 
           <div
+            v-if="show.artist"
             class="responsive-icons d-none align-items-center justify-content-center ms-5 ps-1"
           >
             <div class="pointer like-imgs">
@@ -346,13 +347,15 @@ export default {
     },
     pause: function () {
       let duaration = this.show.currentTime;
-      this.$refs.audio.pause();
-      this.show.isPlay = false;
-      this.$refs.range.value = this.$refs.audio.currentTime;
-      clearInterval(this.timeouts.nowchckinterval);
-      clearInterval(this.timeouts.changelastplayinterval);
-      this.changelastplay();
-      this.music.artist.lastplay.time = Number(duaration) + 1;
+      if (this.$refs.audio) {
+        this.$refs.audio.pause();
+        this.show.isPlay = false;
+        this.$refs.range.value = this.$refs.audio.currentTime;
+        clearInterval(this.timeouts.nowchckinterval);
+        clearInterval(this.timeouts.changelastplayinterval);
+        this.changelastplay();
+        this.music.artist.lastplay.time = Number(duaration) + 1;
+      }
     },
     timechange: function () {
       this.$refs.audio.pause();
@@ -403,8 +406,6 @@ export default {
     getmusic: function (music) {
       if (!music) {
         this.show.name = "Please select a track to listen";
-        this.$refs.audio.src = null;
-        this.$refs.audio.currentTime = 0;
         this.show.artist = null;
         this.show.img = require("../../assets/img/dontknow.png");
       } else {
@@ -428,10 +429,10 @@ export default {
         this.show.type = music.type;
 
         this.$nextTick(() => {
-          if (this.music.artist.lastplay.id == this.show.id) {
-            this.$refs.audio.currentTime = music.artist.lastplay.time;
+          if (this.user.lastplay.id == this.show.id) {
+            this.$refs.audio.currentTime = this.user.lastplay.time;
 
-            this.show.currentTime = music.artist.lastplay.time;
+            this.show.currentTime = this.user.lastplay.time;
           } else {
             this.$refs.audio.currentTime = 0;
             this.show.currentTime = 0;
@@ -699,7 +700,11 @@ input[type="range"]::-webkit-slider-thumb {
     top: -2px;
   }
   .trackname {
-    font-size: 18px !important;
+    font-size: 14px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
   }
   .artistname {
     font-size: 14px !important;
@@ -707,14 +712,14 @@ input[type="range"]::-webkit-slider-thumb {
   }
   .dutraion-box {
     font-size: 14px;
-    margin-left: 5%;
-    width: 90px !important;
+    margin-left: 0;
+    width: 80px !important;
   }
   .duration-slash {
     display: block !important;
   }
   .playicon-box {
-    margin-left: 30%;
+    margin-left: 10%;
     scale: 0.7;
   }
 
@@ -725,8 +730,8 @@ input[type="range"]::-webkit-slider-thumb {
   .responsive-icons {
     display: flex !important;
     scale: 0.9;
-
-    gap: 8px;
+    margin-left: 1% !important;
+    gap: 6px !important;
   }
 
   .responsive-icons .like-imgs,

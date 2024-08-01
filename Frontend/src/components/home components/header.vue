@@ -1,6 +1,6 @@
 <template>
   <nav class="d-flex align-items-center">
-    <div class="div-icon  d-flex justify-content-center align-items-center">
+    <div class="div-icon d-flex justify-content-center align-items-center">
       <svg
         width="131"
         height="25"
@@ -26,17 +26,17 @@
       <div class="d-flex justify-content-center gap-4 quick-access">
         <span
           class="text-capitalize pointer links position-relative"
-          @click="goto('/explore#music')"
+          @click="goto('explore#music')"
           >Music</span
         >
         <span
           class="text-capitalize pointer links position-relative"
-          @click="goto('/explore#podcast')"
+          @click="goto('explore#podcast')"
           >Podcast</span
         >
         <span
           class="text-capitalize pointer links position-relative"
-          @click="goto('/explore#album')"
+          @click="goto('explore#album')"
           >Album</span
         >
       </div>
@@ -99,7 +99,6 @@
           @read="changeread"
           @close="popups.notifacation = false"
           v-show="popups.notifacation"
-         
         />
 
         <svg
@@ -154,7 +153,7 @@
           <circle cx="16" cy="3" r="3" fill="#4343EF" />
         </svg>
       </div>
-      <div class="d-flex gap-2 ms-2 align-items-center ">
+      <div class="d-flex gap-2 ms-2 align-items-center">
         <profilepopup
           v-if="popups.profile"
           :admin="user.isadmin"
@@ -209,6 +208,7 @@ export default {
   name: "header",
   data() {
     return {
+      url: info.Url,
       apiaddress: info.Api_ADDRESS,
       user: {},
       unreadnofification: false,
@@ -227,17 +227,23 @@ export default {
           },
         })
         .then((res) => {
-          this.user = res.data;
-          this.user.notifacation
-            ? this.user.notifacation.forEach((e) => {
-                e.status == "unread" ? (this.unreadnofification = true) : null;
-              })
-            : null;
-          this.senduser();
+          if (res.data) {
+            this.user = res.data;
+            this.user.notifacation
+              ? this.user.notifacation.forEach((e) => {
+                  e.status == "unread"
+                    ? (this.unreadnofification = true)
+                    : null;
+                })
+              : null;
+            this.senduser();
+          } else {
+            location.href = `${this.url}login`;
+          }
         });
     },
     goto: function (e) {
-      location.href = e;
+      location.href = `${this.url}${e}`;
     },
     senduser: function () {
       this.$emit("getuser", this.user);
@@ -256,7 +262,7 @@ export default {
     if (Register.methods.getcookies("jwt")) {
       this.getdata();
     } else {
-      location.href = "/login";
+      location.href = `${this.url}login`;
     }
   },
   components: {
@@ -338,8 +344,5 @@ img {
   .iconbar {
     display: block !important;
   }
- 
-
-  
 }
 </style>

@@ -10,8 +10,8 @@ const { getusernamebyid } = require("../Databases/Users.js");
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
-  console.log("conect");})
-
+  console.log("conect");
+});
 
 const musicschema = new mongoose.Schema({
   name: {
@@ -232,7 +232,7 @@ async function monthlyListener(id) {
     });
 
     let search = library.findIndex((e) => {
-      return e._id === id;
+      return e._id.toString() === id.toString();
     });
     await albumDB.play(library[search].albumid, library[search]._id);
     albumDB.monthlyListener(library[search].albumid, library[search]._id);
@@ -300,7 +300,7 @@ async function search(name) {
     let library = [];
     const tracks = await Track.find();
     tracks.forEach(async (track) => {
-      if (track.status == "public") {
+      if (track.status.toLowerCase() == "public") {
         library.push(track);
       }
     });
@@ -308,17 +308,15 @@ async function search(name) {
     const albums = await albumDB.getallalbums();
     albums.forEach((album) => {
       album.tracks.forEach(async (e) => {
-        if (e.status == "Public") {
+        if (e.status.toLowerCase() == "public") {
           e.cover = album.cover;
           library.push(e);
         }
       });
     });
 
-    const searchResults = library.filter((item) =>
-      item.name.toLowerCase().includes(name)
-    );
-
+    const regex = new RegExp(name, "i");
+    const searchResults = library.filter((e) => regex.test(e.name));
     return searchResults;
   } catch {
     return false;

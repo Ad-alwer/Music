@@ -8,8 +8,8 @@ const AlbumDB = require("./Albums.js");
 require("dotenv").config();
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
-  console.log("conect");})
-
+  console.log("conect");
+});
 
 const musicschema = new mongoose.Schema({
   name: {
@@ -170,30 +170,34 @@ async function checkplaylistname(name) {
 }
 
 async function getuserplaylist(token) {
-  const decode = jwt.verify(token, process.env.REGISTER_JWT);
+  try {
+    const decode = jwt.verify(token, process.env.REGISTER_JWT);
 
-  let library = await trackDB.getalltracks();
+    let library = await trackDB.getalltracks();
 
-  let albums = await AlbumDB.getallalbums();
-  albums.forEach((album) => {
-    album.tracks.forEach((track) => {
-      track.cover = album.cover;
-      library.push(track);
+    let albums = await AlbumDB.getallalbums();
+    albums.forEach((album) => {
+      album.tracks.forEach((track) => {
+        track.cover = album.cover;
+        library.push(track);
+      });
     });
-  });
 
-  const playlists = await Playlist.find({ creator: decode._id });
+    const playlists = await Playlist.find({ creator: decode._id });
 
-  playlists.forEach((playlist) => {
-    playlist.tracks.forEach((track, index) => {
-      const foundItem = library.find((item) => item._id.toString() == track);
-      if (foundItem) {
-        playlist.tracks[index] = foundItem;
-      }
+    playlists.forEach((playlist) => {
+      playlist.tracks.forEach((track, index) => {
+        const foundItem = library.find((item) => item._id.toString() == track);
+        if (foundItem) {
+          playlist.tracks[index] = foundItem;
+        }
+      });
     });
-  });
 
-  return playlists;
+    return playlists;
+  } catch {
+    return false;
+  }
 }
 
 async function getallplaylists() {

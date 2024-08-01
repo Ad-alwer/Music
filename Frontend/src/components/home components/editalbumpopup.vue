@@ -202,7 +202,6 @@
         :user="user"
         :tracks="tracks"
         @addtrack="addtrack"
-        
       />
       <loader v-if="popups.loader" />
     </div>
@@ -234,8 +233,10 @@ export default {
 
       this.detailshower.tumbnail = true;
       this.$refs.tumbnailsize.innerText = `300 Kb`;
-      this.$refs.tumbnailname.innerText =
-        this.data.cover.name.split("covers/")[1];
+      if (this.data.cover.name) {
+        this.$refs.tumbnailname.innerText =
+          this.data.cover.name.split("covers/")[1];
+      }
 
       this.detailshower.albumtrack = true;
       this.data.tracks.forEach((e) => {
@@ -331,8 +332,10 @@ export default {
 
       this.detailshower.tumbnail = true;
       this.$refs.tumbnailsize.innerText = `300 Kb`;
-      this.$refs.tumbnailname.innerText =
-        this.data.cover.name.split("covers/")[1];
+      if (this.data.cover.name) {
+        this.$refs.tumbnailname.innerText =
+          this.data.cover.name.split("covers/")[1];
+      }
 
       this.detailshower.albumtrack = true;
       this.tracks = [];

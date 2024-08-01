@@ -141,15 +141,15 @@ Router.put("/editsocial", async (req, res) => {
     .then((data) => res.send(data));
 });
 
-Router.put("/verifytrack/:jwt/:name", (req, res) => {
+Router.put("/verifytrack/:id/:name", (req, res) => {
   usersDB
-    .verifytrack(req.params.jwt, req.params.name)
+    .verifytrack(req.params.id, req.params.name)
     .then((data) => res.send(data));
 });
 
-Router.put("/rejectrack/:jwt/:name", (req, res) => {
+Router.put("/rejectrack/:id/:name", (req, res) => {
   usersDB
-    .rejectrack(req.params.jwt, req.params.name, req.body.msg)
+    .rejectrack(req.params.id, req.params.name, req.body.msg)
     .then((data) => res.send(data));
 });
 
@@ -188,20 +188,21 @@ Router.get("/getlibrary", (req, res) => {
   usersDB.getLibrary(req.headers.jwt).then((data) => res.send(data));
 });
 
-Router.put("/verifyalbum/:name", (req, res) => {
+Router.put("/verifyalbum/:userid/:name", (req, res) => {
   usersDB
-    .verifyalbum(req.headers.jwt, req.params.name)
+    .verifyalbum(req.params.userid, req.params.name)
     .then((data) => res.send(data));
 });
 
-Router.put("/rejectalbum/:name", (req, res) => {
+Router.put("/rejectalbum/:userid/:name", (req, res) => {
   usersDB
-    .rejectalbum(req.headers.jwt, req.params.name, req.body.msg)
+    .rejectalbum(req.params.userid, req.params.name, req.body.msg)
     .then((data) => res.send(data));
 });
 
 Router.get("/getuserbyidorusername/:data", async (req, res) => {
-  if (mongoose.Types.ObjectId.isValid(req.params.data)) {
+  let regex = /^[a-zA-Z]+$/.test(req.params.data);
+  if (!regex && mongoose.Types.ObjectId.isValid(req.params.data)) {
     await usersDB.getuserbyid(req.params.data).then((data) => res.send(data));
   } else {
     await usersDB

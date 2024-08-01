@@ -81,34 +81,9 @@
                 class="w-100 img-topcollactions rounded-4"
                 alt=""
               />
-              <span class="text-center fw-bold">{{ x.name }}</span>
+              <span class="text-center fw-bold text-capitalize">{{ x.name }}</span>
             </div>
-            <div
-              class="col-4 d-flex flex-column align-items-center pointer"
-              v-for="x in data.topplaylists.slice(0, 3)"
-              :key="x"
-              @click="gotoplaylist(x.name, x.creator)"
-            >
-              <img
-                :src="x.cover.url"
-                class="w-100 img-topcollactions rounded-4"
-                alt=""
-              />
-              <span class="text-center fw-bold">{{ x.name }}</span>
-            </div>
-            <div
-              class="col-4 d-flex flex-column align-items-center pointer"
-              v-for="x in data.topplaylists.slice(0, 3)"
-              :key="x"
-              @click="gotoplaylist(x.name, x.creator)"
-            >
-              <img
-                :src="x.cover.url"
-                class="w-100 img-topcollactions rounded-4"
-                alt=""
-              />
-              <span class="text-center fw-bold">{{ x.name }}</span>
-            </div>
+           
           </div>
         </div>
         <div class="w-50 topgenre-parent">
@@ -388,6 +363,10 @@ export default {
   text-overflow: ellipsis;
   max-width: 110px;
 }
+.topartists img {
+    width: 90px;
+    height: 90px;
+  }
 
 @media screen and (max-width: 767px) {
   .slider {

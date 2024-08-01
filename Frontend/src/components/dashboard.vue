@@ -101,7 +101,6 @@ export default {
         });
     },
     sidemenu: function (e) {
-      console.log('e');
       this.$refs.aside.classList.toggle("d-block", e);
     },
   },
@@ -125,12 +124,12 @@ export default {
   overflow: hidden;
 }
 .content {
-  width: 62%;
+  width: 60%;
   overflow-y: scroll !important;
   max-height: 90vh;
 }
 aside.menu {
-  width: 240px;
+  width: 260px;
   height: 92vh;
 }
 aside.player {
