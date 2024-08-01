@@ -79,6 +79,7 @@ Thank you for your support 🙏
 
 To run this project, you will need to add the following environment variables to your .env file
 
+### Backend :
 `PORT`
 
 `DB_ADRESS`
@@ -103,18 +104,11 @@ To run this project, you will need to add the following environment variables to
 
 `Site_Adress`
 
- Also You need to create file that name default.js in frontend folder and create to variable as name `Api_ADDRESS` and `Url` then export thats.For example : 
-```Javascript
-const Api_ADDRESS = "http://localhost:3000/api/"
-const Url = "http://localhost:8080/"
+### Frontend :
 
-module.exports={
-    Api_ADDRESS,
-    Url
-}
+`VUE_APP_Url`
 
-```
-
+`VUE_APP_Api_ADDRESS`
 
 ## 🚀 About Me
 I'm Ali,
