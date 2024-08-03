@@ -612,12 +612,18 @@ input.form-control {
   .main {
     display: flex;
     justify-content: center;
-    margin: 15px auto !important;
+    margin: 0 auto !important;
+  }
+  input.form-control {
+  width: 380px;
+}
+
+  form {
+    left: 0;
   }
   .container {
     padding: 0 0 !important;
-    margin: 48px 0 0 0 !important;
-    
+    margin: 0 0 0 0 !important;
   }
 }
 </style>

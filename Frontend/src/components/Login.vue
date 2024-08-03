@@ -344,5 +344,12 @@ input.form-control {
     margin: 48px 0 0 0 !important;
     
   }
+  input.form-control {
+  width: 380px;
+}
+
+  form {
+    left: 0;
+  }
 }
 </style>
