@@ -6,8 +6,8 @@ require("dotenv").config();
 const userDB = require("./Users.js");
 
 mongoose.connect(process.env.DB_ADRESS).then(() => {
-  console.log("conect");})
-
+  console.log("conect");
+});
 
 const musicschema = new mongoose.Schema({
   username: {
@@ -47,18 +47,31 @@ async function finalcheckusername(value) {
 }
 
 async function adduser(username, email, password) {
+  const user = await Account.findOne({username});
+
   const code = Math.floor(Math.random() * 1000000000);
-  const account = new Account({
-    username,
-    email,
-    password,
-    code,
-  });
-  
-  await account.save();
-  const token = jwt.sign({ _id: account.id, code }, process.env.PENDING_JWT);
-  const link = `${process.env.Site_Adress}v/${token}`;
-  
+  let link;
+  if (user) {
+    await Account.findByIdAndUpdate(user._id, {
+      $set: {
+        email,
+      },
+    });
+    const token = jwt.sign({ _id: user._id, code }, process.env.PENDING_JWT);
+     link = `${process.env.Site_Adress}v/${token}`;
+  } else {
+    const account = new Account({
+      username,
+      email,
+      password,
+      code,
+    });
+
+    await account.save();
+    const token = jwt.sign({ _id: account.id, code }, process.env.PENDING_JWT);
+     link = `${process.env.Site_Adress}v/${token}`;
+  }
+
   const html = `
     <h1 style="text-align: center">Hello , ${username}</h1>
     <p style="font-size:1.5rem;text-align: center;font-weight:bold;  text-transform: capitalize;">You have created an account in our site. Click on the button below to verify that or copy the text in your browser</p>
@@ -103,14 +116,14 @@ async function adduser(username, email, password) {
       pass: process.env.MAIL_PASS,
     },
   });
-  
+
   const info = await transport.sendMail({
     from: process.env.MAIL_USER,
     to: email,
     subject: "Verify your account",
     html: html,
   });
-  
+
   if (!info.rejected[0]) {
     return true;
   } else {
@@ -122,14 +135,14 @@ async function verify(token) {
   try {
     const decode = jwt.verify(token, process.env.PENDING_JWT);
     let user = await Account.findById(decode._id);
-    
+
     if (user.code === decode.code) {
       const newuser = await userDB.register(
         user.username,
         user.email,
         user.password
       );
-      
+
       await deleteVerified(user.email);
       let newToken = jwt.sign({ _id: newuser._id }, process.env.REGISTER_JWT);
       return newToken;

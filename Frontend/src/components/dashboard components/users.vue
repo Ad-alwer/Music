@@ -264,11 +264,11 @@ input[type="checkbox"]:checked + .switch {
     margin-bottom: 68px;
   }
   table {
-    scale: 0.9;
+    scale: 0.8;
   }
 
   table th {
-    font-size: 15px !important;
+    font-size: 12px !important;
   }
   .switch {
     scale: 0.7;
@@ -277,7 +277,7 @@ input[type="checkbox"]:checked + .switch {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 160px;
+    max-width: 120px;
   }
   .table-section {
     display: flex;

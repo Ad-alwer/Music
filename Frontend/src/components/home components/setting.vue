@@ -195,7 +195,6 @@ export default {
 </script>
 
 <style scoped>
-
 .form-control,
 .form-select {
   border: none;
@@ -208,7 +207,7 @@ export default {
 
 .input-parent {
   border: 2px solid var(--blue-main);
-  width: 450px;
+  width: 100% !important;
 }
 input:disabled {
   background-color: #fff;
@@ -221,5 +220,17 @@ input:disabled {
 }
 .active-box {
   border-bottom: 2px solid var(--blue-main) !important;
+}
+
+@media screen and (max-width: 767px) {
+  .fs-5 {
+    font-size: 14px !important;
+  }
+
+  .form-control,
+  .form-select,
+  .btn,span {
+    font-size: 12px !important;
+  }
 }
 </style>

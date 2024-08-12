@@ -1,5 +1,5 @@
-<template>
-  <div id="parent ">
+<template >
+  <div id="parent " class="overflow-hidden">
     <header class="d-flex align-items-center gap-1 mt-3">
       <hmheader
         class="header"
@@ -249,12 +249,14 @@ export default {
 </script>
 
 <style scoped>
+html{
+  overflow: hidden;
+}
 * {
   overflow: hidden;
 }
 .content {
   width: 62%;
-  overflow-y: scroll !important;
   max-height: 90vh;
 }
 aside.menu {
@@ -268,7 +270,7 @@ aside.player {
 @media screen and (max-width: 767px) {
   aside.menu {
     display: none;
-    position: absolute;
+    position: fixed;
     top: 0;
     width: 180px;
     min-height: 100vh !important;
@@ -276,10 +278,12 @@ aside.player {
     z-index: 500;
   }
   aside.player {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100vw;
-    height: 65px;
+    max-height: 68px;
+    overflow: hidden;
+    padding-bottom: 3px;
     z-index: 500;
     background: white;
   }

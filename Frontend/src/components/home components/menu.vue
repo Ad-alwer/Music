@@ -440,8 +440,8 @@ li {
     background: white;
   }
   li {
-    margin-left: 15%;
-    padding: 5px 0px !important;
+    margin-left: 10%;
+    padding: 3px 0px !important;
   }
   .menu-title {
     margin-top: 1% !important;

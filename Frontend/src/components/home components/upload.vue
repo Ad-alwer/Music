@@ -303,7 +303,7 @@
       </div>
       <div class="mt-4" v-if="typeselect == 'album'">
         <p class="text-black fs-5 fw-bold">Files</p>
-        <div class="d-flex justify-content-center gap-4">
+        <div class="d-flex justify-content-center gap-4 music-file">
           <div class="wrapper">
             <form action="#">
               <input
@@ -638,6 +638,10 @@ export default {
 * {
   overflow: hidden;
 }
+#parent{
+  overflow-y: auto !important;
+  height: 78vh;
+}
 .form-control,
 .form-select {
   border: 2px solid var(--blue-main);
@@ -769,7 +773,7 @@ textarea {
   color: var(--gray-main);
 }
 .search-parent {
-  width: 410px;
+  width: 90%;
   height: 33px;
   border: 1px solid var(--gray-main);
   position: relative;
@@ -801,7 +805,8 @@ textarea {
 
 @media screen and (max-width: 767px) {
   #parent {
-    margin: 10px 20px 68px 20px !important;
+    margin: 10px 0 70px 0 !important;
+    padding: 0 10px !important;
   }
   .detail-box {
     flex-direction: column !important;
@@ -810,14 +815,18 @@ textarea {
   input,
   textarea,
   .album-track-wrapper,
-  .btn-box {
-    width: 95% !important;
+  .btn-box,.wrapper {
+    width: 98% !important;
+  }
+
+  .music-file{
+    justify-content: start !important;
   }
   .files-box {
+    justify-items: start !important;
     flex-direction: column;
     gap: 8px !important;
     margin-top: 8px !important;
-    align-items: center;
   }
   .bar{
     display: none  !important;

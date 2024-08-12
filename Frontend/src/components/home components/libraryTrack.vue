@@ -347,13 +347,13 @@ export default {
 }
 .track-parent {
   padding-bottom: 20% !important;
-  height: 80vh;
+  height: 78vh;
   overflow-y: auto;
 }
 
 @media screen and (max-width: 767px) {
   #parent {
-    margin-bottom: 66px;
+    margin-bottom: 70px;
   }
   .tumbnail {
     width: 60px;
@@ -361,27 +361,32 @@ export default {
     border-radius: 5px !important;
   }
   .trackname {
-    font-size: 17px !important;
+    font-size: 12px !important;
   }
   .username {
     margin-top: -12px;
+    font-size: 11px !important;
   }
   .img-like {
     width: 20px !important;
     height: 20px !important;
   }
   .more {
-    width: 40px !important;
-    height: 40 !important;
+    width: 60px !important;
+    height: 60px !important;
   }
 
   .li-child {
     border-bottom: 1px solid var(--blue-main);
-    font-size: 14px !important;
+    font-size: 12px !important;
+  }
+  .li-child:last-child {
+    border: none;
   }
 
   .track-parent {
     padding-bottom: 26% !important;
+    align-content: baseline;
   }
 }
 </style>

@@ -32,8 +32,8 @@
         <Swiper
           class="py-4"
           :modules="modules"
-          :slides-per-view="responsive ? 5 : 8"
-          :space-between="20"
+          :slides-per-view="responsive ? 4 : 8"
+          :space-between="10"
           :scrollbar="{ draggable: true }"
           loop="true"
           @swiper="onSwiper"
@@ -376,7 +376,8 @@ export default {
     right: 6%;
   }
   .topartists {
-    margin-top: 10px !important;
+    margin: 5px 0 !important;
+    padding: 0 !important;
   }
 
   .topartists img {
@@ -405,7 +406,9 @@ export default {
   }
 
   #parent {
-    margin-bottom: 66px;
+    height: 78vh;
+  overflow-y:auto !important;
+    margin-bottom: 70px;
   }
 }
 </style>

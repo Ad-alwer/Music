@@ -67,8 +67,8 @@
         </div>
       </section>
       <section class="d-flex justify-content-center mt-4">
-        <table class="table table-bordered w-75">
-          <tr class="">
+        <table class="table w-75">
+          <tr class="border-bottom align-center">
             <th
               class="text-uppercase text-center d-flex justify-content-start align-items-center gap-5"
             >
@@ -89,7 +89,7 @@
               />
             </th>
           </tr>
-          <tr>
+          <tr class="border-bottom align-center">
             <th
               class="text-uppercase text-center d-flex justify-content-start align-items-center gap-5"
             >
@@ -100,7 +100,7 @@
               <span class="text-capitalize">{{ user.email }}</span>
             </th>
           </tr>
-          <tr>
+          <tr class="border-bottom align-center">
             <th
               class="text-uppercase text-center d-flex justify-content-start align-items-center gap-5"
             >
@@ -116,7 +116,7 @@
               <img src="../../assets/icons/unverify.png" alt="" />
             </th>
           </tr>
-          <tr>
+          <tr class="border-bottom align-center">
             <th
               class="text-uppercase text-center d-flex justify-content-start align-items-center gap-5"
             >
@@ -132,39 +132,7 @@
               <img v-else src="../../assets/icons/uncheck.png" alt="" />
             </th>
           </tr>
-          <tr class="">
-            <th
-              class="text-uppercase text-center d-flex justify-content-start align-items-center gap-5 favouritegenre-label"
-            >
-              <img src="../../assets/icons/favourite.png" alt="" />
-              <span>favourite genre</span>
-            </th>
-            <th class="">
-              <select
-                name=""
-                id=""
-                class="form-select genre-select text-capitalize fw-semibold color-black text-center"
-                @change="changefavouritegenre($event.target.value)"
-              >
-                <option
-                  class="text-capitalize"
-                  :selected="!user.favouriteGenre"
-                  :disabled="user.favouriteGenre"
-                >
-                  not Different
-                </option>
-                <option
-                  v-for="x in base.genres"
-                  :key="x"
-                  :selected="user.favouriteGenre == x.name"
-                  class="text-capitalize"
-                  :value="x.name"
-                >
-                  {{ x.name }}
-                </option>
-              </select>
-            </th>
-          </tr>
+         
         </table>
       </section>
       <section class="mt-4">
@@ -1019,6 +987,10 @@ export default {
 * {
   overflow: hidden;
 }
+#parent{
+  height: 78vh ;
+    overflow-y:auto !important ;
+}
 
 .profile-parent img {
   width: 110px;
@@ -1137,7 +1109,11 @@ textarea {
 
 @media screen and (max-width: 767px) {
   #parent {
-    margin-bottom: 68px;
+    margin-bottom: 68px !important;
+    
+  }
+  .content{
+    padding: 0 10px !important;
   }
   .profile-parent img {
     width: 80px;
@@ -1157,18 +1133,22 @@ textarea {
     width: 100% !important;
   }
   .table th {
-    gap: 10px !important;
+    gap: 9px !important;
     font-size: 13px !important;
   }
+
+  
   .table img {
     width: 36px;
     height: 36px;
   }
 
   .select-box {
-    font-size: 14px !important;
+    font-size: 9px !important;
     gap: 10px !important;
   }
+
+  
   .request-parent img {
     width: 24px;
     height: 24px;
@@ -1180,7 +1160,9 @@ textarea {
   .search-parent {
     width: 95%;
   }
-  .search-resault,
+  .search-resault{
+    width: 90% !important;
+  }
   .recommend-child {
     width: 70% !important;
   }

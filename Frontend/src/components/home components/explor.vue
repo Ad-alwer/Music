@@ -2,7 +2,7 @@
   <div id="parent" class="container px-5">
     <h4 class="text-capitalize fw-bold title mt-5">explore</h4>
     <loader v-if="loader" />
-    <section v-else-if="seemore">
+    <section v-else-if="seemore" class="seemore-parent">
       <i
         class="fas fa-solid fa-arrow-left text-danger mt-5 fs-5 pointer"
         @click="seemore = null"
@@ -12,7 +12,7 @@
           v-for="(x, i) in seemore.val"
           :key="x"
           @click="seemoreclick(i)"
-          class="d-flex justify-content-center align-items-center flex-column gap-1"
+          class="d-flex justify-content-center align-items-center flex-column gap-1 col-3"
         >
           <img
             :src="x.cover.url"
@@ -20,7 +20,7 @@
             alt=""
           />
           <span
-            class="color-black text-capitalize text-center fw-bold fs-6 seemore-name pointer "
+            class="color-black text-capitalize text-center fw-bold seemore-name pointer swiper-text"
             >{{ x.name }}</span
           >
           <span
@@ -29,7 +29,7 @@
                 x.artist ? x.artist.username : x.tracks[0].artist.username
               )
             "
-            class="text-capitalize text-center text-secondary seemore-username pointer"
+            class="text-capitalize text-center text-secondary seemore-username pointer swiper-subtext"
             >{{
               x.artist ? x.artist.username : x.tracks[0].artist.username
             }}</span
@@ -73,8 +73,10 @@
             <div
               class="swiper-playlist-text d-flex flex-column align-items-center"
             >
-              <p class="color-black text-capitalize">{{ x.name }}</p>
-              <span class="text-capitalize">{{
+              <p class="color-black text-capitalize swiper-text">
+                {{ x.name }}
+              </p>
+              <span class="text-capitalize swiper-subtext">{{
                 x.tracks[0].artist.username
               }}</span>
             </div>
@@ -113,8 +115,10 @@
               class="img-fluid swiper-img rounded-4 newtrack-img"
               alt=""
             />
-            <p class="color-black text-capitalize">{{ x.name }}</p>
-            <span>{{ formatview(x.plays) }} palys</span>
+            <p class="color-black text-capitalize swiper-text">{{ x.name }}</p>
+            <span class="text-capitalize swiper-subtext"
+              >{{ formatview(x.plays) }} palys</span
+            >
           </swiper-slide>
         </Swiper>
       </div>
@@ -151,8 +155,10 @@
               class="img-fluid swiper-img rounded-4 newtrack-img"
               alt=""
             />
-            <p class="color-black text-capitalize">{{ x.name }}</p>
-            <span>{{ formatview(x.plays) }} palys</span>
+            <p class="color-black text-capitalize swiper-text">{{ x.name }}</p>
+            <span class="text-capitalize swiper-subtext"
+              >{{ formatview(x.plays) }} palys</span
+            >
           </swiper-slide>
         </Swiper>
       </div>
@@ -210,7 +216,7 @@ export default {
   },
   data() {
     return {
-      apiaddress:process.env.VUE_APP_Api_ADDRESS,
+      apiaddress: process.env.VUE_APP_Api_ADDRESS,
       pagination: true,
       draggable: true,
 
@@ -360,9 +366,25 @@ export default {
   max-width: 140px;
 }
 
+.swiper-text{
+  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+}
+
 @media screen and (max-width: 767px) {
   #parent {
     margin-bottom: 66px;
+    height: 78vh;
+    overflow: auto !important;
+    padding: 0 10px !important;
+  }
+  swiper {
+    padding: 0 5px !important;
+  }
+  .title {
+    margin: 10px 0px 5px 20px !important;
   }
 
   .newalbum-img {
@@ -371,12 +393,27 @@ export default {
   }
 
   .newtrack-img {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
+  }
+  .seemore-parent {
+    padding: 15px 10% !important;
   }
   .seemore {
-    width: 120px;
-    height: 120px;
+    width: 90px;
+    height: 90px;
+  }
+  .swiper-text {
+    font-size: 11px !important;
+    max-width: 60px;
+  }
+
+  .swiper-subtext {
+    font-size: 10px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60px;
   }
 }
 </style>

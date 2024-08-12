@@ -162,20 +162,23 @@
         />
         <img
           v-if="user.profile"
-          class="rounded-circle img-thumbnail"
+          :class="responsive  ? 'rounded-circle img-thumbnail pointer' :'rounded-circle img-thumbnail'"
           :src="user.profile"
           alt=""
+          @click="responsive ? (popups.profile = true) : null"
         />
         <img
           v-if="!user.profile"
-          class="rounded-circle img-thumbnail"
+          :class="responsive  ? 'rounded-circle img-thumbnail pointer' :'rounded-circle img-thumbnail'"
           src="../../assets/img/icon.jpg"
           alt=""
+          @click="responsive ? (popups.profile = true) : null"
         />
         <span class="text-capitalize fw-bold username">{{
           user.username
         }}</span>
         <svg
+        v-if="!responsive"
           class="pointer"
           @click="popups.profile = true"
           width="14"
@@ -215,6 +218,7 @@ export default {
         notifacation: false,
         profile: false,
       },
+      responsive: false,
     };
   },
   methods: {
@@ -256,6 +260,9 @@ export default {
     sidemenu: function () {
       this.$emit("sidemenu", true);
     },
+    checkScreenSize: function () {
+      this.responsive = window.matchMedia("(max-width: 768px)").matches;
+    },
   },
   beforeMount() {
     if (Register.methods.getcookies("jwt")) {
@@ -263,6 +270,10 @@ export default {
     } else {
       location.href = `${this.url}login`;
     }
+  },
+  mounted() {
+    this.checkScreenSize();
+    window.addEventListener("resize", this.checkScreenSize);
   },
   components: {
     notificationpopup,

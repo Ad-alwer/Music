@@ -37,13 +37,13 @@
       ></i>
       <div
         v-if="seemore.val.length > 0"
-        class="d-flex align-items-center gap-3 flex-wrap gap-3 mt-2"
+        class="d-flex align-items-center gap-3 flex-wrap gap-3 mt-2 "
       >
         <div
           v-for="(x, i) in seemore.val"
           :key="x"
           @click="seemoreclick(i)"
-          class="d-flex justify-content-center flex-column gap-1 align-items-center"
+          class="x.cover ? 'd-flex justify-content-center flex-column gap-1 align-items-center col-3' : 'd-flex justify-content-center flex-column gap-1 align-items-center col-2'"
         >
           <img
             :src="
@@ -79,7 +79,7 @@
           data.playlists.length > 0)
       "
     >
-      <div v-if="data.users.length > 0">
+      <div v-if="data.users.length > 0" class="parent">
         <div class="d-flex justify-content-between pt-2 mt-4">
           <span class="text-uppercase color-black fw-semibold">Members</span>
           <span
@@ -92,7 +92,7 @@
           class="py-4"
           :modules="modules"
           :slides-per-view="responsive ? 5 : 8"
-          :space-between="20"
+          :space-between="responsive ? 10 : 20"
           :scrollbar="{ draggable: true }"
           loop="true"
           @swiper="onSwiper"
@@ -119,9 +119,11 @@
           </swiper-slide>
         </Swiper>
       </div>
-      <div v-if="data.tracks.length > 0">
+      <div v-if="data.tracks.length > 0" class="parent">
         <div class="d-flex justify-content-between pt-4">
-          <span class="text-uppercase color-black fw-semibold">Tracks</span>
+          <span class="text-uppercase color-black fw-semibold"
+            >Tracks</span
+          >
           <span
             @click="openseemore(data.tracks, 'track')"
             class="text-capitalize color-gray pointer color-blue"
@@ -132,7 +134,7 @@
           class="py-4"
           :modules="modules"
           :slides-per-view="responsive ? 3 : 6"
-          :space-between="20"
+          :space-between="responsive ? 10 : 20"
           :scrollbar="{ draggable: true }"
           loop="true"
           @swiper="onSwiper"
@@ -152,13 +154,15 @@
               alt=""
             />
             <p class="color-black trackname">{{ x.name }}</p>
-            <span>{{ x.artist.username }}</span>
+            <span class="text-subtitle">{{ x.artist.username }}</span>
           </swiper-slide>
         </Swiper>
       </div>
-      <div v-if="data.albums.length > 0">
+      <div v-if="data.albums.length > 0" class="parent">
         <div class="d-flex justify-content-between pt-2">
-          <span class="text-uppercase color-black fw-semibold">Albums</span>
+          <span class="text-uppercase color-black fw-semibold"
+            >Albums</span
+          >
           <span
             @click="openseemore(data.albums, 'album')"
             class="text-capitalize color-gray pointer color-blue"
@@ -169,7 +173,7 @@
           class="py-4"
           :modules="modules"
           :slides-per-view="responsive ? 3 : 5"
-          :space-between="20"
+          :space-between="responsive ? 10 : 20"
           :scrollbar="{ draggable: true }"
           loop="true"
           @swiper="onSwiper"
@@ -194,9 +198,11 @@
           </swiper-slide>
         </Swiper>
       </div>
-      <div v-if="data.playlists.length > 0">
+      <div v-if="data.playlists.length > 0" class="parent">
         <div class="d-flex justify-content-between pt-2">
-          <span class="text-uppercase color-black fw-semibold">Playlist</span>
+          <span class="text-uppercase color-black fw-semibold"
+            >Playlist</span
+          >
           <span
             @click="openseemore(data.playlists, 'playlist')"
             class="text-capitalize color-gray pointer color-blue"
@@ -206,8 +212,8 @@
         <Swiper
           class="py-4"
           :modules="modules"
-          :slides-per-view="5"
-          :space-between="20"
+          :slides-per-view="responsive ? 3 : 5"
+          :space-between="responsive ? 10 : 20"
           :scrollbar="{ draggable: true }"
           loop="true"
           @swiper="onSwiper"
@@ -470,16 +476,21 @@ export default {
   #parent {
     margin-bottom: 66px;
     padding: 0 24px !important;
+    height: 75vh;
+    overflow: auto;
   }
-
+  .tracks-img {
+    width: 110px;
+    height: 110px;
+  }
   .search-parent {
-    width: 450px;
+    width: 300px;
     height: 35px;
     padding: 10px 5px !important;
   }
   .search-icon {
-    width: 30px;
-    height: 30px;
+    width: 50px;
+    height: 50px;
   }
 
   .user-img {
@@ -497,24 +508,45 @@ export default {
   }
 
   .albumandplaylist-img {
-    width: 120px;
-    height: 120px;
+    width: 110px;
+    height: 110px;
   }
   .seemore {
-    width: 120px;
-    height: 120px;
+    margin: 0 5px !important;
+    width: 90px;
+    height: 90px;
   }
 
   .seemore-profile {
     width: 60px;
     height: 60px;
   }
-}
 
-.trackname {
-  font-size: 12px !important;
-  text-transform: capitalize;
-  text-wrap: nowrap;
-  text-align: center;
+  .trackname {
+    font-size: 12px !important;
+    text-transform: capitalize;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+  }
+  .seemore-profile + .trackname {
+    font-size: 9px !important;
+    max-width: 70px;
+  }
+
+  .text-subtitle {
+    font-size: 11px !important;
+    text-transform: capitalize;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90px;
+  }
+  .parent{
+    margin-top: 30px !important;
+  }
+
+  
 }
 </style>

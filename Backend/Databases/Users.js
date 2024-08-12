@@ -8,6 +8,7 @@ const albumDB = require("./Albums.js");
 const playlistDB = require("./Playlists.js");
 const baseDB = require("./Base.js");
 const { use } = require("../Routes/AccountspendingRoutes.js");
+const { promises } = require("nodemailer/lib/xoauth2/index.js");
 
 require("dotenv").config();
 
@@ -657,7 +658,7 @@ async function checktrackandalbumname(name, edit) {
     });
     return search >= 0 ? false : true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -1374,18 +1375,24 @@ async function getlastplay(token) {
             library.push(track);
           });
         });
-
+        let playlisttracks = [];
+        playlist.tracks.forEach((e) => {
+          library.forEach((track) => {
+            if (e.toString() === track._id.toString()) {
+              playlisttracks.push(track);
+            }
+          });
+        });
         if (user.lastplay.id) {
-          track = library.find((item) => {
-            return item._id.toString() == user.lastplay.id;
-          });
+          track = playlisttracks.find(
+            (item) => item._id.toString() === user.lastplay.id.toString()
+          );
         } else {
-          track = library.find(async (item) => {
-            return item._id.toString() == playlist.tracks[0]._id;
-          });
+          track = playlisttracks[0];
         }
 
         track.artist = await User.findById(playlist.creator);
+       
         return track;
       } else {
         return false;
@@ -1407,9 +1414,35 @@ async function getLibrary(token) {
     }
 
     if (user.lastplay.type == "track") {
+      let findtrack = await trackDB.findtrackbyid(user.lastplay.id);
+      let artist;
+
+      if (findtrack) {
+        artist = await User.findById(findtrack.artist);
+      } else {
+        let albums = await albumDB.getallalbums();
+        let find;
+        albums.forEach((album) => {
+          album.tracks.forEach((track) => {
+            if (track._id.toString() === user.lastplay.id.toString()) {
+              find = album;
+            }
+          });
+        });
+
+        const resault = await Promise.all(
+          find.tracks.map(async (track) => {
+            track.cover = find.cover;
+            track.artist = await User.findById(track.artist);
+            return track;
+          })
+        );
+        return resault;
+      }
+
       let library = [];
       let albums = await Promise.all(
-        user.albums.map(async (e) => {
+        artist.albums.map(async (e) => {
           const album = await albumDB.findalbum(e.id);
           return album;
         })
@@ -1426,7 +1459,7 @@ async function getLibrary(token) {
       });
 
       let tracks = await Promise.all(
-        user.tracks.map(async (e) => {
+        artist.tracks.map(async (e) => {
           const track = await trackDB.findtrackbyid(e.id);
           return track;
         })
@@ -1508,7 +1541,7 @@ async function getLibrary(token) {
 
       return playlist.tracks;
     }
-  } catch {
+  } catch  {
     return false;
   }
 }
@@ -1584,7 +1617,7 @@ async function verifyalbum(userId, name) {
     );
 
     return true;
-  } catch  {
+  } catch {
     return false;
   }
 }

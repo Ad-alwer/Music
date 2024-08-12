@@ -1,11 +1,15 @@
 <template>
   <div id="parent ">
-    <header class="d-flex align-items-center gap-1 mt-3"  >
-      <hmheader  @sidemenu="sidemenu"/>
+    <header class="d-flex align-items-center gap-1 mt-3">
+      <hmheader @sidemenu="sidemenu" />
     </header>
     <main class="d-flex">
       <aside class="menu" ref="aside">
-        <dashmenu :component="component" @change="change" @sidemenu="sidemenu" />
+        <dashmenu
+          :component="component"
+          @change="change"
+          @sidemenu="sidemenu"
+        />
       </aside>
       <section class="content">
         <users v-if="component == 'users'" :user="user" />
@@ -70,9 +74,7 @@ export default {
       });
 
       !this.component ? (location.href = "/notfound") : null;
-
     }
-
   },
 
   data() {
@@ -139,24 +141,22 @@ aside.player {
 @media screen and (max-width: 767px) {
   aside.menu {
     display: none;
-    position: absolute;
+    position: fixed;
     top: 0;
     width: 180px;
     min-height: 100vh !important;
     background: white;
     z-index: 500;
   }
-  aside.player{
-    position: absolute;
+  aside.player {
+    position: fixed;
     bottom: 0;
     width: 100vw;
     height: 65px;
     z-index: 500;
     background: white;
-    
-
   }
-  .content{
+  .content {
     width: 100%;
   }
 }

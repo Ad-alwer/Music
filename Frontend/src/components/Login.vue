@@ -345,7 +345,7 @@ input.form-control {
     
   }
   input.form-control {
-  width: 380px;
+  width: 320px;
 }
 
   form {

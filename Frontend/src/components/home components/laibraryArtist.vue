@@ -57,10 +57,10 @@
               <img :src="y.cover.url" class="img-detail rounded-4" alt="" />
               <span
                 @click="play(y._id)"
-                class="text-capitalize color-black fw-bold fs-5 pointer"
+                class="text-capitalize color-black fw-bold fs-5 pointer trackname"
                 >{{ y.name }}</span
               >
-              <span class="text-capitalize color-gray"
+              <span class="text-capitalize color-gray plays"
                 >{{ formatview(y.plays) }} plays</span
               >
             </div>
@@ -73,14 +73,14 @@
           </div>
           <p
             @click="gotoartist(data[select].username)"
-            class="text-center color-blue pointer fw-bold mt-2 text-capitalize username"
+            class="text-center color-blue pointer fw-bold mt-4 text-capitalize username"
           >
             See More by {{ data[select].username }}
           </p>
         </div>
       </div>
       <div
-        class="d-flex justify-content-center align-items-center mt-5 pt-5"
+        class="d-flex justify-content-center align-items-center mt-5 pt-5 showdetail"
         v-else
       >
         <img src="../../assets/img/empty.png" alt="" />
@@ -192,14 +192,16 @@ export default {
   width: 60px;
   height: 60px;
 }
-.artist-body{
+.artist-body {
   width: 40%;
+}
+.showdetail{
+  width: 60%;
 }
 .img-detail {
   width: 140px;
   height: 140px;
 }
-
 
 .artist-body {
   height: 600px;
@@ -213,25 +215,33 @@ export default {
 
 @media screen and (max-width: 767px) {
   #parent {
-    margin: 10px 20px !important;
-    margin-bottom: 68px;
+    margin: 0 20px !important;
   }
 
   .img-profile {
     width: 30px;
     height: 30px;
   }
-
   .username {
-    font-size: 16px !important;
+    font-size: 12px !important;
+  }
+  .trackname {
+    font-size: 11px !important;
+    max-width: 70px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .plays {
+    font-size: 10px !important;
   }
   .track-detail {
-    font-size: 14px !important;
+    font-size: 10px !important;
     margin-top: -5px !important;
   }
   .img-detail {
-    width: 120px;
-    height: 120px;
+    width: 80px;
+    height: 80px;
   }
 }
 </style>

@@ -223,8 +223,8 @@ input[type="checkbox"]:checked + .switch {
   display: none;
 }
 .search-icon {
-  width: 18px;
-  height: 18px;
+  width: 36px;
+  height: 36px;
 }
 .search-input {
   caret-color: var(--blue-main);
@@ -233,7 +233,7 @@ input[type="checkbox"]:checked + .switch {
   color: var(--gray-main);
 }
 .search-parent {
-  width: 800px;
+  width: 85%;
   height: 45px;
   border: 1px solid var(--gray-main);
 }

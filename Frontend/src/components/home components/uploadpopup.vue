@@ -108,16 +108,18 @@
           <section class="uploaded-area" v-if="detailshower.feat">
             <li class="rows d-flex" v-for="(x, i) in feats" :key="x">
               <div class="content upload">
-                <img v-if="x.profile"
-                    :src="x.profile"
-                    class="img-fluid rounded-circle"
-                    alt=""
-                  />
-                  <img v-else
-                    src="../../assets/img/icon.jpg"
-                    class="img-fluid rounded-circle"
-                    alt=""
-                  />
+                <img
+                  v-if="x.profile"
+                  :src="x.profile"
+                  class="img-fluid rounded-circle"
+                  alt=""
+                />
+                <img
+                  v-else
+                  src="../../assets/img/icon.jpg"
+                  class="img-fluid rounded-circle"
+                  alt=""
+                />
                 <div class="details">
                   <span class="name text-capitalize fw-bold color-black"
                     ><x class="name"></x>{{ x.username }}</span
@@ -157,7 +159,7 @@
         </button>
         <button
           @click="close"
-          class="btn fw-bold bg-danger text-white fs-5 px-3 py-2 w-25 text-center text-capitalize"
+          class="btn btn-back fw-bold bg-danger text-white fs-5 px-3 py-2 w-25 text-center text-capitalize"
         >
           cancel
         </button>
@@ -207,11 +209,11 @@ export default {
           track: this.$refs.trackinput.files[0],
           feat: this.feats,
           lyrics: this.$refs.lyricsinput.value,
-          trackname:this.$refs.trackinput.files[0].name
+          trackname: this.$refs.trackinput.files[0].name,
         };
-       this.$emit('addtrack',data)
-       this.close()
-      }else{
+        this.$emit("addtrack", data);
+        this.close();
+      } else {
         iziToast.error({
           title: "Please Fill All Inputs",
           position: "topRight",
@@ -241,7 +243,7 @@ export default {
       }, 50);
     },
   },
-  props: ["user",'tracks'],
+  props: ["user", "tracks"],
 };
 </script>
 
@@ -384,7 +386,7 @@ textarea {
   color: var(--gray-main);
 }
 .search-parent {
-  width: 410px;
+  width: 90%;
   height: 33px;
   border: 1px solid var(--gray-main);
   position: relative;
@@ -412,25 +414,37 @@ textarea {
 }
 
 @media screen and (max-width: 767px) {
-  
-  
+  select,
+  input,
+  textarea,
+  .album-track-wrapper,
+  .btn-box,
+  .wrapper {
+    width: 98% !important;
+  }
+
   .popup-inner {
     padding: 6px;
     max-width: 90%;
     margin-bottom: 66px !important;
     height: 90vh;
-    overflow-y: auto ;
+    overflow-y: auto;
     max-height: 90%;
   }
-  .uploadandfeet-box{
+  .uploadandfeet-box {
     flex-direction: column;
     gap: 8px !important;
   }
-  .btn-box{
-  scale: 0.9;
+  .btn-box {
+    gap: 5px !important;
   }
- 
- 
-}
 
+  .btn-save {
+    width: 60% !important;
+  }
+
+  .btn-back {
+    width: 40% !important;
+  }
+}
 </style>

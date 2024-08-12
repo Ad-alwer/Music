@@ -2,7 +2,13 @@
   <loader v-if="popups.loader" />
   <div v-else id="parent" class="container mt-4 mx-3 gap-5 d-flex">
     <div class="w-75 px-2 main">
-      <div class="info d-flex justify-content-center gap-5">
+      <div
+        :class="
+          otheruser._id === thisuser._id
+            ? 'info d-flex justify-content-center gap-5 withoutfollow'
+            : 'info d-flex justify-content-center gap-5'
+        "
+      >
         <div class="profile-parent d-flex gap-3 align-items-center">
           <div class="">
             <img
@@ -14,7 +20,7 @@
             <div v-else class="d-flex justify-content-center w-100">
               <img
                 src="../../assets/img/icon.jpg"
-                class="img-fluid rounded-circle"
+                class="img-fluid rounded-circle profile-img"
                 alt=""
               />
             </div>
@@ -138,7 +144,7 @@
               ></i>
               <div
                 class="d-flex gap-5 align-items-center imgandnamebox"
-                @click="play(selecteddata._id)"
+                @click="play('playlist', selecteddata._id)"
               >
                 <img
                   class="monthly-img img-fluid rounded-3"
@@ -177,7 +183,7 @@
                   class="more-list rounded-3 bg-white"
                 >
                   <li
-                    @click="play(selecteddata._id)"
+                    @click="play(component, selecteddata._id)"
                     class="fw-semibold text-capitalize px-2 py-2 li-child"
                   >
                     play
@@ -185,7 +191,13 @@
 
                   <li
                     v-if="otheruser._id !== thisuser._id"
-                    @click="save(selecteddata.checksave, selecteddata._id)"
+                    @click="
+                      save(
+                        selecteddata.creator ? 'playlist' : 'album',
+                        selecteddata.checksave,
+                        selecteddata._id
+                      )
+                    "
                     class="fw-semibold text-capitalize px-2 py-1 li-child"
                   >
                     {{ selecteddata.checksave ? "Unsave" : "save" }}
@@ -255,7 +267,7 @@
 
                   <li
                     v-if="otheruser._id !== thisuser._id"
-                    @click="save(x.checksave, x._id)"
+                    @click="save(component, x.checksave, x._id)"
                     class="fw-semibold text-capitalize px-2 py-1 li-child"
                   >
                     {{ x.checksave ? "Unsave" : "save" }}
@@ -340,11 +352,11 @@
         </div>
         <div v-else class="data-parent">
           <div v-if="component == 'more'">
-            <section v-if="otheruser.socialmedia.length > 0" >
+            <section v-if="otheruser.socialmedia.length > 0">
               <p class="fw-bold fs-5 text-capitalize mt-4 mb- pe-3">
                 Social media
               </p>
-              <ul class="" >
+              <ul class="">
                 <li
                   v-for="x in otheruser.socialmedia"
                   @click="goto(x.link)"
@@ -361,16 +373,12 @@
                   }}</span>
                 </li>
               </ul>
-              
             </section>
             <section v-if="otheruser.recommendUser.length > 0">
               <p class="fw-bold fs-5 text-capitalize mt-4 mb-0 pe-3">
                 recomended
               </p>
-              <ul
-                class="d-flex flex-column gap-3 mt-2"
-                
-              >
+              <ul class="d-flex flex-column gap-3 mt-2">
                 <li
                   v-for="x in otheruser.recommendUser"
                   @click="gotouser(x.username)"
@@ -383,7 +391,7 @@
                         ? x.profile
                         : require('../../assets/img/icon.jpg')
                     "
-                    class="img-fluid recomended-img rounded-circle"
+                    class="img-fluid recomended-img rounded-circle profile-img"
                     alt=""
                   />
                   <span class="text-capitalize pointer recomeded-title fs-5">{{
@@ -391,10 +399,9 @@
                   }}</span>
                 </li>
               </ul>
-              
             </section>
           </div>
-          <div v-else-if="data.length > 0" class="tracks-parent">
+          <div v-else-if="data.length > 0">
             <div
               class="monthly-box d-flex gap-4 align-items-center justify-content-between mt-3 track-parent"
               v-for="(x, i) in data"
@@ -402,7 +409,7 @@
             >
               <div
                 class="d-flex gap-5 align-items-center imgandnamebox"
-                @click="play(x._id)"
+                @click="play(component, x._id)"
               >
                 <img
                   class="monthly-img img-fluid rounded-3"
@@ -438,7 +445,7 @@
                 </svg>
                 <ul v-if="x.showmore" class="more-list rounded-3 bg-white">
                   <li
-                    @click="play(x._id)"
+                    @click="play(component, x._id)"
                     class="fw-semibold text-capitalize px-2 py-2 li-child"
                   >
                     play
@@ -446,7 +453,7 @@
 
                   <li
                     v-if="otheruser._id !== thisuser._id"
-                    @click="save(x.checksave, x._id)"
+                    @click="save(component, x.checksave, x._id)"
                     class="fw-semibold text-capitalize px-2 py-1 li-child"
                   >
                     {{ x.checksave ? "Unsave" : "save" }}
@@ -482,7 +489,7 @@
     <div class="w-25 px-1 aside">
       <section v-if="otheruser.socialmedia.length > 0">
         <p class="fw-bold fs-5 text-capitalize mt-4 mb- pe-3">Social media</p>
-        <ul class="" >
+        <ul class="">
           <li
             v-for="x in otheruser.socialmedia"
             @click="goto(x.link)"
@@ -495,15 +502,10 @@
             }}</span>
           </li>
         </ul>
-       
-   
       </section>
-      <section  v-if="otheruser.recommendUser.length > 0">
+      <section v-if="otheruser.recommendUser.length > 0">
         <p class="fw-bold fs-5 text-capitalize mt-4 mb-0 pe-3">recomended</p>
-        <ul
-          class="d-flex flex-column gap-3 mt-2"
-         
-        >
+        <ul class="d-flex flex-column gap-3 mt-2">
           <li
             v-for="x in otheruser.recommendUser"
             @click="gotouser(x.username)"
@@ -514,7 +516,7 @@
               :src="
                 x.profile ? x.profile : require('../../assets/img/icon.jpg')
               "
-              class="img-fluid recomended-img rounded-circle"
+              class="img-fluid recomended-img rounded-circle profile-img"
               alt=""
             />
             <span
@@ -523,7 +525,6 @@
             >
           </li>
         </ul>
-        
       </section>
     </div>
   </div>
@@ -554,7 +555,7 @@ export default {
     return {
       component: "music",
       apiaddress: process.env.VUE_APP_Api_ADDRESS,
-      url:process.env.VUE_APP_Url.at,
+      url: process.env.VUE_APP_Url,
       detail: false,
       popups: {
         loader: true,
@@ -804,16 +805,17 @@ export default {
         }
       }
     },
-    play: function (id) {
+    play: function (component, id) {
       this.closeallmore();
       let data;
-      if (this.component === "music" || this.component === "podcast") {
+
+      if (component === "music" || component === "podcast") {
         data = {
           type: "track",
           id,
           time: 0,
         };
-      } else if (this.component === "album") {
+      } else if (component === "album") {
         data = {
           type: "album",
           albumid: id,
@@ -914,10 +916,10 @@ export default {
         });
       }
     },
-    save: function (check, id) {
+    save: function (component, check, id) {
       this.closeallmore();
 
-      if (this.detail) {
+      if (component === "music" || component === "podcast") {
         if (check) {
           axios
             .put(
@@ -959,133 +961,89 @@ export default {
               this.getuser();
             });
         }
-      } else {
-        if (this.component === "music" || this.component === "podcast") {
-          if (check) {
-            axios
-              .put(
-                `${this.apiaddress}track/removesavetrack/${id}`,
-                {},
-                {
-                  headers: {
-                    jwt: Register.methods.getcookies("jwt"),
-                  },
-                }
-              )
-              .then((res) => {
-                this.getuser();
-                if (res.data) {
-                  iziToast.success({
-                    title: "Unsave Successfully",
-                    position: "topRight",
-                  });
-                }
-              });
-          } else {
-            axios
-              .put(
-                `${this.apiaddress}track/savetrack/${id}`,
-                {},
-                {
-                  headers: {
-                    jwt: Register.methods.getcookies("jwt"),
-                  },
-                }
-              )
-              .then((res) => {
-                if (res.data) {
-                  iziToast.success({
-                    title: "Save Successfully",
-                    position: "topRight",
-                  });
-                }
-                this.getuser();
-              });
-          }
-        } else if (this.component === "album") {
-          if (check) {
-            axios
-              .put(
-                `${this.apiaddress}users/removesavealbum/${id}`,
-                {},
-                {
-                  headers: {
-                    jwt: Register.methods.getcookies("jwt"),
-                  },
-                }
-              )
-              .then((res) => {
-                this.getuser();
-                if (res.data) {
-                  iziToast.success({
-                    title: "Unsave Successfully",
-                    position: "topRight",
-                  });
-                }
-              });
-          } else {
-            axios
-              .put(
-                `${this.apiaddress}users/savealbum/${id}`,
-                {},
-                {
-                  headers: {
-                    jwt: Register.methods.getcookies("jwt"),
-                  },
-                }
-              )
-              .then((res) => {
-                this.getuser();
-                if (res.data) {
-                  iziToast.success({
-                    title: "Save Successfully",
-                    position: "topRight",
-                  });
-                }
-              });
-          }
+      } else if (component === "album") {
+        if (check) {
+          axios
+            .put(
+              `${this.apiaddress}users/removesavealbum/${id}`,
+              {},
+              {
+                headers: {
+                  jwt: Register.methods.getcookies("jwt"),
+                },
+              }
+            )
+            .then((res) => {
+              this.getuser();
+              if (res.data) {
+                iziToast.success({
+                  title: "Unsave Successfully",
+                  position: "topRight",
+                });
+              }
+            });
         } else {
-          if (check) {
-            axios
-              .put(
-                `${this.apiaddress}users/removesaveplaylist/${id}`,
-                {},
-                {
-                  headers: {
-                    jwt: Register.methods.getcookies("jwt"),
-                  },
-                }
-              )
-              .then((res) => {
-                this.getuser();
-                if (res.data) {
-                  iziToast.success({
-                    title: "Unsave Successfully",
-                    position: "topRight",
-                  });
-                }
-              });
-          } else {
-            axios
-              .put(
-                `${this.apiaddress}users/saveplaylist/${id}`,
-                {},
-                {
-                  headers: {
-                    jwt: Register.methods.getcookies("jwt"),
-                  },
-                }
-              )
-              .then((res) => {
-                if (res.data) {
-                  iziToast.success({
-                    title: "Save Successfully",
-                    position: "topRight",
-                  });
-                }
-                this.getuser();
-              });
-          }
+          axios
+            .put(
+              `${this.apiaddress}users/savealbum/${id}`,
+              {},
+              {
+                headers: {
+                  jwt: Register.methods.getcookies("jwt"),
+                },
+              }
+            )
+            .then((res) => {
+              this.getuser();
+              if (res.data) {
+                iziToast.success({
+                  title: "Save Successfully",
+                  position: "topRight",
+                });
+              }
+            });
+        }
+      } else {
+        if (check) {
+          axios
+            .put(
+              `${this.apiaddress}users/removesaveplaylist/${id}`,
+              {},
+              {
+                headers: {
+                  jwt: Register.methods.getcookies("jwt"),
+                },
+              }
+            )
+            .then((res) => {
+              this.getuser();
+              if (res.data) {
+                iziToast.success({
+                  title: "Unsave Successfully",
+                  position: "topRight",
+                });
+              }
+            });
+        } else {
+          axios
+            .put(
+              `${this.apiaddress}users/saveplaylist/${id}`,
+              {},
+              {
+                headers: {
+                  jwt: Register.methods.getcookies("jwt"),
+                },
+              }
+            )
+            .then((res) => {
+              if (res.data) {
+                iziToast.success({
+                  title: "Save Successfully",
+                  position: "topRight",
+                });
+              }
+              this.getuser();
+            });
         }
       }
     },
@@ -1255,7 +1213,7 @@ export default {
               });
             }
             index >= 0
-              ? this.play(this.data[index]._id)
+              ? this.play(component, this.data[index]._id)
               : (location.href = "/notfound");
           }
         }
@@ -1447,48 +1405,55 @@ export default {
   .monthly-text p {
     font-size: 14px !important;
   }
+
+  .monthly-play {
+    width: 60px;
+    font-size: 13px !important;
+  }
   .aside {
     display: none;
   }
 
   .timeandplat-parent {
-    gap: 8px !important;
+    gap: 5px !important;
+    justify-content: space-between !important;
   }
   .imgandnamebox {
-    gap: 8px !important;
-  }
-  .tracks-parent {
-    width: 100%;
+    gap: 5px !important;
+    justify-content: space-between !important;
   }
 
-  .svg-more{
-    margin-left: -10px !important;
+  .data-parent {
+    height: 60vh;
+  }
+  .svg-more {
+    margin-left: -14px !important;
   }
   .track-parent {
-
     justify-content: space-between !important;
-    gap: 8px !important;
+    gap: 6px !important;
   }
   .main {
     width: 100% !important;
   }
   .profile-img {
-    width: 70px !important;
-    height: 70px !important;
+    width: 50px !important;
+    height: 50px !important;
   }
   .username {
-    font-size: 18px !important;
+    font-size: 14px !important;
   }
   .follow-parent {
-    gap: 16px !important;
+    gap: 12px !important;
   }
   .follow-button-parent button {
-    font-size: 15px !important;
+    font-size: 13px !important;
     padding: 6px 8px !important;
   }
 
   .select-parent {
-    font-size: 14px;
+    font-size: 11px !important;
+    padding: 3px !important;
   }
   .img-follow,
   .recomended-img {
@@ -1509,17 +1474,20 @@ export default {
   .detail-parent {
     overflow: auto;
     height: 60vh;
+    overflow: hidden;
+    padding: 5px !important;
   }
   .detail-box {
     gap: 8px !important;
+    overflow: hidden !important;
   }
   .detail-box .imgandnamebox {
     gap: 8px !important;
   }
 
   .detail-box .monthly-text {
-    font-size: 14px !important;
-    width: 230px;
+    font-size: 12px !important;
+    width: 180px;
     text-align: center;
   }
   .detail-box .monthly-play {
@@ -1535,12 +1503,34 @@ export default {
   }
 
   .detail-box .palysandtimebox {
-    gap: 0 !important;
+    gap: 8px !important;
     justify-content: space-between !important;
     max-width: 180px;
   }
+
+  .monthly-box {
+    gap: 5px !important;
+  }
   .div.px-4 {
     padding: 0 10px !important;
+  }
+
+  .follow-parent span {
+    font-size: 11px !important;
+  }
+  .info {
+    gap: 0 !important;
+    justify-content: space-between !important;
+    padding: 5px 15px;
+  }
+
+  .withoutfollow {
+    gap: 40px !important;
+    justify-content: center !important;
+    padding: 5px 25px;
+  }
+  .more-list {
+    position: absolute !important;
   }
 }
 </style>

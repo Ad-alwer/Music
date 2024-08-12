@@ -12,7 +12,7 @@
           <div
             v-for="(x, i) in data"
             :key="x._id"
-            class="d-flex align-items-center px-3 gap-4 mt-3 position-relative"
+            class="d-flex align-items-center px-3 gap-4 mt-3 position-relative track-body"
           >
             <img
               :src="x.cover.url"
@@ -316,21 +316,28 @@ export default {
     overflow: hidden;
     height: 79vh;
   }
-  .track-parent{
-    height: 74vh;
+  .track-parent {
+    max-height: 74vh;
     padding-bottom: 8px !important;
-    overflow: auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
   }
   .tumbnail {
     width: 60px;
     height: 60px;
     border-radius: 8px !important;
   }
+
+  .track-body {
+    padding: 0  !important;
+    gap: 0 !important;
+    justify-content: space-between;
+  }
   .username {
-    font-size: 18px !important;
+    font-size: 12px !important;
   }
   .status {
-    font-size: 15px !important;
+    font-size: 11px !important;
     margin-top: -6px;
   }
   .track-namebox {
@@ -338,19 +345,19 @@ export default {
     width: 45% !important;
   }
   .track-duration {
-    width: 50px;
-    font-size: 15px !important;
+    width: 40px;
+    font-size: 11px !important;
   }
   .track-plays {
-    width: 70px;
-    font-size: 15px !important;
+    width: 60px;
+    font-size: 11px !important;
   }
   .more-list {
     right: 2%;
     top: 50px;
   }
   .li-child {
-    font-size: 15px !important;
+    font-size: 12px !important;
   }
 }
 </style>

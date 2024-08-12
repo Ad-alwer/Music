@@ -199,27 +199,6 @@
                 alt=""
               />
             </div>
-            <div class="pointer bookmark-imgs">
-              <img
-                class="pointer opacity-25"
-                v-if="show.artist.toLowerCase() === user.username.toLowerCase()"
-                src="../../assets/icons/bookmark.png"
-                alt=""
-              />
-              <img
-                v-else-if="show.booked"
-                src="../../assets/icons/bookmark.png"
-                @click="booked"
-                alt=""
-              />
-              <img
-                v-else
-                src="../../assets/icons/unbookmark.png"
-                @click="booked"
-                alt=""
-              />
-            </div>
-            <div></div>
           </div>
         </div>
       </section>
@@ -259,7 +238,7 @@ import loader from "../loader.vue";
 
 export default {
   name: "playerbox",
-  async beforeMount() {
+  beforeMount() {
     this.getuser();
   },
 
@@ -284,7 +263,7 @@ export default {
         album: null,
         last: [],
         type: null,
-        finishgetmusic: false,
+        lastindex: null,
       },
       timeouts: {
         nowchckinterval: null,
@@ -294,12 +273,13 @@ export default {
       music: [],
       library: [],
       loader: true,
-      imgload: false,
+      clickable: true,
     };
   },
   watch: {
     data: function () {
       this.getlastplay();
+      this.getlibrary();
     },
     playmusic: function () {
       this.getlastplay();
@@ -353,12 +333,12 @@ export default {
         clearInterval(this.timeouts.nowchckinterval);
         clearInterval(this.timeouts.changelastplayinterval);
         this.changelastplay();
-        this.music.artist.lastplay.time = Number(duaration) + 1;
+        this.user.lastplay.time = Number(duaration) + 1;
       }
     },
     timechange: function () {
       this.$refs.audio.pause();
-      this.music.artist.lastplay.time = this.$refs.range.value;
+      this.user.lastplay.time = this.$refs.range.value;
       this.show.currentTime = this.$refs.range.value;
       this.$refs.audio.play();
     },
@@ -405,8 +385,11 @@ export default {
     getmusic: function (music) {
       if (!music) {
         this.show.name = "Please select a track to listen";
+        this.$refs.name.style.maxWidth = "500px";
         this.show.artist = null;
         this.show.img = require("../../assets/img/dontknow.png");
+        this.show.currentTime = 0;
+        this.show.duration = 0;
       } else {
         this.show.audio = music.url ? music.url : music.track.url;
         this.show.name = music.name;
@@ -543,28 +526,45 @@ export default {
       return time;
     },
     nexttrack: function () {
-      this.$refs.audio.pause();
-      let index;
-      index = this.library.findIndex((e) => {
-        return e._id.toString() === this.music._id.toString();
-      });
-      this.show.last.push(this.music);
-      if (this.library.length === index + 1) {
-        this.music = this.library[0];
-      } else {
-        this.music = this.library[index + 1];
-      }
+      if (this.clickable) {
+        this.clickable = false;
+        this.$refs.audio.pause();
+        let index;
+        index = this.library.findIndex((e) => {
+          return e._id.toString() === this.music._id.toString();
+        });
+        this.show.last.push(this.music);
 
-      this.$refs.audio.play();
+        if (this.library.length === index + 1) {
+          this.music = this.library[0];
+        } else {
+          this.music = this.library[index + 1];
+        }
+        this.getmusic(this.music);
+        this.$refs.audio.play();
+
+        setTimeout(() => {
+          this.clickable = true;
+        }, 300);
+      }
     },
     lasttrack: function () {
-      const index = this.show.last.findIndex((e) => e._id == this.show.id);
-      if (this.show.last.lenght > 0) {
-        this.$refs.audio.pause();
-        this.music = this.show.last[index - 1];
-        this.$refs.audio.play();
-      } else {
-        this.nexttrack();
+      if (this.clickable) {
+        this.clickable = false;
+        if (this.show.last.length > 0) {
+          this.show.lastindex = this.show.lastindex
+            ? this.show.lastindex - 1
+            : (this.show.lastindex = this.show.last.length - 1);
+          this.$refs.audio.pause();
+          this.music = this.show.last[this.show.lastindex];
+          this.getmusic(this.music);
+          this.$refs.audio.play();
+        } else {
+          this.nexttrack();
+        }
+        setTimeout(() => {
+          this.clickable = true;
+        }, 300);
       }
     },
     getlastplay: function () {
@@ -678,15 +678,14 @@ input[type="range"]::-webkit-slider-thumb {
   .parent-box {
     display: flex;
     flex-direction: row !important;
-    /* background: red; */
     background: white;
     margin-top: 0 !important;
     padding: 5px !important;
     padding-left: 8px !important;
-
+    width: 98vw;
     flex-wrap: nowrap !important;
     margin-top: -5px !important;
-    gap: 10px !important;
+    gap: 0 !important;
     justify-content: space-between;
   }
   .tumbnail {
@@ -699,20 +698,20 @@ input[type="range"]::-webkit-slider-thumb {
     top: -2px;
   }
   .trackname {
-    font-size: 14px !important;
+    font-size: 11px !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 120px;
+    max-width: 100px;
   }
   .artistname {
-    font-size: 14px !important;
+    font-size: 10px !important;
     margin-top: -3px;
   }
   .dutraion-box {
-    font-size: 14px;
+    font-size: 10px;
     margin-left: 0;
-    width: 80px !important;
+    width: 60px !important;
   }
   .duration-slash {
     display: block !important;

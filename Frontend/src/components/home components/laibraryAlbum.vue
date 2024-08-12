@@ -1,10 +1,10 @@
 <template>
-  <div id="parent" class="container mt-5 px-3 position-relative">
+  <div id="parent" class="container mt-5 position-relative">
     <loader v-if="loader" />
     <section v-else>
       <div>
         <div class="d-flex justify-content-between p">
-          <span class="text-uppercase color-blue fw-semibold fs-5"
+          <span class="text-uppercase color-blue fw-semibold fs-5 px-3"
             >Saved albums</span
           >
         </div>
@@ -15,7 +15,7 @@
           <div
             v-for="x in data"
             :key="x._id"
-            class="track-body position-relative mb-4"
+            class="track-body position-relative mb-4 col-3"
           >
             <img
               :src="x.cover.url"
@@ -42,7 +42,7 @@
           
         </div>
         <div
-          class="d-flex justify-content-center align-items-center mt-5 pt-5"
+          class="d-flex justify-content-center align-items-center mt-5 pt-5 bg-danger"
           v-else
         >
           <img src="../../assets/img/empty.png" alt="" />
@@ -69,7 +69,6 @@ export default {
       .then((res) => {
         if (res.data) {
           this.data = res.data;
-         
         }
         this.loader = false;
       });
@@ -117,7 +116,7 @@ export default {
 
 <style scoped>
 #parent {
-  height: 80vh;
+  max-height: 80vh;
   overflow: hidden !important;
 }
 .track-body {
@@ -146,37 +145,48 @@ export default {
 }
 
 .album-parent {
-  height: 60vh;
+  height: 72vh;
   overflow-y: auto;
 }
 @media screen and (max-width: 767px) {
   #parent {
-    margin-bottom: 68px;
-    margin: 20px 60px !important;
-    padding: 0 !important;
+    margin-bottom: 70px !important;
+    padding: 20px 30px !important;
   }
   .album-parent {
-    overflow-y: auto;
     padding: 0 !important;
     gap: 8px !important;
+    height: 65vh;
+    overflow-y: auto !important;
+    align-items: baseline !important;
   }
   .tumbnail {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
   }
   .track-body {
-    height: 170px;
+    height: 140px;
+    width: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: -10px !important;
+    margin-bottom: 0 !important;
   }
 
   .trackname {
-    font-size: 17px !important;
+    font-size: 12px !important;
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .tracklenght {
+    font-size: 11px !important;
     margin-top: -3px;
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 </style>

@@ -94,6 +94,8 @@ export default {
   }
   .content {
     padding: 10px 15px !important ;
+    height: 80vh;
+    overflow-y: auto;
   }
 }
 </style>

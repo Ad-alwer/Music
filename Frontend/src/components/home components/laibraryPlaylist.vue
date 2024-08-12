@@ -15,7 +15,7 @@
           <div
             v-for="x in data"
             :key="x._id"
-            class="track-body position-relative"
+            class="track-body position-relative col-3"
           >
             <img
               :src="x.cover.url"
@@ -34,11 +34,11 @@
               class="tracklist rounded-4 d-flex justify-content-center align-items-center flex-column w-100 h-100"
             >
               <span
-                class="text-white p-2 text-capitalize px-3 fs-5 border-bottom pointer info-box"
+                class="text-white p-2 text-capitalize px-3 fs-5 border-bottom pointer "
                 >{{ x.tracks.length }} tracks</span
               >
               <span
-                class="text-white p-2 text-capitalize px-3 fs-5 border-bottom info-box"
+                class="text-white p-2 text-capitalize px-3 fs-5 border-bottom"
                 >{{ formatview(x.plays) }} plays</span
               >
               <span
@@ -149,9 +149,6 @@ export default {
   height: 170px;
 }
 
-.info-box {
-  width: 120px;
-}
 .playlists-parent {
   height: 75vh;
   overflow-y: auto;
@@ -160,17 +157,32 @@ export default {
 @media screen and (max-width: 767px) {
   #parent {
     margin-bottom: 68px;
-    padding: 0 !important;
+    padding: 10px 20px !important;
   }
   .tumbnail,
   .track-body {
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
+    
   }
   .playlists-parent {
-    margin-left: 15px !important;
-    gap: 18px;
+    margin-top: 20px !important;
+    align-content: baseline;
+    padding: 0 !important;
+    gap: 18px !important;
     height: 62vh;
+    overflow-x:hidden !important;
+    overflow-y:auto !important ;
   }
+
+  .tracklist{
+    width: 100px;
+    height: 100px;
+  }
+  .tracklist span{
+    font-size: 11px !important;
+  }
+
+ 
 }
 </style>

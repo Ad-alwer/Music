@@ -164,13 +164,19 @@ export default {
 
 @media screen and (max-width: 767px) {
   .popup-inner {
-    max-width: 98%;
+    max-width: 80%;
   }
   .nameandlink-parent {
     flex-direction: column;
   }
   .input-parent {
-    width: 400px !important;
+    width:300px !important;
+   
+  }
+
+  .form-control,select,.btn{
+    font-size: 12px !important;
+    padding:3px 10px !important ;
   }
 }
 </style>

@@ -1,4 +1,4 @@
-<template>
+<template>  
   <div id="parent" class="container mt-5 px-3 position-relative">
     <section>
       <div>
@@ -109,6 +109,7 @@
               </ul>
             </div>
           </div>
+        
         </div>
       </div>
     </section>
@@ -394,8 +395,17 @@ export default {
 
 <style scoped>
 #parent {
-  height: 80vh;
+  max-height: 80vh;
   overflow: hidden !important;
+}
+
+.album-parent {
+  gap: 5px !important;
+  justify-content: space-between !important;
+  align-items: baseline !important;
+  padding: 0 7px;
+  max-height: 72vh;
+  overflow-y: auto !important;
 }
 .track-body {
   position: relative;
@@ -439,22 +449,22 @@ export default {
 }
 @media screen and (max-width: 767px) {
   #parent {
-    margin: 10px 20px 68px 20px !important;
+    margin: 10px 20px 68px 0 !important;
   }
 
   .track-body {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
   }
   .track-body-text-parent p {
-    font-size: 17px;
+    font-size: 12px;
   }
   .track-body-text-parent span {
-    font-size: 12px;
+    font-size: 11px;
     text-transform: capitalize;
   }
   .album-parent {
-    gap: 5px !important;
+    gap: 2px !important;
   }
 
   .more-list {
@@ -462,7 +472,7 @@ export default {
     top: 50px;
   }
   .li-child {
-    font-size: 12px !important;
+    font-size: 11px !important;
   }
 }
 </style>

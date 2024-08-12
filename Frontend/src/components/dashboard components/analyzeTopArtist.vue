@@ -101,12 +101,7 @@ export default {
   text-align: left !important;
 }
 
-.monthly-text p {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 120px;
-}
+
 .monthly-num {
   width: 35px;
   height: 45px;

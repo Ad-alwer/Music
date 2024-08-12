@@ -338,6 +338,9 @@ tr {
   table th {
     font-size: 14px !important;
   }
+  .socialmedia-title ,.socialmedia-link{
+    font-size: 12px !important;
+  }
   
 }
 </style>

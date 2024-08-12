@@ -28,7 +28,7 @@
           alt=""
         />
         <a
-          class="text-capitalize fw-semibold text-decoration-none fs-5 color-black trim "
+          class="text-capitalize fw-semibold text-decoration-none fs-5 color-black trim"
           >{{ x.text }}</a
         >
       </div>
@@ -37,7 +37,7 @@
         class="d-flex align-items-center gap-4 justify-content-center pointer notification-child more-parent border-0"
       >
         <a
-          class="text-capitalize fw-semibold text-decoration-none fs-6 color-blue "
+          class="text-capitalize fw-semibold text-decoration-none fs-6 color-blue"
           >more</a
         >
       </div>
@@ -76,6 +76,7 @@ export default {
   data() {
     return {
       apiaddress: process.env.VUE_APP_Api_ADDRESS,
+      url: process.env.VUE_APP_Url,
       data: [],
       unread: false,
     };
@@ -94,7 +95,12 @@ export default {
       }
     },
     changecomponent: function (e) {
-      this.$emit("changecomponent", e);
+      const urllocation = location.pathname;
+      if (urllocation.includes("dashboard")) {
+        location.href = `${this.url}notification`;
+      } else {
+        this.$emit("changecomponent", e);
+      }
     },
   },
 };
@@ -160,11 +166,11 @@ img {
     width: 18px;
   }
   .trim {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 180px;
-  font-size: 13px !important;
-}
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+    font-size: 13px !important;
+  }
 }
 </style>

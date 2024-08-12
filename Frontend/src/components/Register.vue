@@ -615,7 +615,7 @@ input.form-control {
     margin: 0 auto !important;
   }
   input.form-control {
-  width: 380px;
+  width: 300px;
 }
 
   form {

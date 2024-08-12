@@ -1,5 +1,5 @@
 <template>
-   <loader v-if="popups.loader" />
+  <loader v-if="popups.loader" />
   <section v-else class="content w-100">
     <div class="d-flex justify-content-between mt-4 mx-5">
       <span class="text-uppercase color-blue fw-semibold fs-5"
@@ -36,7 +36,7 @@
         </svg>
       </div>
       <div
-        class="rounded-3 search-resault  p-2"
+        class="rounded-3 search-resault p-2"
         v-if="searchuserdata.length > 0"
       >
         <div
@@ -53,8 +53,10 @@
               alt=""
             />
             <div class="d-flex flex-column align-items-center">
-              <span class="text-capitalize fw-semibold">{{ x.username }}</span>
-              <span class="text-capitalize color-gray"
+              <span class="text-capitalize fw-semibold text">{{
+                x.username
+              }}</span>
+              <span class="text-capitalize color-gray follower"
                 >{{ formatview(x.subscribe.length) }} follower</span
               >
             </div>
@@ -84,8 +86,10 @@
               alt=""
             />
             <div class="d-flex flex-column align-items-center">
-              <span class="text-capitalize fw-semibold">{{ x.username }}</span>
-              <span class="text-capitalize color-gray"
+              <span class="text-capitalize fw-semibold text">{{
+                x.username
+              }}</span>
+              <span class="text-capitalize color-gray follower"
                 >{{ formatview(x.subscribe.length) }} follower</span
               >
             </div>
@@ -107,7 +111,6 @@ import Register from "../Register.vue";
 import axios from "axios";
 import iziToast from "izitoast";
 
-
 import loader from "../loader.vue";
 
 export default {
@@ -119,7 +122,7 @@ export default {
     return {
       apiaddress: process.env.VUE_APP_Api_ADDRESS,
       user: [],
-     
+
       searchuserdata: [],
       popups: {
         loader: true,
@@ -137,7 +140,6 @@ export default {
         .then((res) => {
           this.user = res.data;
           this.popups.loader = false;
-       
         });
     },
     searchuser: function (value) {
@@ -240,7 +242,7 @@ export default {
     },
   },
   components: {
-    loader
+    loader,
   },
 };
 </script>
@@ -262,7 +264,7 @@ export default {
 }
 
 .search-resault {
-  background-color: rgba(46, 46, 46, 0.20);
+  background-color: rgba(46, 46, 46, 0.2);
   margin-left: 15px;
   width: 60%;
   overflow: scroll;
@@ -283,14 +285,20 @@ export default {
   #parent {
     margin-bottom: 68px;
   }
-  .search-resault,.search-parent{
+  .search-resault,
+  .search-parent {
     width: 70%;
   }
-  .recommend{
+  .recommend {
     width: 80%;
   }
 
-  
-  
+  .text {
+    font-size: 12px !important;
+  }
+
+  .follower{
+    font-size: 11px !important;
+  }
 }
 </style>

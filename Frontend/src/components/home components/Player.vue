@@ -1,9 +1,16 @@
 <template>
-  <div id="parent" class="d-flex flex-column mt-1">
-    <section v-if="!laoder" class="px-3 top-tracks">
+  <div  id="parent" class="d-flex flex-column mt-1">
+  <loader v-if="loader" />
+    <section v-else class="px-3 top-tracks">
       <div class="d-flex justify-content-between align-items-center">
-        <span class="text-uppercase color-black fs-5 fw-semibold">Top tracks </span>
-        <span class="text-capitalize color-gray pointer fw-semibold" @click="gototoptracks">More List</span>
+        <span class="text-uppercase color-black fs-5 fw-semibold"
+          >Top tracks
+        </span>
+        <span
+          class="text-capitalize color-gray pointer fw-semibold"
+          @click="gototoptracks"
+          >More List</span
+        >
       </div>
       <div class="mt-2">
         <div
@@ -38,15 +45,15 @@
         </div>
       </div>
     </section>
-    <hr v-if="!laoder" class="mx-5" />
-    <playerbox v-if="!laoder"
+    <hr class="mx-5" />
+    <playerbox
+    v-show="!loader"
       @check="checkfollowandsave"
       :data="data"
       :check="check"
       :playmusic="playmusic"
     />
-    <loader v-else/>
-    
+
   </div>
 </template>
 
@@ -56,7 +63,7 @@ import playerbox from "./playerbox.vue";
 import axios from "axios";
 import Register from "../Register.vue";
 
-import loader from '../loader.vue';
+import loader from "../loader.vue";
 
 export default {
   name: "player",
@@ -64,7 +71,7 @@ export default {
     axios.get(`${this.apiaddress}users/toptracks`).then((res) => {
       if (res.data) {
         this.tracks = res.data.splice(0, 3);
-        this.loader = false
+        this.loader = false;
       }
     });
   },
@@ -78,7 +85,7 @@ export default {
   },
   components: {
     playerbox,
-    loader
+    loader,
   },
   methods: {
     checkfollowandsave: function (e) {
@@ -133,9 +140,9 @@ export default {
           }
         });
     },
-    gototoptracks:function(){
-      location.href = `/toptracks`
-    }
+    gototoptracks: function () {
+      location.href = `/toptracks`;
+    },
   },
   mounted() {},
   props: ["data", "check"],
@@ -174,9 +181,9 @@ export default {
 }
 
 @media screen and (max-width: 767px) {
-  .top-tracks,hr{
+  .top-tracks,
+  hr {
     display: none !important;
   }
 }
-
 </style>

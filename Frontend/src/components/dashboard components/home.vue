@@ -118,74 +118,7 @@
       </div>
     </section>
     <hr class="mx-5" />
-    <section
-      class="mt-4 d-flex justify-content-center flex-column align-items-start gap-4"
-    >
-      <h3 class="text-center fw-semibold text-capitalize">show</h3>
-      <div class="d-flex flex-wrap showparent ms-4">
-        <div class="col-4 d-flex mt-2 align-items-center gap-2">
-          <span class="text-capitalize fw-semibold fs-5 showname">new music</span>
-          <input
-            type="checkbox"
-            class="offscreen"
-            name="x.username"
-            id="newmusic"
-            :checked="data.newMusic"
-            @change="changeval('newMusic', $event.target.checked)"
-          />
-          <label class="switch" for="newmusic"></label>
-        </div>
-        <div class="col-4 d-flex mt-2 align-items-center gap-2">
-          <span class="text-capitalize fw-semibold fs-5 showname">trend music</span>
-          <input
-            type="checkbox"
-            class="offscreen"
-            name="x.username"
-            id="trendmusic"
-            :checked="data.trendMusic"
-            @change="changeval('trendMusic', $event.target.checked)"
-          />
-          <label class="switch" for="trendmusic"></label>
-        </div>
-        <div class="col-4 d-flex mt-2 align-items-center gap-2">
-          <span class="text-capitalize fw-semibold fs-5 showname">trend podcast</span>
-          <input
-            type="checkbox"
-            class="offscreen"
-            name="x.username"
-            id="trendpodcast"
-            :checked="data.trendpodcast"
-            @change="changeval('trendpodcast', $event.target.checked)"
-          />
-          <label class="switch" for="trendpodcast"></label>
-        </div>
-        <div class="col-4 d-flex mt-2 align-items-center gap-2">
-          <span class="text-capitalize fw-semibold fs-5 showname">top Artists</span>
-          <input
-            type="checkbox"
-            class="offscreen"
-            name="x.username"
-            id="topArtists"
-            :checked="data.topArtists"
-            @change="changeval('topArtists', $event.target.checked)"
-          />
-          <label class="switch" for="topArtists"></label>
-        </div>
-        <div class="col-4 d-flex mt-2 align-items-center gap-3">
-          <span class="text-capitalize fw-semibold fs-5 showname">top Playlist</span>
-          <input
-            type="checkbox"
-            class="offscreen"
-            name="x.username"
-            id="topPlaylist"
-            :checked="data.topPlaylist"
-            @change="changeval('topPlaylist', $event.target.checked)"
-          />
-          <label class="switch" for="topPlaylist"></label>
-        </div>
-      </div>
-    </section>
-    <hr class="mx-5" />
+  
 
     <sliderPopups
       v-if="popups.slider"
@@ -370,45 +303,7 @@ export default {
   border: 2px solid var(--blue-main);
 }
 
-.switch {
-  margin-bottom: -4px;
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 20px;
-  background: red;
-  background-color: rgba(0, 0, 0, 0.25);
-  border-radius: all 0.3s;
-  border-radius: 20px;
-  cursor: pointer;
-}
-.switch::after {
-  content: "";
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border-radius: 18px;
-  background: var(--blue-main);
 
-  top: 1px;
-  left: 1px;
-  transition: all 0.3s;
-}
-input[type="checkbox"]:checked + .switch::after {
-  transform: translateX(20px);
-}
-
-input[type="checkbox"]:checked + .switch {
-  background: #5c52ef85;
-}
-.offscreen {
-  display: none;
-}
-.showparent div:nth-child(4n) input {
-  background: red;
-  position: relative;
-  left: 5px;
-}
 
 .img-social {
   width: 32px;
@@ -439,13 +334,6 @@ input[type="checkbox"]:checked + .switch {
   .img-social + span {
     font-size: 14px !important;
   }
-  .showparent{
-    flex-direction: column;
-    width: 100%;
-  }
-  .showname{
-    width:120px;
-    font-size: 15px !important;
-  }
+
 }
 </style>

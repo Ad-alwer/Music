@@ -220,46 +220,47 @@ export default {
 
 @media screen and (max-width: 767px) {
   #parent {
-    margin: 5px 10px 68px 10px !important;
+    margin: 5px 0 72px 0 !important;
+    padding: 0 0 0 10px !important;
   }
   .monthly-num {
     width: 25px;
     height: 35px;
   }
   .monthly-num span {
-    font-size: 24px !important;
+    font-size: 20px !important;
   }
   .monthly-img {
     width: 50px;
     height: 50px;
   }
   .trackname {
-    font-size: 16px !important;
+    font-size: 11px !important;
   }
   .username {
-    font-size: 14px !important;
+    font-size: 10px !important;
   }
   .monthplay-span {
-    font-size: 14px !important;
-    width: 130px;
+    font-size: 10px !important;
+    width: 90px;
   }
   .plays-span {
-    font-size: 14px !important;
-    width: 70px;
+    font-size: 10px !important;
+    width: 60px;
   }
   .detail-parent {
     gap: 16px !important;
   }
 
   .monthly-box {
-    gap: 8px !important;
+    gap: 16px !important;
   }
   .monthly-text {
-    width: 140px;
+    width: 120px;
   }
   .trackshow-span {
-    font-size: 14px !important;
-    width: 75px;
+    font-size: 10px !important;
+    width: 60px;
   }
 }
 </style>
