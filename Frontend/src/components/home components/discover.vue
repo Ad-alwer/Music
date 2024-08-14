@@ -81,9 +81,10 @@
                 class="w-100 img-topcollactions rounded-4"
                 alt=""
               />
-              <span class="text-center fw-bold text-capitalize">{{ x.name }}</span>
+              <span class="text-center fw-bold text-capitalize">{{
+                x.name
+              }}</span>
             </div>
-           
           </div>
         </div>
         <div class="w-50 topgenre-parent">
@@ -271,6 +272,8 @@ export default {
 <style scoped>
 #parent {
   margin-top: 5% !important;
+  height: 83vh;
+  overflow-y: auto;
 }
 .img-parent {
   max-width: 860px;
@@ -363,9 +366,9 @@ export default {
   max-width: 110px;
 }
 .topartists img {
-    width: 90px;
-    height: 90px;
-  }
+  width: 90px;
+  height: 90px;
+}
 
 @media screen and (max-width: 767px) {
   .slider {
@@ -407,7 +410,7 @@ export default {
 
   #parent {
     height: 78vh;
-  overflow-y:auto !important;
+    overflow-y: auto !important;
     margin-bottom: 70px;
   }
 }

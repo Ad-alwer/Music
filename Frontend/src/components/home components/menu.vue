@@ -391,9 +391,7 @@ li {
   cursor: pointer;
   margin-left: 32%;
 }
-#parent {
-  overflow: hidden;
-}
+
 .menu-title {
   margin-top: 2%;
   font-weight: 600;

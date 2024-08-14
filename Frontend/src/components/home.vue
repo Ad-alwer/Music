@@ -261,7 +261,7 @@ html{
 }
 aside.menu {
   width: 240px;
-  height: 92vh;
+  height: 100%;
 }
 aside.player {
   width: 25%;

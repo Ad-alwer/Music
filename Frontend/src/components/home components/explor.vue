@@ -308,6 +308,10 @@ export default {
 </script>
 
 <style scoped>
+#parent{
+  overflow-y: auto !important;
+  height: 83vh;
+}
 .title {
   color: var(--blue-main);
 }
